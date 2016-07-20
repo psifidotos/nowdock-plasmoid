@@ -11,7 +11,7 @@ import org.kde.plasma.private.taskmanager 0.1 as TaskManagerApplet
 
 Item {
     id:panel
-    //width: 750; height: 600
+   // width: 400; height: 250
 
     property real zoomFactor: 1.7
     property int iconSize: 64
@@ -231,7 +231,7 @@ Item {
                     icList.currentSpot = pos.y;
             }
 
-            onReleased: {
+            onPressed: {
                 if (mouse.button == Qt.LeftButton) {
                     if (IsMinimized === true) {
                         var i = modelIndex();
