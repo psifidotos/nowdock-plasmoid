@@ -1,6 +1,5 @@
 import QtQuick 2.0
-
-import QtQuick.Controls 1.4
+import QtQuick.Layouts 1.1
 
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
@@ -13,13 +12,34 @@ import QtGraphicalEffects 1.0
 
 Item {
     id:panel
-   // width: 400; height: 250
+
+    implicitWidth: (icList.orientation === Qt.Horizontal) ? icList.width+10 : zoomedLength
+    implicitHeight: (icList.orientation === Qt.Vertical) ? icList.height+10 : zoomedLength
+
+    Layout.minimumWidth: width
+    Layout.minimumHeight: height
+
+    property int zoomedLength: Math.floor((iconSize+iconMargin)*zoomFactor)
 
     property real zoomFactor: 1.7
     property int iconSize: 64
-    property bool glow: true
+    property int iconMargin: 15
+    property bool glow: false
 
-    property int position : PlasmaCore.Types.BottomPositioned
+    //property int position : PlasmaCore.Types.BottomPositioned
+    property int position : {
+        switch (plasmoid.location) {
+        case PlasmaCore.Types.LeftEdge:
+            return PlasmaCore.Types.LeftPositioned
+        case PlasmaCore.Types.RightEdge:
+            return PlasmaCore.Types.RightPositioned;
+        case PlasmaCore.Types.TopEdge:
+            return PlasmaCore.Types.TopPositioned;
+        default:
+            return PlasmaCore.Types.BottomPositioned
+        }
+    }
+
     property bool vertical: (plasmoid.formFactor === PlasmaCore.Types.Vertical)
 
     Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
@@ -43,9 +63,23 @@ Item {
         screen: plasmoid.screen
         activity: activityInfo.currentActivity
 
+        filterByActivity: true
+
         Component.onCompleted: {
             console.debug();
         }
+    }
+
+    TaskManagerApplet.Backend {
+        id: backend
+
+        taskManagerItem: panel
+        //toolTipItem: toolTipDelegate
+        //highlightWindows: plasmoid.configuration.highlightWindows
+
+        //onAddLauncher: {
+        //   tasksModel.requestAddLauncher(url);
+        //}
     }
 
     TaskManager.VirtualDesktopInfo {
@@ -56,11 +90,6 @@ Item {
         id: activityInfo
     }
 
-    /*Image {
-        source: "images/1280x800.jpg"
-        anchors.fill: parent
-        fillMode: Image.Pad
-    }*/
 
     IconsModel{
         id: iconsmdl
@@ -76,10 +105,13 @@ Item {
             anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
             anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
 
-            property int iconMargin: 15
-
             width: (panel.iconSize+iconMargin)*scale;
             height: (panel.iconSize+iconMargin)*scale;
+
+            acceptedButtons: Qt.LeftButton | Qt.MidButton
+
+            property bool pressed: false
+            property int iconMargin: panel.iconMargin
 
             property real scale: 1;
             property real appearScale: 1;
@@ -244,18 +276,33 @@ Item {
             }
 
             onPressed: {
-                if (mouse.button == Qt.LeftButton) {
-                    if (IsMinimized === true) {
-                        var i = modelIndex();
-                        tasksModel.requestToggleMinimized(i);
-                        tasksModel.requestActivate(i);
-                    } else if (IsActive === true) {
-                        tasksModel.requestToggleMinimized(modelIndex());
-                    } else {
-                        tasksModel.requestActivate(modelIndex());
-                    }
-
+                if (mouse.button == Qt.LeftButton || mouse.button == Qt.MidButton) {
+                    pressed = true;
                 }
+            }
+
+            onReleased: {
+                if(pressed){
+                    if (mouse.button == Qt.MidButton){
+                        tasksModel.requestNewInstance(modelIndex());
+                    } else if (mouse.button == Qt.LeftButton) {
+                        if (model.IsGroupParent)
+                            panel.presentWindows(model.LegacyWinIdList);
+                        else {
+                            if (IsMinimized === true) {
+                                var i = modelIndex();
+                                tasksModel.requestToggleMinimized(i);
+                                tasksModel.requestActivate(i);
+                            } else if (IsActive === true) {
+                                tasksModel.requestToggleMinimized(modelIndex());
+                            } else {
+                                tasksModel.requestActivate(modelIndex());
+                            }
+                        }
+                    }
+                }
+
+                pressed = false;
             }
 
             function modelIndex(){
@@ -265,9 +312,9 @@ Item {
         }
     }
 
-    PlasmaCore.FrameSvgItem {
+    Item {
         id:barLine
-        imagePath: "widgets/panel-background";
+        //   imagePath: "widgets/panel-background";
         property bool blockLoop: false
 
         width: ( (icList.orientation === Qt.Horizontal) && (!blockLoop) )? icList.width+10 : 12
@@ -308,14 +355,6 @@ Item {
             }
         }
 
-        /*  PlasmaCore.FrameSvgItem {
-            imagePath: "widgets/panel-background";
-            prefix: "shadow"
-            anchors.centerIn: parent
-            width: parent.width+12
-            height: parent.height+12
-        }*/
-
         ListView {
             id:icList
             anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
@@ -333,6 +372,7 @@ Item {
             property int currentSpot : -1000
             width: (orientation === Qt.Horizontal) ? contentWidth + 1 : 120
             height: (orientation === Qt.Vertical) ? contentHeight + 1 : 120
+            interactive: false
 
             //  model: iconsmdl
             model: tasksModel
@@ -354,7 +394,7 @@ Item {
     }
 
     //// Buttons on the top
-  /*  Row{
+    /*  Row{
         id: buttonsGrp
         anchors.right: parent.right
         anchors.top: parent.top
@@ -375,7 +415,7 @@ Item {
             }
         }*/
 
-   /*     PlasmaComponents.Button {
+    /*     PlasmaComponents.Button {
             text: "Change Layout"
             onClicked: {
                 barLine.blockLoop = true;
@@ -403,6 +443,10 @@ Item {
     //}
 
 
-    Component.onCompleted: barLine.movePanel();
+    Component.onCompleted:  {
+        barLine.movePanel();
+        panel.presentWindows.connect(backend.presentWindows);
+    }
+
 
 }

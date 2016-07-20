@@ -25,13 +25,13 @@ Item{
         opacity: 0.5
         visible: panel.glow
     }
+
     BrightnessContrast {
         anchors.fill: smallCircle
         source: smallCircle
         anchors.margins: 1
         brightness: 0.4
         contrast: 0.4
-        visible: panel.glow
     }
 
 }
