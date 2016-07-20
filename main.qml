@@ -51,7 +51,7 @@ Item {
 
     Component {
         id: iconDelegate
-        Item{
+        MouseArea{
             id: wrapper
             anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
             anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
@@ -120,7 +120,7 @@ Item {
                 anchors.verticalCenter: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
                                          (panel.position === PlasmaCore.Types.RightPositioned)) ? parent.verticalCenter : undefined
 
-                active: taskMouseArea.containsMouse
+                active: wrapper.containsMouse
                 enabled: true
                 usesPlasmaTheme: false
 
@@ -189,53 +189,52 @@ Item {
             }
 
 
-            MouseArea {
-                id: taskMouseArea
-                anchors.fill: parent
-                hoverEnabled: true
+            //MouseArea {
+            //       id: taskMouseArea
+            //    anchors.fill: parent
+            hoverEnabled: true
 
-                onEntered: {
-                    var pos = mapToItem(icList, mouseX, mouseY);
+            onEntered: {
+                var pos = mapToItem(icList, mouseX, mouseY);
 
-                    if (icList.orientation == Qt.Horizontal)
-                        icList.currentSpot = pos.x;
-                    else
-                        icList.currentSpot = pos.y;
-                }
-
-                onExited: {
-                    icList.currentSpot = -1000;
-                }
-
-                onPositionChanged: {
-                    var pos = mapToItem(icList, mouse.x, mouse.y);
-
-                    if (icList.orientation == Qt.Horizontal)
-                        icList.currentSpot = pos.x;
-                    else
-                        icList.currentSpot = pos.y;
-                }
-
-                onReleased: {
-                    if (mouse.button == Qt.LeftButton) {
-                            if (IsMinimized === true) {
-                                var i = modelIndex();
-                                tasksModel.requestToggleMinimized(i);
-                                tasksModel.requestActivate(i);
-                            } else if (IsActive === true) {
-                                tasksModel.requestToggleMinimized(modelIndex());
-                            } else {
-                                tasksModel.requestActivate(modelIndex());
-                            }
-
-                    }
-                }
-
-                function modelIndex(){
-                    return tasksModel.makeModelIndex(index);
-                }
-
+                if (icList.orientation == Qt.Horizontal)
+                    icList.currentSpot = pos.x;
+                else
+                    icList.currentSpot = pos.y;
             }
+
+            onExited: {
+                icList.currentSpot = -1000;
+            }
+
+            onPositionChanged: {
+                var pos = mapToItem(icList, mouse.x, mouse.y);
+
+                if (icList.orientation == Qt.Horizontal)
+                    icList.currentSpot = pos.x;
+                else
+                    icList.currentSpot = pos.y;
+            }
+
+            onReleased: {
+                if (mouse.button == Qt.LeftButton) {
+                    if (IsMinimized === true) {
+                        var i = modelIndex();
+                        tasksModel.requestToggleMinimized(i);
+                        tasksModel.requestActivate(i);
+                    } else if (IsActive === true) {
+                        tasksModel.requestToggleMinimized(modelIndex());
+                    } else {
+                        tasksModel.requestActivate(modelIndex());
+                    }
+
+                }
+            }
+
+            function modelIndex(){
+                return tasksModel.makeModelIndex(index);
+            }
+
         }
     }
 
@@ -333,7 +332,7 @@ Item {
         anchors.right: parent.right
         anchors.top: parent.top
 
-/*        PlasmaComponents.Button {
+        /*        PlasmaComponents.Button {
             text: "Add Item"
             onClicked: iconsmdl.append({"icon": "icons/firefox.png","instances": 1, "active":true})
         }
