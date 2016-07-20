@@ -1,0 +1,21 @@
+[Desktop Entry]
+Name=Now Dock
+Name[el]=Now Dock
+Comment=Switch between running applications
+Comment[el]=Εναλλαγή μεταξύ εκτελούμενων εφαρμογών
+Type=Service
+Icon=preferences-system-windows
+X-KDE-ServiceTypes=Plasma/Applet
+X-Plasma-API=declarativeappletscript
+X-Plasma-MainScript=ui/main.qml
+X-Plasma-Provides=org.kde.plasma.multitasking
+X-KDE-PluginInfo-Author=Michail Vourlakos
+X-KDE-PluginInfo-Email=mvourlakos@gmail.com
+X-KDE-PluginInfo-Name=org.kdelook.nowdock
+X-KDE-PluginInfo-Version=0.1
+X-KDE-PluginInfo-Website=https://github.com/psifidotos/plasmaqmldock
+X-KDE-PluginInfo-Category=Windows and Tasks
+X-KDE-PluginInfo-Depends=
+X-KDE-PluginInfo-License=GPL v2+
+X-KDE-PluginInfo-EnabledByDefault=true
+

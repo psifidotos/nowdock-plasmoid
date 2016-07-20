@@ -4,27 +4,42 @@ import QtQuick.Controls 1.4
 
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
+import org.kde.plasma.plasmoid 2.0
 
 import org.kde.taskmanager 0.1 as TaskManager
 import org.kde.plasma.private.taskmanager 0.1 as TaskManagerApplet
 
 Item {
     id:panel
-    width: 750; height: 600
+    //width: 750; height: 600
 
     property real zoomFactor: 1.7
     property int iconSize: 64
     property bool glow: true
 
+    property int position : PlasmaCore.Types.BottomPositioned
+    property bool vertical: (plasmoid.formFactor === PlasmaCore.Types.Vertical)
 
-    property int position : PlasmaCore.Types.LeftPositioned
+    Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
+    Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground
+
+
+    property Item dragSource: null
+
+    signal requestLayout
+    signal windowsHovered(variant winIds, bool hovered)
+    signal presentWindows(variant winIds)
+
+
+    /////
+
 
     TaskManager.TasksModel {
         id: tasksModel
 
         virtualDesktop: virtualDesktopInfo.currentDesktop
-        //screen: plasmoid.screen
-        //    activity: activityInfo.currentActivity
+        screen: plasmoid.screen
+        activity: activityInfo.currentActivity
 
         Component.onCompleted: {
             console.debug();
@@ -39,11 +54,11 @@ Item {
         id: activityInfo
     }
 
-    Image {
+    /*Image {
         source: "images/1280x800.jpg"
         anchors.fill: parent
         fillMode: Image.Pad
-    }
+    }*/
 
     IconsModel{
         id: iconsmdl
@@ -327,19 +342,10 @@ Item {
     }
 
     //// Buttons on the top
-    Row{
+  /*  Row{
         id: buttonsGrp
         anchors.right: parent.right
         anchors.top: parent.top
-
-        /*        PlasmaComponents.Button {
-            text: "Add Item"
-            onClicked: iconsmdl.append({"icon": "icons/firefox.png","instances": 1, "active":true})
-        }
-        PlasmaComponents.Button {
-            text: "Remove Item"
-            onClicked: iconsmdl.remove(2)
-        }*/
 
         PlasmaComponents.Button {
             text: "Disable Glow"
@@ -355,9 +361,9 @@ Item {
 
 
             }
-        }
+        }*/
 
-        PlasmaComponents.Button {
+   /*     PlasmaComponents.Button {
             text: "Change Layout"
             onClicked: {
                 barLine.blockLoop = true;
@@ -381,8 +387,8 @@ Item {
                 barLine.movePanel();
                 barLine.blockLoop = false;
             }
-        }
-    }
+        }*/
+    //}
 
 
     Component.onCompleted: barLine.movePanel();
