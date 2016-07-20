@@ -9,6 +9,8 @@ import org.kde.plasma.plasmoid 2.0
 import org.kde.taskmanager 0.1 as TaskManager
 import org.kde.plasma.private.taskmanager 0.1 as TaskManagerApplet
 
+import QtGraphicalEffects 1.0
+
 Item {
     id:panel
    // width: 400; height: 250
@@ -140,6 +142,16 @@ Item {
                 usesPlasmaTheme: false
 
                 source: decoration
+            }
+
+            DropShadow {
+                anchors.fill: iconImage
+                horizontalOffset: 3
+                verticalOffset: 3
+                radius: 8.0
+                samples: 17
+                color: "#80000000"
+                source: iconImage
             }
 
             Item{
