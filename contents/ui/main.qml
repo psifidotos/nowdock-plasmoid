@@ -22,7 +22,6 @@ Item {
     property int iconMargin: 15
     property bool glow: false
 
-    //property int position : PlasmaCore.Types.BottomPositioned
     property int position
 
     Connections {
@@ -121,14 +120,14 @@ Item {
                 NumberAnimation { duration: 80 }
             }
 
-            ListView.onRemove: SequentialAnimation {
+          /*  ListView.onRemove: SequentialAnimation {
                 PropertyAction { target: wrapper; property: "ListView.delayRemove"; value: true }
                 ParallelAnimation{
                     NumberAnimation { target: wrapper; property: "scale"; to: 0; duration: 350; easing.type: Easing.InOutQuad }
                     NumberAnimation { target: wrapper; property: "opacity"; to: 0; duration: 350; easing.type: Easing.InOutQuad }
                 }
                 PropertyAction { target: wrapper; property: "ListView.delayRemove"; value: false }
-            }
+            }*/
 
             onCurSpotChanged: {
                 var absCoords = mapToItem(icList, 0, 0);
@@ -244,10 +243,6 @@ Item {
                 }
             }
 
-
-            //MouseArea {
-            //       id: taskMouseArea
-            //    anchors.fill: parent
             hoverEnabled: true
 
             onEntered: {
@@ -309,16 +304,21 @@ Item {
         }
     }
 
-    Item {
+    Item{
         id:barLine
-        //   imagePath: "widgets/panel-background";
         property bool blockLoop: false
 
         width: ( (icList.orientation === Qt.Horizontal) && (!blockLoop) )? icList.width+10 : 12
         height: ((icList.orientation === Qt.Vertical) && (!blockLoop) ) ? icList.height+10 : 12
 
-        function movePanel(){
-            if (panel.position === PlasmaCore.Types.BottomPositioned){
+        PlasmaCore.FrameSvgItem{
+            anchors.fill:parent
+            imagePath: "widgets/panel-background";
+        }
+
+
+        function movePanel(newPosition){
+            if (newPosition === PlasmaCore.Types.BottomPositioned){
                 anchors.horizontalCenter = parent.horizontalCenter;
                 anchors.verticalCenter = undefined;
                 anchors.bottom = parent.bottom;
@@ -326,7 +326,7 @@ Item {
                 anchors.left = undefined;
                 anchors.right = undefined;
             }
-            else if (panel.position === PlasmaCore.Types.TopPositioned){
+            else if (newPosition === PlasmaCore.Types.TopPositioned){
                 anchors.horizontalCenter = parent.horizontalCenter;
                 anchors.verticalCenter = undefined;
                 anchors.bottom = undefined;
@@ -334,7 +334,7 @@ Item {
                 anchors.left = undefined;
                 anchors.right = undefined;
             }
-            else if (panel.position === PlasmaCore.Types.LeftPositioned){
+            else if (newPosition === PlasmaCore.Types.LeftPositioned){
                 anchors.horizontalCenter = undefined;
                 anchors.verticalCenter = parent.verticalCenter;
                 anchors.bottom = undefined;
@@ -342,7 +342,7 @@ Item {
                 anchors.left = parent.left;
                 anchors.right = undefined;
             }
-            else if (panel.position === PlasmaCore.Types.RightPositioned){
+            else if (newPosition === PlasmaCore.Types.RightPositioned){
                 anchors.horizontalCenter = undefined;
                 anchors.verticalCenter = parent.verticalCenter;
                 anchors.bottom = undefined;
@@ -374,19 +374,19 @@ Item {
             //  model: iconsmdl
             model: tasksModel
             delegate: iconDelegate
-            orientation: ((panel.position === PlasmaCore.Types.BottomPositioned) ||
-                          (panel.position === PlasmaCore.Types.TopPositioned)) ? Qt.Horizontal : Qt.Vertical
 
-            add: Transition {
+            orientation: Qt.Horizontal
+
+        /*    add: Transition {
                 ParallelAnimation{
                     NumberAnimation { property: "appearScale"; from: 0; to: 1; duration: 500 }
                     NumberAnimation { property: "opacity"; from: 0; to: 1; duration: 500 }
                 }
-            }
+            }*/
 
-            removeDisplaced: Transition {
+            /*removeDisplaced: Transition {
                 NumberAnimation { properties: "x,y"; duration: 500 }
-            }
+            }*/
         }
     }
 
@@ -405,24 +405,23 @@ Item {
         }
     }
 
+    Timer {
+        id: panelGeometryTimer
+
+        interval: 500
+        repeat: false
+
+        onTriggered: updateImplicits();
+    }
+
+
     Component.onCompleted:  {
-        updatePosition()
+        updatePosition();
+        updateImplicits();
         panel.presentWindows.connect(backend.presentWindows);
         iconGeometryTimer.start();
     }
 
-    function layout(){
-        var staticSize = panel.iconSize + panel.iconMargin;
-
-        if( panel.vertical ){
-            panel.supposedTasksListWidth = staticSize;
-            panel.supposedTasksListHeight = tasksModel.count * staticSize;
-        } else {
-            panel.supposedTasksListWidth = tasksModel.count * staticSize;
-            panel.supposedTasksListHeight = staticSize;
-        }
-
-    }
 
     function updateImplicits(){
         var zoomedLength = Math.floor(panel.iconSize*panel.zoomFactor);
@@ -439,26 +438,36 @@ Item {
         }
     }
 
-    function updatePosition(){
-        updateImplicits();
-
+    function updatePosition(){       
         barLine.blockLoop = true;
+
+        var newPosition;
+        var tempVertical=false;
 
         switch (plasmoid.location) {
         case PlasmaCore.Types.LeftEdge:
-            panel.position = PlasmaCore.Types.LeftPositioned;
+            newPosition = PlasmaCore.Types.LeftPositioned;
+            tempVertical = true;
             break;
         case PlasmaCore.Types.RightEdge:
-            panel.position = PlasmaCore.Types.RightPositioned;
+            newPosition = PlasmaCore.Types.RightPositioned;
+            tempVertical = true;
             break;
         case PlasmaCore.Types.TopEdge:
-            panel.position = PlasmaCore.Types.TopPositioned;
+            newPosition = PlasmaCore.Types.TopPositioned;
             break;
         default:
-            panel.position = PlasmaCore.Types.BottomPositioned;
+            newPosition = PlasmaCore.Types.BottomPositioned;
         }
 
-        barLine.movePanel();
+        barLine.movePanel(newPosition);
+        if(tempVertical)
+            icList.orientation = Qt.Vertical;
+        else
+            icList.orientation = Qt.Horizontal;
+
+        panel.position = newPosition;
+
         barLine.blockLoop = false;
     }
 
