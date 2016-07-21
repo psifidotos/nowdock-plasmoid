@@ -13,13 +13,15 @@ import QtGraphicalEffects 1.0
 Item {
     id:panel
 
-    implicitWidth: (icList.orientation === Qt.Horizontal) ? icList.width+10 : zoomedLength
-    implicitHeight: (icList.orientation === Qt.Vertical) ? icList.height+10 : zoomedLength
+   // implicitWidth: (icList.orientation === Qt.Horizontal) ? icList.width+10 : zoomedLength
+   // implicitHeight: (icList.orientation === Qt.Vertical) ? icList.height+10 : zoomedLength
 
-    Layout.minimumWidth: width
-    Layout.minimumHeight: height
 
-    property int zoomedLength: Math.floor((iconSize+iconMargin)*zoomFactor)
+    Layout.minimumWidth: implicitWidth
+    Layout.minimumHeight: implicitHeight
+
+
+
 
     property real zoomFactor: 1.7
     property int iconSize: 64
@@ -27,18 +29,15 @@ Item {
     property bool glow: false
 
     //property int position : PlasmaCore.Types.BottomPositioned
-    property int position : {
-        switch (plasmoid.location) {
-        case PlasmaCore.Types.LeftEdge:
-            return PlasmaCore.Types.LeftPositioned
-        case PlasmaCore.Types.RightEdge:
-            return PlasmaCore.Types.RightPositioned;
-        case PlasmaCore.Types.TopEdge:
-            return PlasmaCore.Types.TopPositioned;
-        default:
-            return PlasmaCore.Types.BottomPositioned
-        }
+    property int position
+
+
+    Connections {
+        target: plasmoid
+        onLocationChanged: panel.updatePosition();
     }
+
+
 
     property bool vertical: (plasmoid.formFactor === PlasmaCore.Types.Vertical)
 
@@ -64,6 +63,8 @@ Item {
         activity: activityInfo.currentActivity
 
         filterByActivity: true
+
+        onCountChanged: panel.updateImplicits()
 
         Component.onCompleted: {
             console.debug();
@@ -333,7 +334,7 @@ Item {
                 anchors.horizontalCenter = parent.horizontalCenter;
                 anchors.verticalCenter = undefined;
                 anchors.bottom = undefined;
-                anchors.top = buttonsGrp.bottom;
+                anchors.top = parent.top;
                 anchors.left = undefined;
                 anchors.right = undefined;
             }
@@ -393,28 +394,6 @@ Item {
         }
     }
 
-    //// Buttons on the top
-    /*  Row{
-        id: buttonsGrp
-        anchors.right: parent.right
-        anchors.top: parent.top
-
-        PlasmaComponents.Button {
-            text: "Disable Glow"
-            onClicked: {
-                if (panel.glow){
-                    panel.glow = false;
-                    text = "Enable Glow"
-                }
-                else{
-                    panel.glow = true;
-                    text = "Disable Glow"
-                }
-
-
-            }
-        }*/
-
     /*     PlasmaComponents.Button {
             text: "Change Layout"
             onClicked: {
@@ -444,9 +423,59 @@ Item {
 
 
     Component.onCompleted:  {
-        barLine.movePanel();
+        updatePosition()
         panel.presentWindows.connect(backend.presentWindows);
     }
 
+    function layout(){
+        var staticSize = panel.iconSize + panel.iconMargin;
+
+        if( panel.vertical ){
+            panel.supposedTasksListWidth = staticSize;
+            panel.supposedTasksListHeight = tasksModel.count * staticSize;
+        } else {
+            panel.supposedTasksListWidth = tasksModel.count * staticSize;
+            panel.supposedTasksListHeight = staticSize;
+        }
+
+    }
+
+    function updateImplicits(){
+        var zoomedLength = Math.floor(panel.iconSize*panel.zoomFactor);
+        var bigAxis = (tasksModel.count - 1) * (iconSize+iconMargin) + zoomedLength
+        var smallAxis = zoomedLength + 1
+
+        if (panel.vertical){
+            panel.implicitWidth = smallAxis;
+            panel.implicitHeight = bigAxis;
+        }
+        else{
+            panel.implicitWidth = bigAxis;
+            panel.implicitHeight = smallAxis;
+        }
+    }
+
+    function updatePosition(){
+        updateImplicits();
+
+        barLine.blockLoop = true;
+
+        switch (plasmoid.location) {
+        case PlasmaCore.Types.LeftEdge:
+            panel.position = PlasmaCore.Types.LeftPositioned;
+            break;
+        case PlasmaCore.Types.RightEdge:
+            panel.position = PlasmaCore.Types.RightPositioned;
+            break;
+        case PlasmaCore.Types.TopEdge:
+            panel.position = PlasmaCore.Types.TopPositioned;
+            break;
+        default:
+            panel.position = PlasmaCore.Types.BottomPositioned;
+        }
+
+        barLine.movePanel();
+        barLine.blockLoop = false;
+    }
 
 }
