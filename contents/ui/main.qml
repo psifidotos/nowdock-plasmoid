@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.1
+import QtGraphicalEffects 1.0
 
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
@@ -8,20 +9,13 @@ import org.kde.plasma.plasmoid 2.0
 import org.kde.taskmanager 0.1 as TaskManager
 import org.kde.plasma.private.taskmanager 0.1 as TaskManagerApplet
 
-import QtGraphicalEffects 1.0
+import "../code/tools.js" as TaskTools
 
 Item {
     id:panel
 
-   // implicitWidth: (icList.orientation === Qt.Horizontal) ? icList.width+10 : zoomedLength
-   // implicitHeight: (icList.orientation === Qt.Vertical) ? icList.height+10 : zoomedLength
-
-
     Layout.minimumWidth: implicitWidth
     Layout.minimumHeight: implicitHeight
-
-
-
 
     property real zoomFactor: 1.7
     property int iconSize: 64
@@ -31,19 +25,18 @@ Item {
     //property int position : PlasmaCore.Types.BottomPositioned
     property int position
 
-
     Connections {
         target: plasmoid
-        onLocationChanged: panel.updatePosition();
+        onLocationChanged: {
+            panel.updatePosition();
+            iconGeometryTimer.start();
+        }
     }
-
-
 
     property bool vertical: (plasmoid.formFactor === PlasmaCore.Types.Vertical)
 
     Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
     Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground
-
 
     property Item dragSource: null
 
@@ -51,9 +44,7 @@ Item {
     signal windowsHovered(variant winIds, bool hovered)
     signal presentWindows(variant winIds)
 
-
     /////
-
 
     TaskManager.TasksModel {
         id: tasksModel
@@ -64,10 +55,12 @@ Item {
 
         filterByActivity: true
 
-        onCountChanged: panel.updateImplicits()
+        groupMode: TaskManager.TasksModel.GroupApplication
+        groupInline: false
 
-        Component.onCompleted: {
-            console.debug();
+        onCountChanged: {
+            panel.updateImplicits()
+            iconGeometryTimer.restart();
         }
     }
 
@@ -110,6 +103,9 @@ Item {
             height: (panel.iconSize+iconMargin)*scale;
 
             acceptedButtons: Qt.LeftButton | Qt.MidButton
+
+            readonly property var m: model
+            property int itemIndex: index
 
             property bool pressed: false
             property int iconMargin: panel.iconMargin
@@ -394,37 +390,25 @@ Item {
         }
     }
 
-    /*     PlasmaComponents.Button {
-            text: "Change Layout"
-            onClicked: {
-                barLine.blockLoop = true;
-                if(panel.position === PlasmaCore.Types.BottomPositioned){
-                    panel.position = PlasmaCore.Types.RightPositioned
-                    console.debug(" On Right");
-                }
-                else if (panel.position === PlasmaCore.Types.RightPositioned){
-                    panel.position = PlasmaCore.Types.TopPositioned
-                    console.debug(" On Top");
-                }
-                else if (panel.position === PlasmaCore.Types.TopPositioned){
-                    panel.position = PlasmaCore.Types.LeftPositioned
-                    console.debug(" On Left");
-                }
-                else{
-                    panel.position = PlasmaCore.Types.BottomPositioned
-                    console.debug("On Bottom");
-                }
+    //// helpers
 
-                barLine.movePanel();
-                barLine.blockLoop = false;
-            }
-        }*/
-    //}
+    Timer {
+        id: iconGeometryTimer
 
+        // INVESTIGATE: such big interval but unfortunately it doesnot work otherwise
+        interval: 500
+        repeat: false
+
+        onTriggered: {
+        //    console.debug("Found children: "+icList.contentItem.children.length);
+            TaskTools.publishIconGeometries(icList.contentItem.children);
+        }
+    }
 
     Component.onCompleted:  {
         updatePosition()
         panel.presentWindows.connect(backend.presentWindows);
+        iconGeometryTimer.start();
     }
 
     function layout(){
