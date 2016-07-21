@@ -130,20 +130,6 @@ Item {
                 PropertyAction { target: wrapper; property: "ListView.delayRemove"; value: false }
             }
 
-            onCurSpotChanged: {
-                var absCoords = mapToItem(icList, 0, 0);
-                var zone = panel.zoomFactor * 100;
-                var absCenter;
-
-                if(icList.orientation === Qt.Horizontal)
-                    absCenter = absCoords.x + center;
-                else
-                    absCenter = absCoords.y + center;
-
-                var rDistance = Math.abs(curSpot - absCenter);
-                scale = Math.max(1, panel.zoomFactor - ( (rDistance) / zone));
-            }
-
 
             PlasmaCore.IconItem {
                 id: iconImage
@@ -245,10 +231,24 @@ Item {
             }
 
 
-            //MouseArea {
-            //       id: taskMouseArea
-            //    anchors.fill: parent
             hoverEnabled: true
+
+            ////IMPORTANT: This shouldnt been calculated so many times for every task even those
+            ////that arent going to alter their scale, plus could be calculated with differences
+            ////instead of every step even 1px to calculate every 3 or 4
+            onCurSpotChanged: {
+                var absCoords = mapToItem(icList, 0, 0);
+                var zone = panel.zoomFactor * 100;
+                var absCenter;
+
+                if(icList.orientation === Qt.Horizontal)
+                    absCenter = absCoords.x + center;
+                else
+                    absCenter = absCoords.y + center;
+
+                var rDistance = Math.abs(curSpot - absCenter);
+                scale = Math.max(1, panel.zoomFactor - ( (rDistance) / zone));
+            }
 
             onEntered: {
                 var pos = mapToItem(icList, mouseX, mouseY);
@@ -259,17 +259,26 @@ Item {
                     icList.currentSpot = pos.y;
             }
 
+            // IMPORTANT: This must be improved ! even for small miliseconds  it reduces performance
             onExited: {
                 icList.currentSpot = -1000;
             }
 
             onPositionChanged: {
                 var pos = mapToItem(icList, mouse.x, mouse.y);
+                var animationStep = 5;
 
-                if (icList.orientation == Qt.Horizontal)
-                    icList.currentSpot = pos.x;
-                else
-                    icList.currentSpot = pos.y;
+                if (icList.orientation == Qt.Horizontal){
+                    var step = Math.abs(icList.currentSpot-pos.x);
+                    if (step >= animationStep)
+                        icList.currentSpot = pos.x;
+
+                }
+                else{
+                    var step = Math.abs(icList.currentSpot-pos.y);
+                    if (step >= animationStep)
+                        icList.currentSpot = pos.y;
+                }
             }
 
             onPressed: {
@@ -425,7 +434,7 @@ Item {
     }
 
     function updateImplicits(){
-        var zoomedLength = Math.floor(panel.iconSize*panel.zoomFactor);
+        var zoomedLength = Math.floor((iconSize+iconMargin)*panel.zoomFactor);
         var bigAxis = (tasksModel.count - 1) * (iconSize+iconMargin) + zoomedLength
         var smallAxis = zoomedLength + 1
 
