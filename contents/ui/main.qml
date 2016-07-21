@@ -120,7 +120,7 @@ Item {
                 NumberAnimation { duration: 80 }
             }
 
-          /*  ListView.onRemove: SequentialAnimation {
+/*            ListView.onRemove: SequentialAnimation {
                 PropertyAction { target: wrapper; property: "ListView.delayRemove"; value: true }
                 ParallelAnimation{
                     NumberAnimation { target: wrapper; property: "scale"; to: 0; duration: 350; easing.type: Easing.InOutQuad }
@@ -377,14 +377,14 @@ Item {
 
             orientation: Qt.Horizontal
 
-        /*    add: Transition {
+         /*   add: Transition {
                 ParallelAnimation{
                     NumberAnimation { property: "appearScale"; from: 0; to: 1; duration: 500 }
                     NumberAnimation { property: "opacity"; from: 0; to: 1; duration: 500 }
                 }
             }*/
 
-            /*removeDisplaced: Transition {
+         /*   removeDisplaced: Transition {
                 NumberAnimation { properties: "x,y"; duration: 500 }
             }*/
         }
@@ -425,7 +425,7 @@ Item {
 
     function updateImplicits(){
         var zoomedLength = Math.floor(panel.iconSize*panel.zoomFactor);
-        var bigAxis = (tasksModel.count - 1) * (iconSize+iconMargin) + zoomedLength
+        var bigAxis = (tasksModel.count) * (iconSize+iconMargin) + zoomedLength
         var smallAxis = zoomedLength + 1
 
         if (panel.vertical){
