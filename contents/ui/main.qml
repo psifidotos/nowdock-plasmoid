@@ -24,6 +24,9 @@ Item {
 
     property int position
 
+    Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
+    Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground
+
     Connections {
         target: plasmoid
         onLocationChanged: {
@@ -33,9 +36,6 @@ Item {
     }
 
     property bool vertical: (plasmoid.formFactor === PlasmaCore.Types.Vertical)
-
-    Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
-    Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground
 
     property Item dragSource: null
 
@@ -128,20 +128,6 @@ Item {
                 }
                 PropertyAction { target: wrapper; property: "ListView.delayRemove"; value: false }
             }*/
-
-            onCurSpotChanged: {
-                var absCoords = mapToItem(icList, 0, 0);
-                var zone = panel.zoomFactor * 100;
-                var absCenter;
-
-                if(icList.orientation === Qt.Horizontal)
-                    absCenter = absCoords.x + center;
-                else
-                    absCenter = absCoords.y + center;
-
-                var rDistance = Math.abs(curSpot - absCenter);
-                scale = Math.max(1, panel.zoomFactor - ( (rDistance) / zone));
-            }
 
 
             PlasmaCore.IconItem {
@@ -245,6 +231,27 @@ Item {
 
             hoverEnabled: true
 
+            ////IMPORTANT: This shouldnt been calculated so many times for every task even those
+            ////that arent going to alter their scale, plus could be calculated with differences
+            ////instead of every step even 1px to calculate every 3 or 4
+            onCurSpotChanged: {
+                var distanceFromHovered = Math.abs(index - icList.hoveredIndex);
+
+                if (distanceFromHovered <= 1){
+                    var absCoords = mapToItem(icList, 0, 0);
+                    var zone = panel.zoomFactor * 100;
+                    var absCenter;
+
+                    if(icList.orientation === Qt.Horizontal)
+                        absCenter = absCoords.x + center;
+                    else
+                        absCenter = absCoords.y + center;
+
+                    var rDistance = Math.abs(curSpot - absCenter);
+                    scale = Math.max(1, panel.zoomFactor - ( (rDistance) / zone));
+                }
+            }
+
             onEntered: {
                 var pos = mapToItem(icList, mouseX, mouseY);
 
@@ -254,17 +261,29 @@ Item {
                     icList.currentSpot = pos.y;
             }
 
+            // IMPORTANT: This must be improved ! even for small miliseconds  it reduces performance
             onExited: {
                 icList.currentSpot = -1000;
             }
 
             onPositionChanged: {
                 var pos = mapToItem(icList, mouse.x, mouse.y);
+                var animationStep = 15;
 
-                if (icList.orientation == Qt.Horizontal)
-                    icList.currentSpot = pos.x;
-                else
-                    icList.currentSpot = pos.y;
+                if (icList.orientation == Qt.Horizontal){
+                    var step = Math.abs(icList.currentSpot-pos.x);
+                    if (step >= animationStep){
+                        icList.hoveredIndex = index;
+                        icList.currentSpot = pos.x;
+                    }
+                }
+                else{
+                    var step = Math.abs(icList.currentSpot-pos.y);
+                    if (step >= animationStep){
+                        icList.hoveredIndex = index;
+                        icList.currentSpot = pos.y;
+                    }
+                }
             }
 
             onPressed: {
@@ -367,6 +386,7 @@ Item {
 
 
             property int currentSpot : -1000
+            property int hoveredIndex : -1
             width: (orientation === Qt.Horizontal) ? contentWidth + 1 : 120
             height: (orientation === Qt.Vertical) ? contentHeight + 1 : 120
             interactive: false
@@ -396,11 +416,11 @@ Item {
         id: iconGeometryTimer
 
         // INVESTIGATE: such big interval but unfortunately it doesnot work otherwise
-        interval: 500
+        interval: 1000
         repeat: false
 
         onTriggered: {
-        //    console.debug("Found children: "+icList.contentItem.children.length);
+            //    console.debug("Found children: "+icList.contentItem.children.length);
             TaskTools.publishIconGeometries(icList.contentItem.children);
         }
     }
@@ -424,6 +444,7 @@ Item {
 
 
     function updateImplicits(){
+
         var zoomedLength = Math.floor(panel.iconSize*panel.zoomFactor);
         var bigAxis = (tasksModel.count) * (iconSize+iconMargin) + zoomedLength
         var smallAxis = zoomedLength + 1
