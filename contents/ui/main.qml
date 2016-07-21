@@ -21,9 +21,12 @@ Item {
     property int iconSize: 64
     property int iconMargin: 15
     property bool glow: false
-
+    property int zoomedLength : Math.floor((iconSize+iconMargin)*panel.zoomFactor);
     //property int position : PlasmaCore.Types.BottomPositioned
     property int position
+
+    Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
+    Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground
 
     Connections {
         target: plasmoid
@@ -34,9 +37,6 @@ Item {
     }
 
     property bool vertical: (plasmoid.formFactor === PlasmaCore.Types.Vertical)
-
-    Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
-    Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground
 
     property Item dragSource: null
 
@@ -237,17 +237,21 @@ Item {
             ////that arent going to alter their scale, plus could be calculated with differences
             ////instead of every step even 1px to calculate every 3 or 4
             onCurSpotChanged: {
-                var absCoords = mapToItem(icList, 0, 0);
-                var zone = panel.zoomFactor * 100;
-                var absCenter;
+                var distanceFromHovered = Math.abs(index - icList.hoveredIndex);
 
-                if(icList.orientation === Qt.Horizontal)
-                    absCenter = absCoords.x + center;
-                else
-                    absCenter = absCoords.y + center;
+                if (distanceFromHovered <= 1){
+                    var absCoords = mapToItem(icList, 0, 0);
+                    var zone = panel.zoomFactor * 100;
+                    var absCenter;
 
-                var rDistance = Math.abs(curSpot - absCenter);
-                scale = Math.max(1, panel.zoomFactor - ( (rDistance) / zone));
+                    if(icList.orientation === Qt.Horizontal)
+                        absCenter = absCoords.x + center;
+                    else
+                        absCenter = absCoords.y + center;
+
+                    var rDistance = Math.abs(curSpot - absCenter);
+                    scale = Math.max(1, panel.zoomFactor - ( (rDistance) / zone));
+                }
             }
 
             onEntered: {
@@ -266,18 +270,21 @@ Item {
 
             onPositionChanged: {
                 var pos = mapToItem(icList, mouse.x, mouse.y);
-                var animationStep = 5;
+                var animationStep = 15;
 
                 if (icList.orientation == Qt.Horizontal){
                     var step = Math.abs(icList.currentSpot-pos.x);
-                    if (step >= animationStep)
+                    if (step >= animationStep){
+                        icList.hoveredIndex = index;
                         icList.currentSpot = pos.x;
-
+                    }
                 }
                 else{
                     var step = Math.abs(icList.currentSpot-pos.y);
-                    if (step >= animationStep)
+                    if (step >= animationStep){
+                        icList.hoveredIndex = index;
                         icList.currentSpot = pos.y;
+                    }
                 }
             }
 
@@ -376,6 +383,7 @@ Item {
 
 
             property int currentSpot : -1000
+            property int hoveredIndex : -1
             width: (orientation === Qt.Horizontal) ? contentWidth + 1 : 120
             height: (orientation === Qt.Vertical) ? contentHeight + 1 : 120
             interactive: false
@@ -405,11 +413,11 @@ Item {
         id: iconGeometryTimer
 
         // INVESTIGATE: such big interval but unfortunately it doesnot work otherwise
-        interval: 500
+        interval: 1000
         repeat: false
 
         onTriggered: {
-        //    console.debug("Found children: "+icList.contentItem.children.length);
+            //    console.debug("Found children: "+icList.contentItem.children.length);
             TaskTools.publishIconGeometries(icList.contentItem.children);
         }
     }
