@@ -22,6 +22,10 @@ Item {
     property int iconMargin: 15
     property bool glow: false
 
+    property int clearWidth
+    property int clearHeight
+    property int delegateTransformOrigin
+
     property int position
 
     Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
@@ -38,12 +42,20 @@ Item {
     property bool vertical: (plasmoid.formFactor === PlasmaCore.Types.Vertical)
 
     property Item dragSource: null
+    property bool inAnimation: false
 
     signal requestLayout
     signal windowsHovered(variant winIds, bool hovered)
     signal presentWindows(variant winIds)
 
     /////
+
+    onInAnimationChanged: {
+        if (!inAnimation){
+            panel.updateImplicits();
+            iconGeometryTimer.restart();
+        }
+    }
 
     TaskManager.TasksModel {
         id: tasksModel
@@ -54,6 +66,8 @@ Item {
 
         filterByActivity: true
 
+
+        separateLaunchers: false
         groupMode: TaskManager.TasksModel.GroupApplication
         groupInline: false
 
@@ -94,7 +108,6 @@ Item {
             id: wrapper
             anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
             anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
-
             anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
             anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
 
@@ -120,18 +133,21 @@ Item {
                 NumberAnimation { duration: 80 }
             }
 
-/*            ListView.onRemove: SequentialAnimation {
+            ListView.onRemove: SequentialAnimation {
+                PropertyAction { target: panel; property: "inAnimation"; value: true }
                 PropertyAction { target: wrapper; property: "ListView.delayRemove"; value: true }
                 ParallelAnimation{
                     NumberAnimation { target: wrapper; property: "scale"; to: 0; duration: 350; easing.type: Easing.InOutQuad }
                     NumberAnimation { target: wrapper; property: "opacity"; to: 0; duration: 350; easing.type: Easing.InOutQuad }
                 }
                 PropertyAction { target: wrapper; property: "ListView.delayRemove"; value: false }
-            }*/
+                PropertyAction { target: panel; property: "inAnimation"; value: false }
+            }
 
 
             PlasmaCore.IconItem {
                 id: iconImage
+
                 width: panel.iconSize * parent.scale * parent.appearScale;
                 height: panel.iconSize * parent.scale * parent.appearScale;
 
@@ -150,6 +166,7 @@ Item {
                                            (panel.position === PlasmaCore.Types.TopPositioned)) ? parent.horizontalCenter : undefined
                 anchors.verticalCenter: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
                                          (panel.position === PlasmaCore.Types.RightPositioned)) ? parent.verticalCenter : undefined
+
 
                 active: wrapper.containsMouse
                 enabled: true
@@ -181,7 +198,6 @@ Item {
                                            (panel.position === PlasmaCore.Types.TopPositioned)) ? parent.horizontalCenter : undefined
                 anchors.verticalCenter: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
                                          (panel.position === PlasmaCore.Types.RightPositioned)) ? parent.verticalCenter : undefined
-
 
                 Rectangle{
                     visible: IsActive ? true : false
@@ -325,10 +341,10 @@ Item {
 
     Item{
         id:barLine
-        property bool blockLoop: false
+     //   property bool blockLoop: false
 
-        width: ( (icList.orientation === Qt.Horizontal) && (!blockLoop) )? icList.width+10 : 12
-        height: ((icList.orientation === Qt.Vertical) && (!blockLoop) ) ? icList.height+10 : 12
+        width: ( icList.orientation === Qt.Horizontal ) ? panel.implicitWidth+10 : 12
+        height: ( icList.orientation === Qt.Vertical ) ? panel.implicitHeight+10 : 12
 
         PlasmaCore.FrameSvgItem{
             anchors.fill:parent
@@ -336,77 +352,52 @@ Item {
         }
 
 
-        function movePanel(newPosition){
-            if (newPosition === PlasmaCore.Types.BottomPositioned){
-                anchors.horizontalCenter = parent.horizontalCenter;
-                anchors.verticalCenter = undefined;
-                anchors.bottom = parent.bottom;
-                anchors.top = undefined;
-                anchors.left = undefined;
-                anchors.right = undefined;
-            }
-            else if (newPosition === PlasmaCore.Types.TopPositioned){
-                anchors.horizontalCenter = parent.horizontalCenter;
-                anchors.verticalCenter = undefined;
-                anchors.bottom = undefined;
-                anchors.top = parent.top;
-                anchors.left = undefined;
-                anchors.right = undefined;
-            }
-            else if (newPosition === PlasmaCore.Types.LeftPositioned){
-                anchors.horizontalCenter = undefined;
-                anchors.verticalCenter = parent.verticalCenter;
-                anchors.bottom = undefined;
-                anchors.top = undefined;
-                anchors.left = parent.left;
-                anchors.right = undefined;
-            }
-            else if (newPosition === PlasmaCore.Types.RightPositioned){
-                anchors.horizontalCenter = undefined;
-                anchors.verticalCenter = parent.verticalCenter;
-                anchors.bottom = undefined;
-                anchors.top = undefined;
-                anchors.left =undefined;
-                anchors.right = parent.right;
-            }
-        }
-
         ListView {
             id:icList
+
             anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
             anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
+            anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
+            anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
 
             anchors.horizontalCenter: ((panel.position === PlasmaCore.Types.BottomPositioned) ||
                                        (panel.position === PlasmaCore.Types.TopPositioned)) ? parent.horizontalCenter : undefined
-
-            anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
-            anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
             anchors.verticalCenter: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
                                      (panel.position === PlasmaCore.Types.RightPositioned)) ? parent.verticalCenter : undefined
 
 
             property int currentSpot : -1000
             property int hoveredIndex : -1
-            width: (orientation === Qt.Horizontal) ? contentWidth + 1 : 120
-            height: (orientation === Qt.Vertical) ? contentHeight + 1 : 120
+            width: (orientation === Qt.Horizontal) ? panel.clearWidth  : 120
+            height: (orientation === Qt.Vertical) ? panel.clearHeight  : 120
+
+         /*   Rectangle{
+                anchors.fill: parent
+                border.width: 2
+                color: "transparent"
+            } */
             interactive: false
 
-            //  model: iconsmdl
             model: tasksModel
             delegate: iconDelegate
-
             orientation: Qt.Horizontal
 
-         /*   add: Transition {
+            add: Transition {
+                PropertyAction { target: panel; property: "inAnimation"; value: true }
                 ParallelAnimation{
-                    NumberAnimation { property: "appearScale"; from: 0; to: 1; duration: 500 }
+                    NumberAnimation { property: "appearScale"; from: 0.25; to: 1; duration: 500 }
                     NumberAnimation { property: "opacity"; from: 0; to: 1; duration: 500 }
                 }
-            }*/
+                PropertyAction { target: panel; property: "inAnimation"; value: false }
+            }
 
-         /*   removeDisplaced: Transition {
+            moveDisplaced: Transition {
                 NumberAnimation { properties: "x,y"; duration: 500 }
-            }*/
+            }
+
+            removeDisplaced: Transition {
+                NumberAnimation { properties: "x,y"; duration: 500 }
+            }
         }
     }
 
@@ -414,7 +405,6 @@ Item {
 
     Timer {
         id: iconGeometryTimer
-
         // INVESTIGATE: such big interval but unfortunately it doesnot work otherwise
         interval: 1000
         repeat: false
@@ -438,30 +428,93 @@ Item {
     Component.onCompleted:  {
         updatePosition();
         updateImplicits();
+//        updateDelegateTransformOrigin();
+
         panel.presentWindows.connect(backend.presentWindows);
         iconGeometryTimer.start();
     }
 
+    function movePanel(newPosition){
+        var bLine = barLine;
+        if (newPosition === PlasmaCore.Types.BottomPositioned){
+            bLine.anchors.horizontalCenter = bLine.parent.horizontalCenter;
+            bLine.anchors.verticalCenter = undefined;
+            bLine.anchors.bottom = bLine.parent.bottom;
+            bLine.anchors.top = undefined;
+            bLine.anchors.left = undefined;
+            bLine.anchors.right = undefined;
+        }
+        else if (newPosition === PlasmaCore.Types.TopPositioned){
+            bLine.anchors.horizontalCenter = bLine.parent.horizontalCenter;
+            bLine.anchors.verticalCenter = undefined;
+            bLine.anchors.bottom = undefined;
+            bLine.anchors.top = bLine.parent.top;
+            bLine.anchors.left = undefined;
+            bLine.anchors.right = undefined;
+        }
+        else if (newPosition === PlasmaCore.Types.LeftPositioned){
+            bLine.anchors.horizontalCenter = undefined;
+            bLine.anchors.verticalCenter = bLine.parent.verticalCenter;
+            bLine.anchors.bottom = undefined;
+            bLine.anchors.top = undefined;
+            bLine.anchors.left = bLine.parent.left;
+            bLine.anchors.right = undefined;
+        }
+        else if (newPosition === PlasmaCore.Types.RightPositioned){
+            bLine.anchors.horizontalCenter = undefined;
+            bLine.anchors.verticalCenter = bLine.parent.verticalCenter;
+            bLine.anchors.bottom = undefined;
+            bLine.anchors.top = undefined;
+            bLine.anchors.left =undefined;
+            bLine.anchors.right = bLine.parent.right;
+        }
+    }
+
 
     function updateImplicits(){
-
-        var zoomedLength = Math.floor(panel.iconSize*panel.zoomFactor);
-        var bigAxis = (tasksModel.count) * (iconSize+iconMargin) + zoomedLength
+        var zoomedLength = Math.floor( (iconSize+iconMargin) * panel.zoomFactor);
+        var bigAxis = (tasksModel.count-1) * (iconSize+iconMargin) + zoomedLength
         var smallAxis = zoomedLength + 1
+
+        var clearBigAxis = tasksModel.count * (iconSize+iconMargin);
+        var clearSmallAxis = (iconSize+iconMargin);
 
         if (panel.vertical){
             panel.implicitWidth = smallAxis;
             panel.implicitHeight = bigAxis;
+            panel.clearWidth = clearSmallAxis;
+            panel.clearHeight = clearBigAxis;
         }
         else{
             panel.implicitWidth = bigAxis;
             panel.implicitHeight = smallAxis;
+            panel.clearWidth = clearBigAxis;
+            panel.clearHeight = clearSmallAxis;
         }
     }
 
-    function updatePosition(){       
-        barLine.blockLoop = true;
+    function updateDelegateTransformOrigin (){
+    /*    switch(panel.position){
+        case PlasmaCore.Types.LeftPositioned:
+            panel.delegateTransformOrigin = Item.Left;
+            break;
+        case PlasmaCore.Types.RightPositioned:
+            panel.delegateTransformOrigin = Item.Right;
+            break;
+        case PlasmaCore.Types.TopPositioned:
+            panel.delegateTransformOrigin = Item.Top;
+            break;
+        case PlasmaCore.Types.BottomPositioned:
+            panel.delegateTransformOrigin = Item.Bottom;
+            break;
+        default:
+            panel.delegateTransformOrigin = Item.Bottom;
+            break;
+        }*/
+    }
 
+
+    function updatePosition(){
         var newPosition;
         var tempVertical=false;
 
@@ -481,15 +534,15 @@ Item {
             newPosition = PlasmaCore.Types.BottomPositioned;
         }
 
-        barLine.movePanel(newPosition);
+        movePanel(newPosition);
+
         if(tempVertical)
             icList.orientation = Qt.Vertical;
         else
             icList.orientation = Qt.Horizontal;
 
         panel.position = newPosition;
-
-        barLine.blockLoop = false;
+      //  updateDelegateTransformOrigin();
     }
 
 }
