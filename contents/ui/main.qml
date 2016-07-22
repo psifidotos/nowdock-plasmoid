@@ -137,7 +137,7 @@ Item {
                 NumberAnimation { duration: 80 }
             }
 
-            /*      ListView.onRemove: SequentialAnimation {
+            ListView.onRemove: SequentialAnimation {
                 PropertyAction { target: panel; property: "inAnimation"; value: true }
                 PropertyAction { target: wrapper; property: "ListView.delayRemove"; value: true }
                 ParallelAnimation{
@@ -146,7 +146,7 @@ Item {
                 }
                 PropertyAction { target: wrapper; property: "ListView.delayRemove"; value: false }
                 PropertyAction { target: panel; property: "inAnimation"; value: false }
-            }*/
+            }
 
 
             Flow{
@@ -201,6 +201,7 @@ Item {
                     height: ( icList.orientation === Qt.Vertical ) ? parent.regulatorSize : size
 
                     property int size: 8
+                    property int groupingSize : ( IsGroupParent) ? (2 * size) : size
 
                     Item{
                         width: (( IsGroupParent ) && (icList.orientation === Qt.Horizontal)) ? 2*glowFrame.size : glowFrame.size
@@ -208,6 +209,7 @@ Item {
                         anchors.centerIn: parent
 
                         Flow{
+                            flow: ( icList.orientation === Qt.Vertical ) ? Flow.TopToBottom : Flow.LeftToRight
                             GlowPoint{
                                 width: glowFrame.size
                                 height: width
@@ -324,12 +326,12 @@ Item {
         id:barLine
         //   property bool blockLoop: false
 
-        width: ( icList.orientation === Qt.Horizontal ) ? panel.implicitWidth+10 : 12
-        height: ( icList.orientation === Qt.Vertical ) ? panel.implicitHeight+10 : 12
+        width: ( icList.orientation === Qt.Horizontal ) ? panel.implicitWidth+10 : 14
+        height: ( icList.orientation === Qt.Vertical ) ? panel.implicitHeight+10 : 14
 
         PlasmaCore.FrameSvgItem{
             anchors.fill:parent
-            imagePath: "widgets/panel-background";
+            imagePath: "dialogs/background";
         }
 
 
