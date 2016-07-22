@@ -111,8 +111,12 @@ Item {
             anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
             anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
 
-            width: (panel.iconSize+iconMargin)*scale;
-            height: (panel.iconSize+iconMargin)*scale;
+            property int addedSpace: 12
+
+            width: (icList.orientation === Qt.Vertical ) ? (panel.iconSize+iconMargin)*scale+addedSpace :
+                                                           (panel.iconSize+iconMargin)*scale
+            height: (icList.orientation === Qt.Vertical ) ? (panel.iconSize+iconMargin)*scale :
+                                                            (panel.iconSize+iconMargin)*scale + addedSpace
 
             acceptedButtons: Qt.LeftButton | Qt.MidButton
 
@@ -133,7 +137,7 @@ Item {
                 NumberAnimation { duration: 80 }
             }
 
-            ListView.onRemove: SequentialAnimation {
+            /*      ListView.onRemove: SequentialAnimation {
                 PropertyAction { target: panel; property: "inAnimation"; value: true }
                 PropertyAction { target: wrapper; property: "ListView.delayRemove"; value: true }
                 ParallelAnimation{
@@ -142,108 +146,85 @@ Item {
                 }
                 PropertyAction { target: wrapper; property: "ListView.delayRemove"; value: false }
                 PropertyAction { target: panel; property: "inAnimation"; value: false }
-            }
+            }*/
 
 
-            PlasmaCore.IconItem {
-                id: iconImage
+            Flow{
+                width: parent.width
+                height: parent.height
 
-                width: panel.iconSize * parent.scale * parent.appearScale;
-                height: panel.iconSize * parent.scale * parent.appearScale;
+                flow: Flow.LeftToRight
+                layoutDirection: (panel.position === PlasmaCore.Types.LeftPositioned) ? Qt.RightToLeft : Qt.LeftToRight
 
-                anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
-                anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
-                anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
-                anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
+                property int regulatorSize: (panel.iconSize + panel.iconMargin) * wrapper.scale * wrapper.appearScale - 2;
 
-                anchors.bottomMargin: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.iconMargin : 0
-                anchors.topMargin: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.iconMargin : 0
-                anchors.leftMargin: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.iconMargin : 0
-                anchors.rightMargin: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.iconMargin : 0
+                Item{
+                    width: parent.regulatorSize
+                    height: parent.regulatorSize
 
+                    PlasmaCore.IconItem {
+                        id: iconImage
 
-                anchors.horizontalCenter: ((panel.position === PlasmaCore.Types.BottomPositioned) ||
-                                           (panel.position === PlasmaCore.Types.TopPositioned)) ? parent.horizontalCenter : undefined
-                anchors.verticalCenter: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
-                                         (panel.position === PlasmaCore.Types.RightPositioned)) ? parent.verticalCenter : undefined
+                        width: panel.iconSize * wrapper.scale * wrapper.appearScale;
+                        height: panel.iconSize * wrapper.scale * wrapper.appearScale;
 
+                        anchors.centerIn: parent
 
-                active: wrapper.containsMouse
-                enabled: true
-                usesPlasmaTheme: false
+                        active: wrapper.containsMouse
+                        enabled: true
+                        usesPlasmaTheme: false
 
-                source: decoration
-            }
-
-            DropShadow {
-                anchors.fill: iconImage
-                horizontalOffset: 3
-                verticalOffset: 3
-                radius: 8.0
-                samples: 17
-                color: "#80000000"
-                source: iconImage
-            }
-
-            Item{
-                width: ( icList.orientation === Qt.Horizontal ) ? iconImage.width : parent.iconMargin - 3
-                height: ( icList.orientation === Qt.Vertical ) ? iconImage.height : parent.iconMargin - 3
-
-                anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
-                anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
-                anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
-                anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
-
-                anchors.horizontalCenter: ((panel.position === PlasmaCore.Types.BottomPositioned) ||
-                                           (panel.position === PlasmaCore.Types.TopPositioned)) ? parent.horizontalCenter : undefined
-                anchors.verticalCenter: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
-                                         (panel.position === PlasmaCore.Types.RightPositioned)) ? parent.verticalCenter : undefined
+                        source: decoration
+                    }
+                    DropShadow {
+                        anchors.fill: iconImage
+                        horizontalOffset: 3
+                        verticalOffset: 3
+                        radius: 8.0
+                        samples: 17
+                        color: "#80000000"
+                        source: iconImage
+                    }
+                }// Icon Item
 
                 Rectangle{
-                    visible: IsActive ? true : false
+                    opacity: IsActive ? 1 : 0
 
                     color: theme.highlightColor
-                    width: ( icList.orientation === Qt.Horizontal ) ? parent.width : 3
-                    height: ( icList.orientation === Qt.Vertical ) ? parent.height : 3
-
-                    anchors.top: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.top : undefined
-                    anchors.bottom: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.bottom : undefined
-                    anchors.left: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.left : undefined
-                    anchors.right: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.right : undefined
-                }
+                    width: ( icList.orientation === Qt.Horizontal ) ? parent.regulatorSize : 3
+                    height: ( icList.orientation === Qt.Vertical ) ? parent.regulatorSize : 3
+                }// active indicator
 
                 Item{
                     id:glowFrame
-                    width: (( IsGroupParent ) && (icList.orientation === Qt.Horizontal)) ? 2*size : size
-                    height: (( IsGroupParent ) && (icList.orientation === Qt.Vertical)) ? 2*size : size
-                    anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
-                    anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
-                    anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
-                    anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
-
-                    anchors.horizontalCenter: ( icList.orientation === Qt.Horizontal ) ? parent.horizontalCenter : undefined
-                    anchors.verticalCenter: ( icList.orientation === Qt.Vertical ) ? parent.verticalCenter : undefined
+                    width: ( icList.orientation === Qt.Horizontal ) ? parent.regulatorSize : size
+                    height: ( icList.orientation === Qt.Vertical ) ? parent.regulatorSize : size
 
                     property int size: 8
 
-                    Flow{
-                        anchors.fill: parent
+                    Item{
+                        width: (( IsGroupParent ) && (icList.orientation === Qt.Horizontal)) ? 2*glowFrame.size : glowFrame.size
+                        height: (( IsGroupParent ) && (icList.orientation === Qt.Vertical)) ? 2*glowFrame.size : glowFrame.size
+                        anchors.centerIn: parent
 
-                        GlowPoint{
-                            width: glowFrame.size
-                            height: width
+                        Flow{
+                            GlowPoint{
+                                width: glowFrame.size
+                                height: width
 
-                            visible: ( !IsLauncher ) ? true: false
-                        }
-                        GlowPoint{
-                            width: glowFrame.size
-                            height: width
+                                visible: ( !IsLauncher ) ? true: false
+                            }
+                            GlowPoint{
+                                width: glowFrame.size
+                                height: width
 
-                            visible: (IsGroupParent) ? true: false
+                                visible: (IsGroupParent) ? true: false
+                            }
                         }
                     }
-                }
-            }
+                }// number of windows indicator
+
+            } //Flow Element
 
             hoverEnabled: true
 
@@ -341,7 +322,7 @@ Item {
 
     Item{
         id:barLine
-     //   property bool blockLoop: false
+        //   property bool blockLoop: false
 
         width: ( icList.orientation === Qt.Horizontal ) ? panel.implicitWidth+10 : 12
         height: ( icList.orientation === Qt.Vertical ) ? panel.implicitHeight+10 : 12
@@ -389,7 +370,7 @@ Item {
             orientation: Qt.Horizontal
 
             Behavior on width{
-                 NumberAnimation { duration: 100 }
+                NumberAnimation { duration: 100 }
             }
 
             Behavior on height{
@@ -442,7 +423,7 @@ Item {
     Component.onCompleted:  {
         updatePosition();
         updateImplicits();
-//        updateDelegateTransformOrigin();
+        //        updateDelegateTransformOrigin();
 
         panel.presentWindows.connect(backend.presentWindows);
         iconGeometryTimer.start();
@@ -508,7 +489,7 @@ Item {
     }
 
     function updateDelegateTransformOrigin (){
-    /*    switch(panel.position){
+        /*    switch(panel.position){
         case PlasmaCore.Types.LeftPositioned:
             panel.delegateTransformOrigin = Item.Left;
             break;
@@ -556,7 +537,7 @@ Item {
             icList.orientation = Qt.Horizontal;
 
         panel.position = newPosition;
-      //  updateDelegateTransformOrigin();
+        //  updateDelegateTransformOrigin();
     }
 
 }
