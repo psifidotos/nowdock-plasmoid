@@ -31,6 +31,11 @@ Item {
     Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
     Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground
 
+    property bool vertical: (plasmoid.formFactor === PlasmaCore.Types.Vertical)
+
+    property Item dragSource: null
+    property bool inAnimation: false
+
     Connections {
         target: plasmoid
         onLocationChanged: {
@@ -38,11 +43,6 @@ Item {
             iconGeometryTimer.start();
         }
     }
-
-    property bool vertical: (plasmoid.formFactor === PlasmaCore.Types.Vertical)
-
-    property Item dragSource: null
-    property bool inAnimation: false
 
     signal requestLayout
     signal windowsHovered(variant winIds, bool hovered)
@@ -284,7 +284,7 @@ Item {
 
             onPositionChanged: {
                 var pos = mapToItem(icList, mouse.x, mouse.y);
-                var animationStep = 15;
+                var animationStep = 5;
 
                 if (icList.orientation == Qt.Horizontal){
                     var step = Math.abs(icList.currentSpot-pos.x);
@@ -368,19 +368,33 @@ Item {
 
             property int currentSpot : -1000
             property int hoveredIndex : -1
-            width: (orientation === Qt.Horizontal) ? panel.clearWidth  : 120
-            height: (orientation === Qt.Vertical) ? panel.clearHeight  : 120
 
-         /*   Rectangle{
+            property int runningWidth : (currentSpot  === -1000) ? panel.clearWidth : panel.implicitWidth
+            property int runningHeight : (currentSpot === -1000) ? panel.clearHeight : panel.implicitHeight
+
+            width: (orientation === Qt.Horizontal) ? runningWidth  : 120
+            height: (orientation === Qt.Vertical) ? runningHeight  : 120
+
+            /*Rectangle{
                 anchors.fill: parent
-                border.width: 2
+                border.width: 1
+                border.color: "red"
                 color: "transparent"
-            } */
+            }*/
+
             interactive: false
 
             model: tasksModel
             delegate: iconDelegate
             orientation: Qt.Horizontal
+
+            Behavior on width{
+                 NumberAnimation { duration: 100 }
+            }
+
+            Behavior on height{
+                NumberAnimation { duration: 100 }
+            }
 
             add: Transition {
                 PropertyAction { target: panel; property: "inAnimation"; value: true }
