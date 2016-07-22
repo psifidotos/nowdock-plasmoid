@@ -32,6 +32,7 @@ Item{
         anchors.margins: 1
         brightness: 0.4
         contrast: 0.4
+        visible: panel.glow
     }
 
 }
