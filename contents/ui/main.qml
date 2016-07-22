@@ -36,6 +36,7 @@ Item {
     property Item dragSource: null
     property bool inAnimation: false
 
+
     Connections {
         target: plasmoid
         onLocationChanged: {
@@ -74,6 +75,10 @@ Item {
         onCountChanged: {
             panel.updateImplicits()
             iconGeometryTimer.restart();
+        }
+
+        onActivityChanged: {
+            panelGeometryTimer.start();
         }
     }
 
@@ -412,13 +417,27 @@ Item {
         }
     }
 
+    //It is used when changing activities..
+    //Because of many suddent moves, deletes and adds
+    //sometimes the ListView appearance breaks
+    //this timer makes a full repaint for the ListView
     Timer {
         id: panelGeometryTimer
 
-        interval: 500
+        interval: 2000
         repeat: false
 
-        onTriggered: updateImplicits();
+        onTriggered: {
+            icList.model = 0;
+            icList.model = tasksModel;
+
+         /// Debugging loop
+        /*    var taskItems = icList.contentItem.children;
+            for (var i = 0; i < taskItems.length - 1; ++i) {
+                var task = taskItems[i];
+                console.debug(i+": "+task.objectName+" "+task.width+" "+task.height);
+            }*/
+        }
     }
 
 
