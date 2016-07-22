@@ -137,6 +137,7 @@ Item {
             property int curSpot: icList.currentSpot
             property int center: Math.floor(width / 2)
 
+            property int regulatorSize: (panel.iconSize + panel.iconMargin) * wrapper.scale * wrapper.appearScale - 2;
 
             Behavior on scale {
                 NumberAnimation { duration: 80 }
@@ -153,84 +154,31 @@ Item {
                 PropertyAction { target: panel; property: "inAnimation"; value: false }
             }
 
-
             Flow{
+                visible: (panel.position === PlasmaCore.Types.TopPositioned) ? false : true
                 width: parent.width
                 height: parent.height
 
                 flow: Flow.LeftToRight
                 layoutDirection: (panel.position === PlasmaCore.Types.LeftPositioned) ? Qt.RightToLeft : Qt.LeftToRight
 
-                property int regulatorSize: (panel.iconSize + panel.iconMargin) * wrapper.scale * wrapper.appearScale - 2;
+                TaskIconItem{}
+                TaskActiveItem{}
+                TaskGroupItem{}
+            }//Flow
 
-                Item{
-                    width: parent.regulatorSize
-                    height: parent.regulatorSize
+            //Flow which is used only when the listview is on Top and we are hiding the main one
+            Flow{
+                visible: (panel.position === PlasmaCore.Types.TopPositioned) ? true : false
+                width: parent.width
+                height: parent.height
 
-                    PlasmaCore.IconItem {
-                        id: iconImage
+                flow: Flow.LeftToRight
+                layoutDirection: (panel.position === PlasmaCore.Types.LeftPositioned) ? Qt.RightToLeft : Qt.LeftToRight
 
-                        width: panel.iconSize * wrapper.scale * wrapper.appearScale;
-                        height: panel.iconSize * wrapper.scale * wrapper.appearScale;
-
-                        anchors.centerIn: parent
-
-                        active: wrapper.containsMouse
-                        enabled: true
-                        usesPlasmaTheme: false
-
-                        source: decoration
-                    }
-                    DropShadow {
-                        anchors.fill: iconImage
-                        horizontalOffset: 3
-                        verticalOffset: 3
-                        radius: 8.0
-                        samples: 17
-                        color: "#80000000"
-                        source: iconImage
-                    }
-                }// Icon Item
-
-                Rectangle{
-                    opacity: IsActive ? 1 : 0
-
-                    color: theme.highlightColor
-                    width: ( icList.orientation === Qt.Horizontal ) ? parent.regulatorSize : 3
-                    height: ( icList.orientation === Qt.Vertical ) ? parent.regulatorSize : 3
-                }// active indicator
-
-                Item{
-                    id:glowFrame
-                    width: ( icList.orientation === Qt.Horizontal ) ? parent.regulatorSize : size
-                    height: ( icList.orientation === Qt.Vertical ) ? parent.regulatorSize : size
-
-                    property int size: 8
-                    property int groupingSize : ( IsGroupParent) ? (2 * size) : size
-
-                    Item{
-                        width: (( IsGroupParent ) && (icList.orientation === Qt.Horizontal)) ? 2*glowFrame.size : glowFrame.size
-                        height: (( IsGroupParent ) && (icList.orientation === Qt.Vertical)) ? 2*glowFrame.size : glowFrame.size
-                        anchors.centerIn: parent
-
-                        Flow{
-                            flow: ( icList.orientation === Qt.Vertical ) ? Flow.TopToBottom : Flow.LeftToRight
-                            GlowPoint{
-                                width: glowFrame.size
-                                height: width
-
-                                visible: ( !IsLauncher ) ? true: false
-                            }
-                            GlowPoint{
-                                width: glowFrame.size
-                                height: width
-
-                                visible: (IsGroupParent) ? true: false
-                            }
-                        }
-                    }
-                }// number of windows indicator
-
+                TaskGroupItem{}
+                TaskActiveItem{}
+                TaskIconItem{}
             } //Flow Element
 
             hoverEnabled: true
