@@ -111,28 +111,20 @@ Item {
         var tasks = icList.contentItem.children;
         var lostMouse = true;
 
-        console.debug("Index:::: "+index);
         if ((index === 0)&&(tasks.length>1)){
-            console.debug("----111");
-            console.debug(tasks[1].containsMouse);
             if(tasks[1].containsMouse){
-                console.debug("EEEEEE 111");
                 lostMouse = false;
             }
         }
         else if((index === tasks.length-1)&&(tasks.length>1)){
-                console.debug("----222");
             if(tasks[tasks.length-2].containsMouse){
-                console.debug("EEEEEE 222");
                 lostMouse = false;
             }
         }
         else{
             if(tasks.length>=3){
-                console.debug("----333");
                 if((tasks[index-1].containsMouse) || (tasks[index+1].containsMouse) ){
                     lostMouse = false;
-                    console.debug("EEEEEE 333");
                 }
             }
         }
@@ -249,10 +241,18 @@ Item {
             onEntered: {
                 var pos = mapToItem(icList, mouseX, mouseY);
 
-                if (icList.orientation == Qt.Horizontal)
-                    icList.currentSpot = pos.x;
-                else
-                    icList.currentSpot = pos.y;
+                var stepSize = 20;
+
+                if (icList.orientation == Qt.Horizontal){
+                    var step = Math.abs(icList.currentSpot-pos.x);
+                    if(step>=stepSize)
+                        icList.currentSpot = pos.x;
+                }
+                else{
+                    var step = Math.abs(icList.currentSpot-pos.y);
+                    if(step>=stepSize)
+                        icList.currentSpot = pos.y;
+                }
             }
 
             // IMPORTANT: This must be improved ! even for small miliseconds  it reduces performance
