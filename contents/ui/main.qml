@@ -219,7 +219,6 @@ Item {
             onCurSpotChanged: {
                 var distanceFromHovered = Math.abs(index - icList.hoveredIndex);
 
-
                 if (distanceFromHovered <= 1){
                     var absCoords = mapToItem(icList, 0, 0);
                     var zone = panel.zoomFactor * 100;
@@ -232,8 +231,8 @@ Item {
 
                     var rDistance = Math.abs(curSpot - absCenter);
 
-                    if(index===0)
-                        console.debug(rDistance);
+                  //  if(index===0)
+                   //     console.debug(rDistance);
                     scale = Math.max(1, panel.zoomFactor - ( (rDistance) / zone));
                 }
             }
