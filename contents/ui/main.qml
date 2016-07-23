@@ -107,6 +107,44 @@ Item {
         id: iconsmdl
     }
 
+    function checkListViewHovered(index){
+        var tasks = icList.contentItem.children;
+        var lostMouse = true;
+
+        console.debug("Index:::: "+index);
+        if ((index === 0)&&(tasks.length>1)){
+            console.debug("----111");
+            console.debug(tasks[1].containsMouse);
+            if(tasks[1].containsMouse){
+                console.debug("EEEEEE 111");
+                lostMouse = false;
+            }
+        }
+        else if((index === tasks.length-1)&&(tasks.length>1)){
+                console.debug("----222");
+            if(tasks[tasks.length-2].containsMouse){
+                console.debug("EEEEEE 222");
+                lostMouse = false;
+            }
+        }
+        else{
+            if(tasks.length>=3){
+                console.debug("----333");
+                if((tasks[index-1].containsMouse) || (tasks[index+1].containsMouse) ){
+                    lostMouse = false;
+                    console.debug("EEEEEE 333");
+                }
+            }
+        }
+
+        if(lostMouse){
+            icList.currentSpot = -1000;
+            icList.currentIndex = -1;
+        }
+    }
+
+
+
     Component {
         id: iconDelegate
         MouseArea{
@@ -189,6 +227,7 @@ Item {
             onCurSpotChanged: {
                 var distanceFromHovered = Math.abs(index - icList.hoveredIndex);
 
+
                 if (distanceFromHovered <= 1){
                     var absCoords = mapToItem(icList, 0, 0);
                     var zone = panel.zoomFactor * 100;
@@ -200,6 +239,9 @@ Item {
                         absCenter = absCoords.y + center;
 
                     var rDistance = Math.abs(curSpot - absCenter);
+
+                    if(index===0)
+                        console.debug(rDistance);
                     scale = Math.max(1, panel.zoomFactor - ( (rDistance) / zone));
                 }
             }
@@ -215,7 +257,8 @@ Item {
 
             // IMPORTANT: This must be improved ! even for small miliseconds  it reduces performance
             onExited: {
-                icList.currentSpot = -1000;
+                panel.checkListViewHovered(index);
+                //icList.currentSpot = -1000;
             }
 
             onPositionChanged: {
@@ -379,8 +422,8 @@ Item {
             icList.model = 0;
             icList.model = tasksModel;
 
-         /// Debugging loop
-        /*    var taskItems = icList.contentItem.children;
+            /// Debugging loop
+            /*    var taskItems = icList.contentItem.children;
             for (var i = 0; i < taskItems.length - 1; ++i) {
                 var task = taskItems[i];
                 console.debug(i+": "+task.objectName+" "+task.width+" "+task.height);
