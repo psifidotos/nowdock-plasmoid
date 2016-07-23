@@ -23,6 +23,8 @@ Item{
 
         source: decoration
     }
+    // Another way for the shadow must be found it increases the cpu cycles x3 (probably)
+    /*
     DropShadow {
         anchors.fill: iconImage
         horizontalOffset: 3
@@ -31,5 +33,5 @@ Item{
         samples: 17
         color: "#80000000"
         source: iconImage
-    }
+    }*/
 }// Icon Item
