@@ -324,10 +324,10 @@ Item {
         width: ( icList.orientation === Qt.Horizontal ) ? panel.implicitWidth+10 : 14
         height: ( icList.orientation === Qt.Vertical ) ? panel.implicitHeight+10 : 14
 
-        PlasmaCore.FrameSvgItem{
+     /*   PlasmaCore.FrameSvgItem{
             anchors.fill:parent
             imagePath: "dialogs/background";
-        }
+        } */
 
 
         ListView {
