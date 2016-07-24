@@ -69,12 +69,11 @@ Item {
 
 
         separateLaunchers: false
-        groupMode: TaskManager.TasksModel.GroupApplication
+   //     groupMode: TaskManager.TasksModel.GroupApplication
         groupInline: false
 
 
         onCountChanged: {
-            console.debug("Count changed - "+counter2+" , "+count);;
         //    panel.updateImplicits()  // is going to triger it the inAnimation ending
             iconGeometryTimer.restart();
         }
@@ -141,10 +140,14 @@ Item {
     Item{
         id:barLine
         //   property bool blockLoop: false
+        opacity: tasksModel.count > 0 ? 1 : 0
 
         width: ( icList.orientation === Qt.Horizontal ) ? panel.implicitWidth+4 : 18
         height: ( icList.orientation === Qt.Vertical ) ? panel.implicitHeight+4 : 18
 
+        Behavior on opacity{
+            NumberAnimation { duration: 100 }
+        }
 
         BorderImage{
             anchors.fill:parent
@@ -155,12 +158,16 @@ Item {
             verticalTileMode: BorderImage.Stretch
         }
 
+        Behavior on opacity{
+            NumberAnimation { duration: 200 }
+        }
+
         Behavior on width{
-            NumberAnimation { duration: 100 }
+            NumberAnimation { duration: 200 }
         }
 
         Behavior on height{
-            NumberAnimation { duration: 100 }
+            NumberAnimation { duration: 200 }
         }
 
         /*        PlasmaCore.FrameSvgItem{
