@@ -12,7 +12,6 @@ Item{
 
     property int size: 8
 
-
     Item{
         width: (( IsGroupParent ) && (icList.orientation === Qt.Horizontal)) ? 2*glowFrame.size : glowFrame.size
         height: (( IsGroupParent ) && (icList.orientation === Qt.Vertical)) ? 2*glowFrame.size : glowFrame.size

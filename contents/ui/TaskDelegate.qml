@@ -101,23 +101,21 @@ Component {
 
                 //  if(index===0)
                 //     console.debug(rDistance);
-                scale = Math.max(1, panel.zoomFactor - ( (rDistance) / zone));
+                var newScale = Math.max(1, panel.zoomFactor - ( (rDistance) / zone));
+                if(Math.abs(newScale-scale) >= 0.03)
+                    scale = newScale;
             }
         }
 
         onEntered: {
             var pos = mapToItem(icList, mouseX, mouseY);
 
-            var stepSize = 20;
-
             if (icList.orientation == Qt.Horizontal){
                 var step = Math.abs(icList.currentSpot-pos.x);
-                if(step>=stepSize)
                     icList.currentSpot = pos.x;
             }
             else{
                 var step = Math.abs(icList.currentSpot-pos.y);
-                if(step>=stepSize)
                     icList.currentSpot = pos.y;
             }
         }
@@ -129,7 +127,7 @@ Component {
 
         onPositionChanged: {
             var pos = mapToItem(icList, mouse.x, mouse.y);
-            var animationStep = 2;
+            var animationStep = 4;
 
             if (icList.orientation == Qt.Horizontal){
                 var step = Math.abs(icList.currentSpot-pos.x);
