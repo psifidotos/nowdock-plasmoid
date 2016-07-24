@@ -9,11 +9,12 @@ Item{
     width: wrapper.regulatorSize
     height: wrapper.regulatorSize
 
-  /*  PlasmaCore.IconItem {
+    PlasmaCore.IconItem {
         id: iconImage
 
-        width: panel.iconSize * wrapper.scale * wrapper.appearScale;
-        height: panel.iconSize * wrapper.scale * wrapper.appearScale;
+        property int newTempSize: panel.iconSize * wrapper.scale * wrapper.appearScale
+        width: newTempSize
+        height: newTempSize
 
         anchors.centerIn: parent
 
@@ -23,11 +24,22 @@ Item{
 
         source: decoration
 
+        /*transform: Scale {
+            origin.x: width/2
+            origin.y: height
+            xScale:( wrapper.scale * wrapper.appearScale / 2)
+            yScale:( wrapper.scale * wrapper.appearScale / 2 )
+        }*/
+    }
 
-    }*/
-    // Another way for the shadow must be found it increases the cpu cycles x3 (probably)
+    // Another way for the shadow must be found it increases the cpu cycles x2 alsmost,
+    // even with the following caching mechanism.
+    // it would be must better if we could create an image
+    // the first time and use the DropShadow mechanism and then
+    // just use that image for the animations
 
-    DropShadow {
+    /*DropShadow {
+        id:shadowImage
         width: panel.iconSize * wrapper.scale * wrapper.appearScale;
         height: panel.iconSize * wrapper.scale * wrapper.appearScale;
         anchors.centerIn: parent
@@ -57,6 +69,6 @@ Item{
 
             source: decoration
         }
+    }*/
 
-    }
 }// Icon Item

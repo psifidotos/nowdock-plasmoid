@@ -117,10 +117,10 @@ Item {
             var tasks = icList.contentItem.children;
             var lostMouse = true;
 
-      //      console.debug("---------");
+            //      console.debug("---------");
             for(var i=0; i<tasks.length; ++i){
                 var task = tasks[i];
-        //        console.debug(task.containsMouse);
+                //        console.debug(task.containsMouse);
                 if (task.containsMouse){
                     lostMouse = false;
                     break;
@@ -229,8 +229,8 @@ Item {
 
                     var rDistance = Math.abs(curSpot - absCenter);
 
-                  //  if(index===0)
-                   //     console.debug(rDistance);
+                    //  if(index===0)
+                    //     console.debug(rDistance);
                     scale = Math.max(1, panel.zoomFactor - ( (rDistance) / zone));
                 }
             }
@@ -318,13 +318,32 @@ Item {
         id:barLine
         //   property bool blockLoop: false
 
-        width: ( icList.orientation === Qt.Horizontal ) ? panel.implicitWidth+10 : 64
-        height: ( icList.orientation === Qt.Vertical ) ? panel.implicitHeight+10 : 64
+        width: ( icList.orientation === Qt.Horizontal ) ? panel.implicitWidth+4 : 18
+        height: ( icList.orientation === Qt.Vertical ) ? panel.implicitHeight+4 : 18
 
-        PlasmaCore.FrameSvgItem{
+
+        BorderImage{
             anchors.fill:parent
-            imagePath: "dialogs/background";
+            source: "../images/panel-west.png"
+            border { left:8; right:8; top:8; bottom:8 }
+
+            horizontalTileMode: BorderImage.Stretch
+            verticalTileMode: BorderImage.Stretch
         }
+
+        Behavior on width{
+            NumberAnimation { duration: 100 }
+        }
+
+        Behavior on height{
+            NumberAnimation { duration: 100 }
+        }
+
+        /*        PlasmaCore.FrameSvgItem{
+            anchors.fill:parent
+            imagePath: "widgets/panel-background"
+            prefix:"east"
+        }*/
 
 
         ListView {
@@ -347,8 +366,8 @@ Item {
             property int runningWidth : (currentSpot  === -1000) ? panel.clearWidth : panel.implicitWidth
             property int runningHeight : (currentSpot === -1000) ? panel.clearHeight : panel.implicitHeight
 
-     //       width: (orientation === Qt.Horizontal) ? runningWidth  : 120
-      //      height: (orientation === Qt.Vertical) ? runningHeight  : 120
+            //       width: (orientation === Qt.Horizontal) ? runningWidth  : 120
+            //      height: (orientation === Qt.Vertical) ? runningHeight  : 120
 
             width: (orientation === Qt.Horizontal) ? contentWidth + 1  : 120
             height: (orientation === Qt.Vertical) ? contentHeight + 1  : 120
@@ -365,7 +384,7 @@ Item {
             delegate: iconDelegate
             orientation: Qt.Horizontal
 
-       /*     Behavior on width{
+            /*     Behavior on width{
                 NumberAnimation { duration: 100 }
             }
 
