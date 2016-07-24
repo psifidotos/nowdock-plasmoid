@@ -11,7 +11,7 @@ Item{
     height: ( icList.orientation === Qt.Vertical ) ? wrapper.regulatorSize : size
 
     property int size: 8
-    property int groupingSize : ( IsGroupParent) ? (2 * size) : size
+
 
     Item{
         width: (( IsGroupParent ) && (icList.orientation === Qt.Horizontal)) ? 2*glowFrame.size : glowFrame.size

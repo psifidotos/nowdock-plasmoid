@@ -12,7 +12,7 @@ Item{
     PlasmaCore.IconItem {
         id: iconImage
 
-        property int newTempSize: panel.iconSize * wrapper.scale * wrapper.appearScale
+        property int newTempSize: Math.floor(panel.iconSize * wrapper.scale * wrapper.appearScale)
         width: newTempSize
         height: newTempSize
 
