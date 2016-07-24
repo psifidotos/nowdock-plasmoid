@@ -107,35 +107,33 @@ Item {
         id: iconsmdl
     }
 
-    function checkListViewHovered(index){
-        var tasks = icList.contentItem.children;
-        var lostMouse = true;
+    //Timer to check if the mouse is still inside the ListView
+    Timer{
+        id:checkListHovered
+        repeat:false;
+        interval:20;
 
-        if ((index === 0)&&(tasks.length>1)){
-            if(tasks[1].containsMouse){
-                lostMouse = false;
-            }
-        }
-        else if((index === tasks.length-1)&&(tasks.length>1)){
-            if(tasks[tasks.length-2].containsMouse){
-                lostMouse = false;
-            }
-        }
-        else{
-            if(tasks.length>=3){
-                if((tasks[index-1].containsMouse) || (tasks[index+1].containsMouse) ){
+        onTriggered: {
+            var tasks = icList.contentItem.children;
+            var lostMouse = true;
+
+      //      console.debug("---------");
+            for(var i=0; i<tasks.length; ++i){
+                var task = tasks[i];
+        //        console.debug(task.containsMouse);
+                if (task.containsMouse){
                     lostMouse = false;
+                    break;
                 }
             }
-        }
 
-        if(lostMouse){
-            icList.currentSpot = -1000;
-            icList.currentIndex = -1;
+            if(lostMouse){
+                icList.currentSpot = -1000;
+                icList.currentIndex = -1;
+            }
+
         }
     }
-
-
 
     Component {
         id: iconDelegate
@@ -256,13 +254,12 @@ Item {
 
             // IMPORTANT: This must be improved ! even for small miliseconds  it reduces performance
             onExited: {
-                panel.checkListViewHovered(index);
-                //icList.currentSpot = -1000;
+                checkListHovered.start();
             }
 
             onPositionChanged: {
                 var pos = mapToItem(icList, mouse.x, mouse.y);
-                var animationStep = 5;
+                var animationStep = 2;
 
                 if (icList.orientation == Qt.Horizontal){
                     var step = Math.abs(icList.currentSpot-pos.x);
@@ -321,13 +318,13 @@ Item {
         id:barLine
         //   property bool blockLoop: false
 
-        width: ( icList.orientation === Qt.Horizontal ) ? panel.implicitWidth+10 : 14
-        height: ( icList.orientation === Qt.Vertical ) ? panel.implicitHeight+10 : 14
+        width: ( icList.orientation === Qt.Horizontal ) ? panel.implicitWidth+10 : 64
+        height: ( icList.orientation === Qt.Vertical ) ? panel.implicitHeight+10 : 64
 
-     /*   PlasmaCore.FrameSvgItem{
+        PlasmaCore.FrameSvgItem{
             anchors.fill:parent
             imagePath: "dialogs/background";
-        } */
+        }
 
 
         ListView {
@@ -350,9 +347,11 @@ Item {
             property int runningWidth : (currentSpot  === -1000) ? panel.clearWidth : panel.implicitWidth
             property int runningHeight : (currentSpot === -1000) ? panel.clearHeight : panel.implicitHeight
 
-            width: (orientation === Qt.Horizontal) ? runningWidth  : 120
-            height: (orientation === Qt.Vertical) ? runningHeight  : 120
+     //       width: (orientation === Qt.Horizontal) ? runningWidth  : 120
+      //      height: (orientation === Qt.Vertical) ? runningHeight  : 120
 
+            width: (orientation === Qt.Horizontal) ? contentWidth + 1  : 120
+            height: (orientation === Qt.Vertical) ? contentHeight + 1  : 120
             /*Rectangle{
                 anchors.fill: parent
                 border.width: 1
@@ -366,13 +365,13 @@ Item {
             delegate: iconDelegate
             orientation: Qt.Horizontal
 
-            Behavior on width{
+       /*     Behavior on width{
                 NumberAnimation { duration: 100 }
             }
 
             Behavior on height{
                 NumberAnimation { duration: 100 }
-            }
+            }*/
 
             add: Transition {
                 PropertyAction { target: panel; property: "inAnimation"; value: true }

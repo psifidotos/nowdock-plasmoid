@@ -32,11 +32,9 @@ Item{
         height: panel.iconSize * wrapper.scale * wrapper.appearScale;
         anchors.centerIn: parent
 
-        horizontalOffset: 3
-        verticalOffset: 3
-        radius: 8.0
-        samples: 17
-        color: "#80000000"
+        radius: 4.0
+        samples: 10
+        color: "#75080808"
         source: effectSource
 
         ShaderEffectSource {
