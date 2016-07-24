@@ -72,8 +72,10 @@ Item {
         groupMode: TaskManager.TasksModel.GroupApplication
         groupInline: false
 
+
         onCountChanged: {
-            panel.updateImplicits()
+            console.debug("Count changed - "+counter2+" , "+count);;
+        //    panel.updateImplicits()  // is going to triger it the inAnimation ending
             iconGeometryTimer.restart();
         }
 
@@ -316,7 +318,6 @@ Item {
         }
     }
 
-
     function updateImplicits(){
         var zoomedLength = Math.floor( (iconSize+iconMargin) * panel.zoomFactor);
         var bigAxis = (tasksModel.count-1) * (iconSize+iconMargin) + zoomedLength
@@ -337,26 +338,6 @@ Item {
             panel.clearWidth = clearBigAxis;
             panel.clearHeight = clearSmallAxis;
         }
-    }
-
-    function updateDelegateTransformOrigin (){
-        /*    switch(panel.position){
-        case PlasmaCore.Types.LeftPositioned:
-            panel.delegateTransformOrigin = Item.Left;
-            break;
-        case PlasmaCore.Types.RightPositioned:
-            panel.delegateTransformOrigin = Item.Right;
-            break;
-        case PlasmaCore.Types.TopPositioned:
-            panel.delegateTransformOrigin = Item.Top;
-            break;
-        case PlasmaCore.Types.BottomPositioned:
-            panel.delegateTransformOrigin = Item.Bottom;
-            break;
-        default:
-            panel.delegateTransformOrigin = Item.Bottom;
-            break;
-        }*/
     }
 
 
