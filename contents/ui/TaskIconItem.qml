@@ -21,7 +21,7 @@ Item{
 
         anchors.centerIn: parent
 
-        source: (active === true)  ? activeIcon.source : simpleIcon.source
+        source: (wrapper.containsMouse === true)  ? activeIcon.source : simpleIcon.source
         opacity: 0
 
         onSourceChanged: {
