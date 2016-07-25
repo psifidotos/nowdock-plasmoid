@@ -36,6 +36,7 @@ Item {
     property Item dragSource: null
     property bool inAnimation: false
 
+    property QtObject contextMenuComponent: Qt.createComponent("ContextMenu.qml");
 
     Connections {
         target: plasmoid
@@ -44,6 +45,15 @@ Item {
             iconGeometryTimer.start();
         }
     }
+
+    Connections {
+        target: plasmoid.configuration
+
+        onLaunchersChanged: tasksModel.launcherList = plasmoid.configuration.launchers
+        onGroupingAppIdBlacklistChanged: tasksModel.groupingAppIdBlacklist = plasmoid.configuration.groupingAppIdBlacklist;
+        onGroupingLauncherUrlBlacklistChanged: tasksModel.groupingLauncherUrlBlacklist = plasmoid.configuration.groupingLauncherUrlBlacklist;
+    }
+
 
     signal requestLayout
     signal windowsHovered(variant winIds, bool hovered)
@@ -66,20 +76,39 @@ Item {
         activity: activityInfo.currentActivity
 
         filterByActivity: true
-
+        launchInPlace: true
 
         separateLaunchers: false
-   //     groupMode: TaskManager.TasksModel.GroupApplication
+        //     groupMode: TaskManager.TasksModel.GroupApplication
         groupInline: false
 
 
         onCountChanged: {
-        //    panel.updateImplicits()  // is going to triger it the inAnimation ending
+            //    panel.updateImplicits()  // is going to triger it the inAnimation ending
             iconGeometryTimer.restart();
         }
 
         onActivityChanged: {
             panelGeometryTimer.start();
+        }
+
+        onLauncherListChanged: {
+        //    layoutTimer.restart();
+            plasmoid.configuration.launchers = launcherList;
+          //  panel.updateImplicits();
+        }
+
+        onGroupingAppIdBlacklistChanged: {
+            plasmoid.configuration.groupingAppIdBlacklist = groupingAppIdBlacklist;
+        }
+
+        onGroupingLauncherUrlBlacklistChanged: {
+            plasmoid.configuration.groupingLauncherUrlBlacklist = groupingLauncherUrlBlacklist;
+        }
+
+        Component.onCompleted: {
+            launcherList = plasmoid.configuration.launchers;
+            icList.model = tasksModel;
         }
     }
 
@@ -90,9 +119,9 @@ Item {
         //toolTipItem: toolTipDelegate
         //highlightWindows: plasmoid.configuration.highlightWindows
 
-        //onAddLauncher: {
-        //   tasksModel.requestAddLauncher(url);
-        //}
+        onAddLauncher: {
+            tasksModel.requestAddLauncher(url);
+        }
     }
 
     TaskManager.VirtualDesktopInfo {
@@ -211,7 +240,7 @@ Item {
 
             interactive: false
 
-            model: tasksModel
+            //  model: tasksModel
             delegate: TaskDelegate{}
             orientation: Qt.Horizontal
 
@@ -377,6 +406,14 @@ Item {
 
         panel.position = newPosition;
         //  updateDelegateTransformOrigin();
+    }
+
+    function hasLauncher(url) {
+        return tasksModel.launcherPosition(url) != -1;
+    }
+
+    function addLauncher(url) {
+        tasksModel.requestAddLauncher(url);
     }
 
 }

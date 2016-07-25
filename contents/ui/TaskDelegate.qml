@@ -19,7 +19,9 @@ Component {
         height: (icList.orientation === Qt.Vertical ) ? Math.floor( (panel.iconSize+iconMargin)*scale ) :
                                                         Math.floor((panel.iconSize+iconMargin)*scale + addedSpace)
 
-        acceptedButtons: Qt.LeftButton | Qt.MidButton
+        acceptedButtons: Qt.LeftButton | Qt.MidButton | Qt.RightButton
+
+        property QtObject contextMenu: null
 
         property int addedSpace: 12
 
@@ -112,11 +114,11 @@ Component {
 
             if (icList.orientation == Qt.Horizontal){
                 var step = Math.abs(icList.currentSpot-pos.x);
-                    icList.currentSpot = pos.x;
+                icList.currentSpot = pos.x;
             }
             else{
                 var step = Math.abs(icList.currentSpot-pos.y);
-                    icList.currentSpot = pos.y;
+                icList.currentSpot = pos.y;
             }
         }
 
@@ -146,8 +148,13 @@ Component {
         }
 
         onPressed: {
-            if (mouse.button == Qt.LeftButton || mouse.button == Qt.MidButton) {
+            if ((mouse.button == Qt.LeftButton)||(mouse.button == Qt.MidButton)) {
                 pressed = true;
+            }
+            else if (mouse.button == Qt.RightButton){
+                contextMenu = panel.contextMenuComponent.createObject(wrapper);
+                contextMenu.visualParent = wrapper;
+                contextMenu.show();
             }
         }
 
