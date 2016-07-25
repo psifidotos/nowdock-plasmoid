@@ -76,10 +76,11 @@ Item {
         activity: activityInfo.currentActivity
 
         filterByActivity: true
+
         launchInPlace: true
 
-        separateLaunchers: false
-        //     groupMode: TaskManager.TasksModel.GroupApplication
+        separateLaunchers: true
+        // groupMode: TaskManager.TasksModel.GroupApplication
         groupInline: false
 
 
@@ -93,9 +94,9 @@ Item {
         }
 
         onLauncherListChanged: {
-        //    layoutTimer.restart();
+            //    layoutTimer.restart();
             plasmoid.configuration.launchers = launcherList;
-          //  panel.updateImplicits();
+            //  panel.updateImplicits();
         }
 
         onGroupingAppIdBlacklistChanged: {
@@ -108,6 +109,9 @@ Item {
 
         Component.onCompleted: {
             launcherList = plasmoid.configuration.launchers;
+            groupingAppIdBlacklist = plasmoid.configuration.groupingAppIdBlacklist;
+            groupingLauncherUrlBlacklist = plasmoid.configuration.groupingLauncherUrlBlacklist;
+
             icList.model = tasksModel;
         }
     }
@@ -226,11 +230,14 @@ Item {
             property int runningWidth : (currentSpot  === -1000) ? panel.clearWidth : panel.implicitWidth
             property int runningHeight : (currentSpot === -1000) ? panel.clearHeight : panel.implicitHeight
 
-            //       width: (orientation === Qt.Horizontal) ? runningWidth  : 120
-            //      height: (orientation === Qt.Vertical) ? runningHeight  : 120
+            property int tempWidthAnimations: (panel.inAnimation === true) ? runningWidth : contentWidth + 1
+            property int tempHeightAnimations: (panel.inAnimation === true) ? runningHeight : contentHeight + 1
 
-            width: (orientation === Qt.Horizontal) ? contentWidth + 1  : 120
-            height: (orientation === Qt.Vertical) ? contentHeight + 1  : 120
+            width: (orientation === Qt.Horizontal) ? tempWidthAnimations : 120
+            height: (orientation === Qt.Vertical) ? tempHeightAnimations : 120
+
+            //   width: (orientation === Qt.Horizontal) ? contentWidth + 1  : 120
+            //  height: (orientation === Qt.Vertical) ? contentHeight + 1  : 120
             /*Rectangle{
                 anchors.fill: parent
                 border.width: 1
@@ -244,30 +251,27 @@ Item {
             delegate: TaskDelegate{}
             orientation: Qt.Horizontal
 
-            /*     Behavior on width{
-                NumberAnimation { duration: 100 }
-            }
-
-            Behavior on height{
-                NumberAnimation { duration: 100 }
-            }*/
-
             add: Transition {
                 PropertyAction { target: panel; property: "inAnimation"; value: true }
                 ParallelAnimation{
-                    NumberAnimation { property: "appearScale"; from: 0.25; to: 1; duration: 500 }
-                    NumberAnimation { property: "opacity"; from: 0; to: 1; duration: 500 }
+                    NumberAnimation { property: "opacity"; from:0; to:1; duration: 300 }
                 }
                 PropertyAction { target: panel; property: "inAnimation"; value: false }
             }
 
-            moveDisplaced: Transition {
-                NumberAnimation { properties: "x,y"; duration: 500 }
+            displaced: Transition {
+                NumberAnimation { properties: "x,y"; duration: 350 }
+                //when the element because of displacement goest outside the listView and
+                //return the opacity must be fixed
+                NumberAnimation { property: "opacity"; to:1; duration: 200 }
             }
 
-            removeDisplaced: Transition {
-                NumberAnimation { properties: "x,y"; duration: 500 }
+            //helps to calculate property the size of the panel on the first run...
+            populate: Transition {
+                PropertyAction { target: panel; property: "inAnimation"; value: true }
+                PropertyAction { target: panel; property: "inAnimation"; value: false }
             }
+
         }
     }
 

@@ -47,7 +47,7 @@ Component {
             PropertyAction { target: panel; property: "inAnimation"; value: true }
             PropertyAction { target: wrapper; property: "ListView.delayRemove"; value: true }
             ParallelAnimation{
-                NumberAnimation { target: wrapper; property: "scale"; to: 0; duration: 350; easing.type: Easing.InOutQuad }
+            //    NumberAnimation { target: wrapper; property: "scale"; to: 0; duration: 350; easing.type: Easing.InOutQuad }
                 NumberAnimation { target: wrapper; property: "opacity"; to: 0; duration: 350; easing.type: Easing.InOutQuad }
             }
             PropertyAction { target: wrapper; property: "ListView.delayRemove"; value: false }
