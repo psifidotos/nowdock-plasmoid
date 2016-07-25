@@ -208,7 +208,14 @@ Item {
             imagePath: "widgets/panel-background"
             prefix:"east"
         }*/
-
+      /*  Rectangle{
+            anchors.centerIn: parent
+            width: icList.width
+            height: icList.height+50
+            border.width: 1
+            border.color: "red"
+            color: "lightblue"
+        }*/
 
         ListView {
             id:icList
