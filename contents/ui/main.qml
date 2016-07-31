@@ -170,6 +170,8 @@ Item {
     }
 
 
+
+
     Item{
         id:barLine
         //   property bool blockLoop: false
@@ -191,6 +193,26 @@ Item {
             verticalTileMode: BorderImage.Stretch
         }
 
+      /*  Rectangle{
+            anchors.horizontalCenter:  parent.horizontalCenter
+            anchors.verticalCenter: parent.bottom
+
+            width: ( icList.orientation === Qt.Horizontal ) ? panel.implicitWidth+4 : 60
+            height: ( icList.orientation === Qt.Vertical ) ? panel.implicitHeight+4 : 60
+            opacity: tasksModel.count > 0 ? 1 : 0
+
+            radius: 6
+
+           // color: "transparent"
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: "#00000000" }
+                GradientStop { position: 0.5; color: "#ff000000" }
+                GradientStop { position: 1.0; color: "#ff000000" }
+            }
+        }*/
+
+
+
         Behavior on opacity{
             NumberAnimation { duration: 200 }
         }
@@ -208,7 +230,7 @@ Item {
             imagePath: "widgets/panel-background"
             prefix:"east"
         }*/
-      /*  Rectangle{
+        /*  Rectangle{
             anchors.centerIn: parent
             width: icList.width
             height: icList.height+50

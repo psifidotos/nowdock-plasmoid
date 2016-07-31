@@ -54,171 +54,196 @@ Item{
     // it would be must better if we could create an image
     // the first time and use the DropShadow mechanism and then
     // just use that image for the animations
-  /*  PlasmaCore.IconItem {
+
+    /*  PlasmaCore.IconItem {
         id: iconImage
 
-        property int newTempSize: Math.floor(panel.iconSize * wrapper.scale * wrapper.appearScale)
-        width: newTempSize
-        height: newTempSize
+        width:64
+        height:64
 
         anchors.centerIn: parent
 
-        active: active
+        active: true
         enabled: true
         usesPlasmaTheme: false
 
         source: decoration
+
+    }*/
+    /* Image{
+        id:iconImage
+        width: 64
+        height: 64
+        source: "firefox.png"
     }
 
     DropShadow {
         id:shadowImageNoActive
-     //   visible:false
-        anchors.fill: iconImage
+
+        width: 64
+        height: 64
+
+        scale: wrapper.scale * wrapper.appearScale
+
+        anchors.centerIn: parent
 
         radius: 7.0
         samples: 10
         color: "#90080808"
-        source: iconImage
-        /*ShaderEffectSource {
+        source: ShaderEffectSource {
             id:effectSource
-            anchors.fill: parent
+            width: iconImage.width
+            height: iconImage.height
             sourceItem: iconImage
             hideSource: true
-        }*/
+            live: false
+        }
 
+    }*/
 
-   // }
-
-///////////////Buffering
-
-    Component {
-         id: component
-         Item {
-             id: yourImageWithLoadedIconContainer
-             anchors.fill: parent
-
-             PlasmaCore.IconItem {
-                 id: iconImage
-                 width: 2 * panel.iconSize - 8
-                 height: 2 * panel.iconSize - 8
-
-                 active: false
-                 enabled: true
-                 usesPlasmaTheme: false
-
-                 source: decoration
-
-                 visible: false
-
-                 // use this when using Image instead of Rectangle
-                 Timer{
-                     id:ttt
-                     repeat:false
-                     interval: 1
-                     onTriggered: {
-                         shadowImageNoActive.grabToImage(function(result) {
-                             simpleIcon.source = result.url;
-                         //    yourImageWithLoadedIconContainer.destroy()
-                         }, Qt.size(iconImage.width,iconImage.height) );
-                         ttt2.start();
-                     }
-                 }
-                 Timer{
-                     id:ttt2
-                     repeat:false
-                     interval: 100
-                     onTriggered: {
-                         yourImageWithLoadedIconContainer.destroy();
-                     }
-                 }
-
-                 onVisibleChanged:{
-                     console.debug ("asdfasdf");
-                 }
-
-                Component.onCompleted: {
-                     ttt.start();
-                 }
-             }
-             DropShadow {
-                 id:shadowImageNoActive
-                 visible:false
-                 width: 2 * panel.iconSize
-                 height: 2 * panel.iconSize
-                 anchors.centerIn: iconImage
-
-
-                 radius: 7.0
-                 samples: 10
-                 color: "#aa080808"
-                 source: iconImage
-             }
-         }
-     }
+    ///////////////Buffering
 
     Component {
-         id: component2
-         Item {
-             id: yourImageWithLoadedIconContainer2
-             anchors.fill: parent
+        id: component
+        Item {
+            id: yourImageWithLoadedIconContainer
+            anchors.fill: parent
 
-             PlasmaCore.IconItem {
-                 id: iconImage2
-                 width: 2 * panel.iconSize - 8
-                 height: 2 * panel.iconSize - 8
+            Item{
+                id:fixedIcon
+                width: 2*panel.iconSize
+                height: width
 
-                 active: true
-                 enabled: true
-                 usesPlasmaTheme: false
+                visible:false
 
-                 source: decoration
+                PlasmaCore.IconItem {
+                    id: iconImage
+                    width: parent.width - 16
+                    height: parent.height - 16
+                    anchors.centerIn: parent
 
-                 visible: false
+                    active: false
+                    enabled: true
+                    usesPlasmaTheme: false
 
-                 // use this when using Image instead of Rectangle
-                 Timer{
-                     id:ttt11
-                     repeat:false
-                     interval: 1
-                     onTriggered: {
-                         shadowImageNoActive2.grabToImage(function(result) {
-                             activeIcon.source = result.url;
-                         //    yourImageWithLoadedIconContainer.destroy()
-                         }, Qt.size(iconImage2.width,iconImage2.height) );
-                         ttt22.start();
-                     }
-                 }
-                 Timer{
-                     id:ttt22
-                     repeat:false
-                     interval: 100
-                     onTriggered: {
-                         yourImageWithLoadedIconContainer2.destroy();
-                     }
-                 }
+                    source: decoration
 
-                 onVisibleChanged:{
-                     console.debug ("asdfasdf");
-                 }
+                    visible: true
 
-                Component.onCompleted: {
-                     ttt11.start();
-                 }
-             }
-             DropShadow {
-                 id:shadowImageNoActive2
-                 visible:false
-                 width: 2 * panel.iconSize
-                 height: 2 * panel.iconSize
-                 anchors.centerIn: iconImage2
+                    // use this when using Image instead of Rectangle
+                    Timer{
+                        id:ttt
+                        repeat:false
+                        interval: 1
+                        onTriggered: {
+                            shadowImageNoActive.grabToImage(function(result) {
+                                simpleIcon.source = result.url;
+                                //    yourImageWithLoadedIconContainer.destroy()
+                            }, Qt.size(fixedIcon.width,fixedIcon.height) );
+                            ttt2.start();
+                        }
+                    }
+                    Timer{
+                        id:ttt2
+                        repeat:false
+                        interval: 40
+                        onTriggered: {
+                            yourImageWithLoadedIconContainer.destroy();
+                        }
+                    }
+
+                    Component.onCompleted: {
+                        ttt.start();
+                    }
+                }
+            }
+            DropShadow {
+                id:shadowImageNoActive
+                visible:false
+                width: fixedIcon.width
+                height: fixedIcon.height
+                anchors.centerIn: fixedIcon
 
 
-                 radius: 7.0
-                 samples: 10
-                 color: "#aa080808"
-                 source: iconImage2
-             }
-         }
-     }
+                radius: 8.0
+                samples: 14
+                color: "#ff080808"
+                source: fixedIcon
+            }
+        }
+    }
+
+    Component {
+        id: component2
+        Item {
+            id: yourImageWithLoadedIconContainer2
+            anchors.fill: parent
+
+            Item{
+                id:fixedIcon2
+                width: 2*panel.iconSize
+                height: width
+
+                visible:false
+
+                PlasmaCore.IconItem {
+                    id: iconImage2
+                    width: parent.width -  16
+                    height: parent.height - 16
+
+                    anchors.centerIn: parent
+
+                    active: true
+                    enabled: true
+                    usesPlasmaTheme: false
+
+                    source: decoration
+
+                    visible: true
+
+                    // use this when using Image instead of Rectangle
+                    Timer{
+                        id:ttt11
+                        repeat:false
+                        interval: 1
+                        onTriggered: {
+                            shadowImageNoActive2.grabToImage(function(result) {
+                                activeIcon.source = result.url;
+                                //    yourImageWithLoadedIconContainer.destroy()
+                            }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
+                            ttt22.start();
+                        }
+                    }
+                    Timer{
+                        id:ttt22
+                        repeat:false
+                        interval: 40
+                        onTriggered: {
+                            yourImageWithLoadedIconContainer2.destroy();
+                        }
+                    }
+
+                    Component.onCompleted: {
+                        ttt11.start();
+                    }
+                }
+            }
+
+            DropShadow {
+                id:shadowImageNoActive2
+                visible:false
+                width: fixedIcon2.width
+                height: fixedIcon2.height
+                anchors.centerIn: fixedIcon2
+
+
+                radius: 8
+                samples: 14
+                color: "#ff080808"
+                source: fixedIcon2
+            }
+
+        }
+    }
 
 }// Icon Item
