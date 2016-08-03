@@ -124,8 +124,8 @@ Component {
                 var bigNeighbourZoom = Math.min(1 + zoomCenter + firstComputation, panel.zoomFactor);
                 var smallNeighbourZoom = Math.max(1 + zoomCenter - firstComputation, 1);
 
-                bigNeighbourZoom = bigNeighbourZoom.toFixed(2);
-                smallNeighbourZoom = smallNeighbourZoom.toFixed(2);
+                bigNeighbourZoom = Number(bigNeighbourZoom.toFixed(2));
+                smallNeighbourZoom = Number(smallNeighbourZoom.toFixed(2));
 
                 var leftScale;
                 var rightScale;
@@ -150,7 +150,12 @@ Component {
                 }
 
 
-                scale = panel.zoomFactor;
+                //testing shadowboxes
+              //  if(index === 0 ){
+                //    scale =panel.zoomFactor+(leftScale-1);
+               // }
+               // else
+                    scale = panel.zoomFactor;
 
                 //debugging code
              /*   if (index >=1 ){
