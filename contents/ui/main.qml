@@ -164,7 +164,7 @@ Item {
 
             if(lostMouse){
                 icList.currentSpot = -1000;
-                icList.currentIndex = -1;
+                icList.hoveredIndex = -1;
             }
 
         }

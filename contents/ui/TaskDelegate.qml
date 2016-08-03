@@ -36,7 +36,7 @@ Component {
 
         property real appearScale: 1;
 
-        property int curSpot: icList.currentSpot
+        property int curIndex: icList.hoveredIndex
         property int center: Math.floor(width / 2)
 
         ///Dont use Math.floor it adds one pixel in animations and creates glitches
@@ -91,26 +91,18 @@ Component {
         ////that arent going to alter their scale, plus could be calculated with differences
         ////instead of every step even 1px to calculate every 3 or 4
         ////maybe a new algorithm is needed ... one that reduces flickering
-        onCurSpotChanged: {
+        function calculateScales( currentMousePosition ){
             var distanceFromHovered = Math.abs(index - icList.hoveredIndex);
 
 
             // A new algorithm tryig to make the zoom calculation only once
             // and at the same time fixing glitches
-            if ((distanceFromHovered == 0)&&(icList.currentSpot > 0) ){
-                var absCoords = mapToItem(icList, 0, 0);
-                var zone = panel.zoomFactor * 100;
-                var absCenter;
+            if ((distanceFromHovered == 0)&&(currentMousePosition  > 0) ){
 
-                if(icList.orientation === Qt.Horizontal)
-                    absCenter = absCoords.x + center;
-                else
-                    absCenter = absCoords.y + center;
-
-                var rDistance = Math.abs(curSpot - absCenter);
+                var rDistance = Math.abs(currentMousePosition  - center);
 
                 //check if the mouse goes right or down according to the center
-                var positiveDirection =  ((curSpot - absCenter) >= 0 );
+                var positiveDirection =  ((currentMousePosition  - center) >= 0 );
 
 
                 //finding the zoom center e.g. for zoom:1.7, calculates 0.35
@@ -141,6 +133,7 @@ Component {
 
             //    console.debug(leftScale + "  " + rightScale + " " + index);
 
+                //activate messages to update the the neighbour scales
                 if(index < icList.contentItem.children.length - 1){
                     icList.updateScale(index+1, rightScale);
                 }
@@ -166,23 +159,33 @@ Component {
                 } */
             }
 
-            if( (distanceFromHovered > 1)||(icList.currentSpot < 0)){
+            //if( (distanceFromHovered > 1)||(icList.currentSpot < 0)){
+               // scale = 1;
+          //  }
+
+        } //scale
+
+
+        //restore scales when there is no zoom factor for that item or
+        //the mouse is out of the ListView
+        onCurIndexChanged: {
+            var distanceFromHovered = Math.abs(index - icList.hoveredIndex);
+
+            if( (distanceFromHovered > 1) || (curIndex < 0)){
                 scale = 1;
             }
-
-
         }
 
         onEntered: {
-            var pos = mapToItem(icList, mouseX, mouseY);
+            icList.hoveredIndex = index;
 
             if (icList.orientation == Qt.Horizontal){
-                var step = Math.abs(icList.currentSpot-pos.x);
-                icList.currentSpot = pos.x;
+                icList.currentSpot = mouseX;
+                calculateScales(mouseX);
             }
             else{
-                var step = Math.abs(icList.currentSpot-pos.y);
-                icList.currentSpot = pos.y;
+                icList.currentSpot = mouseY;
+                calculateScales(mouseY);
             }
         }
 
@@ -192,21 +195,22 @@ Component {
         }
 
         onPositionChanged: {
-            var pos = mapToItem(icList, mouse.x, mouse.y);
-            var animationStep = 4;
+            var animationStep = 3;
 
             if (icList.orientation == Qt.Horizontal){
-                var step = Math.abs(icList.currentSpot-pos.x);
+                var step = Math.abs(icList.currentSpot-mouse.x);
                 if (step >= animationStep){
                     icList.hoveredIndex = index;
-                    icList.currentSpot = pos.x;
+                    icList.currentSpot = mouse.x;
+                    calculateScales(mouse.x);
                 }
             }
             else{
-                var step = Math.abs(icList.currentSpot-pos.y);
+                var step = Math.abs(icList.currentSpot-mouse.y);
                 if (step >= animationStep){
                     icList.hoveredIndex = index;
-                    icList.currentSpot = pos.y;
+                    icList.currentSpot = mouse.y;
+                    calculateScales(mouse.y);
                 }
             }
         }
