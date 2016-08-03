@@ -62,10 +62,13 @@ Item {
 
     /////
 
+    //very important !!!!
+    //this function updates the size of the plasmoid according to the number
+    //of tasks in the model !!!
     onInAnimationChanged: {
-        if (!inAnimation){
+        if (inAnimation === false){
             panel.updateImplicits();
-            iconGeometryTimer.restart();
+            //            iconGeometryTimer.restart();
         }
     }
 
@@ -178,14 +181,14 @@ Item {
         //   property bool blockLoop: false
         opacity: tasksModel.count > 0 ? 1 : 0
 
-    //    width: ( icList.orientation === Qt.Horizontal ) ? panel.implicitWidth+4 : 18
-    //    height: ( icList.orientation === Qt.Vertical ) ? panel.implicitHeight+4 : 18
-        width: ( icList.orientation === Qt.Horizontal ) ? icList.width+8 : 18
-        height: ( icList.orientation === Qt.Vertical ) ? icList.height+8 : 18
+        property int spacing: panel.iconSize / 4
 
-        Behavior on opacity{
-            NumberAnimation { duration: 100 }
-        }
+        property int currentSize: (icList.hoveredIndex >= 0) ? panel.implicitWidth + spacing : panel.clearWidth + spacing
+        width: ( icList.orientation === Qt.Horizontal ) ? currentSize : 18
+        height: ( icList.orientation === Qt.Vertical ) ? currentSize : 18
+        //    width: ( icList.orientation === Qt.Horizontal ) ? icList.width+8 : 18
+        //   height: ( icList.orientation === Qt.Vertical ) ? icList.height+8 : 18
+
 
         BorderImage{
             anchors.fill:parent
@@ -196,7 +199,7 @@ Item {
             verticalTileMode: BorderImage.Stretch
         }
 
-      /*  Rectangle{
+        /*  Rectangle{
             anchors.horizontalCenter:  parent.horizontalCenter
             anchors.verticalCenter: parent.bottom
 
@@ -215,9 +218,8 @@ Item {
         }*/
 
 
-
         Behavior on opacity{
-            NumberAnimation { duration: 200 }
+            NumberAnimation { duration: 150 }
         }
 
         Behavior on width{
@@ -261,6 +263,7 @@ Item {
 
             property int currentSpot : -1000
             property int hoveredIndex : -1
+            property int previousCount : 0
 
             property int runningWidth : (currentSpot  === -1000) ? panel.clearWidth : panel.implicitWidth
             property int runningHeight : (currentSpot === -1000) ? panel.clearHeight : panel.implicitHeight
@@ -352,11 +355,11 @@ Item {
 
     Component.onCompleted:  {
         updatePosition();
-        updateImplicits();
-        //        updateDelegateTransformOrigin();
+
+        //   updateImplicits(); // the models items have not been added yet
 
         panel.presentWindows.connect(backend.presentWindows);
-        iconGeometryTimer.start();
+        //    iconGeometryTimer.start();
     }
 
     function movePanel(newPosition){
@@ -395,25 +398,38 @@ Item {
         }
     }
 
+   // property int ncounter:0
+
     function updateImplicits(){
-        var zoomedLength = Math.floor( 2 * (iconSize+iconMargin) * (panel.zoomFactor));
-        var bigAxis = (tasksModel.count-1) * (iconSize+iconMargin) + zoomedLength
-        var smallAxis = zoomedLength + 1
+        if(icList.previousCount !== icList.count){
+            icList.previousCount = icList.count;
 
-        var clearBigAxis = tasksModel.count * (iconSize+iconMargin);
-        var clearSmallAxis = (iconSize+iconMargin);
+            var zoomedLength = Math.floor( 1.5 * (iconSize+iconMargin) * (panel.zoomFactor));
+            var bigAxis = (tasksModel.count-1) * (iconSize+iconMargin) + zoomedLength
+            var smallAxis = zoomedLength + 1
 
-        if (panel.vertical){
-            panel.implicitWidth = smallAxis;
-            panel.implicitHeight = bigAxis;
-            panel.clearWidth = clearSmallAxis;
-            panel.clearHeight = clearBigAxis;
-        }
-        else{
-            panel.implicitWidth = bigAxis;
-            panel.implicitHeight = smallAxis;
-            panel.clearWidth = clearBigAxis;
-            panel.clearHeight = clearSmallAxis;
+            var clearBigAxis = tasksModel.count * (iconSize+iconMargin);
+            var clearSmallAxis = (iconSize+iconMargin);
+
+
+            //debugging code
+         //   ncounter++;
+        //    console.log(ncounter+". - "+tasksModel.count);
+
+            if (panel.vertical){
+                panel.implicitWidth = smallAxis;
+                panel.implicitHeight = bigAxis;
+                panel.clearWidth = clearSmallAxis;
+                panel.clearHeight = clearBigAxis;
+            }
+            else{
+                panel.implicitWidth = bigAxis;
+                panel.implicitHeight = smallAxis;
+                panel.clearWidth = clearBigAxis;
+                panel.clearHeight = clearSmallAxis;
+            }
+
+            iconGeometryTimer.restart();
         }
     }
 
