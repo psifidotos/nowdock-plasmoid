@@ -14,10 +14,11 @@ Component {
         anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
         anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
 
-        width: (icList.orientation === Qt.Vertical ) ? Math.floor((panel.iconSize+iconMargin)*scale+addedSpace) :
-                                                       Math.floor((panel.iconSize+iconMargin)*scale)
-        height: (icList.orientation === Qt.Vertical ) ? Math.floor( (panel.iconSize+iconMargin)*scale ) :
-                                                        Math.floor((panel.iconSize+iconMargin)*scale + addedSpace)
+        ///Dont use Math.floor it adds one pixel in animations and creates glitches
+        width: (icList.orientation === Qt.Vertical ) ? (panel.iconSize+iconMargin)*scale+addedSpace :
+                                                       (panel.iconSize+iconMargin)*scale
+        height: (icList.orientation === Qt.Vertical ) ? (panel.iconSize+iconMargin)*scale :
+                                                        (panel.iconSize+iconMargin)*scale + addedSpace
 
         acceptedButtons: Qt.LeftButton | Qt.MidButton | Qt.RightButton
 
@@ -32,12 +33,14 @@ Component {
         property int iconMargin: panel.iconMargin
 
         property real scale: 1;
+
         property real appearScale: 1;
 
         property int curSpot: icList.currentSpot
         property int center: Math.floor(width / 2)
 
-        property int regulatorSize: Math.floor ( (panel.iconSize + panel.iconMargin) * wrapper.scale * wrapper.appearScale - 2 );
+        ///Dont use Math.floor it adds one pixel in animations and creates glitches
+        property int regulatorSize: (panel.iconSize + panel.iconMargin) * wrapper.scale * wrapper.appearScale - 2;
 
         Behavior on scale {
             NumberAnimation { duration: 80 }
@@ -47,7 +50,7 @@ Component {
             PropertyAction { target: panel; property: "inAnimation"; value: true }
             PropertyAction { target: wrapper; property: "ListView.delayRemove"; value: true }
             ParallelAnimation{
-            //    NumberAnimation { target: wrapper; property: "scale"; to: 0; duration: 350; easing.type: Easing.InOutQuad }
+                //    NumberAnimation { target: wrapper; property: "scale"; to: 0; duration: 350; easing.type: Easing.InOutQuad }
                 NumberAnimation { target: wrapper; property: "opacity"; to: 0; duration: 350; easing.type: Easing.InOutQuad }
             }
             PropertyAction { target: wrapper; property: "ListView.delayRemove"; value: false }
@@ -83,13 +86,18 @@ Component {
 
         hoverEnabled: true
 
+
         ////IMPORTANT: This shouldnt been calculated so many times for every task even those
         ////that arent going to alter their scale, plus could be calculated with differences
         ////instead of every step even 1px to calculate every 3 or 4
+        ////maybe a new algorithm is needed ... one that reduces flickering
         onCurSpotChanged: {
             var distanceFromHovered = Math.abs(index - icList.hoveredIndex);
 
-            if (distanceFromHovered <= 1){
+
+            // A new algorithm tryig to make the zoom calculation only once
+            // and at the same time fixing glitches
+            if ((distanceFromHovered == 0)&&(icList.currentSpot > 0) ){
                 var absCoords = mapToItem(icList, 0, 0);
                 var zone = panel.zoomFactor * 100;
                 var absCenter;
@@ -101,12 +109,63 @@ Component {
 
                 var rDistance = Math.abs(curSpot - absCenter);
 
-                //  if(index===0)
-                //     console.debug(rDistance);
-                var newScale = Math.max(1, panel.zoomFactor - ( (rDistance) / zone));
-                if(Math.abs(newScale-scale) >= 0.03)
-                    scale = newScale;
+                //check if the mouse goes right or down according to the center
+                var positiveDirection =  ((curSpot - absCenter) >= 0 );
+
+
+                //finding the zoom center e.g. for zoom:1.7, calculates 0.35
+                var zoomCenter = (panel.zoomFactor - 1) / 2
+
+                //computes the in the scale e.g. 0...0.35 according to the mouse distance
+                //0.35 on the edge and 0 in the center
+                var firstComputation = (rDistance / center) * zoomCenter;
+
+                //calculates the scaling for the neighbour tasks
+                var bigNeighbourZoom = Math.min(1 + zoomCenter + firstComputation, panel.zoomFactor);
+                var smallNeighbourZoom = Math.max(1 + zoomCenter - firstComputation, 1);
+
+                bigNeighbourZoom = bigNeighbourZoom.toFixed(2);
+                smallNeighbourZoom = smallNeighbourZoom.toFixed(2);
+
+                var leftScale;
+                var rightScale;
+
+                if(positiveDirection === true){
+                    rightScale = bigNeighbourZoom;
+                    leftScale = smallNeighbourZoom;
+                }
+                else {
+                    rightScale = smallNeighbourZoom;
+                    leftScale = bigNeighbourZoom;
+                }
+
+            //    console.debug(leftScale + "  " + rightScale + " " + index);
+
+                if(index < icList.contentItem.children.length - 1){
+                    icList.updateScale(index+1, rightScale);
+                }
+
+                if(index > 0){
+                    icList.updateScale(index-1,leftScale);
+                }
+
+
+                scale = panel.zoomFactor;
+
+                //debugging code
+             /*   if (index >=1 ){
+                    var left = icList.contentItem.children[index-1];
+                    var right = icList.contentItem.children[index+1];
+                    console.debug("LW: "+left.width+" C: "+width+" RW:"+right.width);
+                    console.debug("Total Width: "+(width+left.width+right.width));
+                } */
             }
+
+            if( (distanceFromHovered > 1)||(icList.currentSpot < 0)){
+                scale = 1;
+            }
+
+
         }
 
         onEntered: {
@@ -186,5 +245,15 @@ Component {
             return tasksModel.makeModelIndex(index);
         }
 
+
+        function signalUpdateScale(nIndex, nScale){
+            if( index === nIndex){
+                scale = nScale;
+            }
+        }
+
+        Component.onCompleted: {
+            icList.updateScale.connect(signalUpdateScale);
+        }
     }
 }

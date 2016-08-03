@@ -17,9 +17,9 @@ Item {
     Layout.minimumWidth: implicitWidth
     Layout.minimumHeight: implicitHeight
 
-    property real zoomFactor: 1.7
+    property real zoomFactor: 1.6
     property int iconSize: 64
-    property int iconMargin: 15
+    property int iconMargin: 5
     property bool glow: false
 
     property int clearWidth
@@ -35,6 +35,7 @@ Item {
 
     property Item dragSource: null
     property bool inAnimation: false
+    property bool enableShadows: false
 
     property QtObject contextMenuComponent: Qt.createComponent("ContextMenu.qml");
 
@@ -177,8 +178,10 @@ Item {
         //   property bool blockLoop: false
         opacity: tasksModel.count > 0 ? 1 : 0
 
-        width: ( icList.orientation === Qt.Horizontal ) ? panel.implicitWidth+4 : 18
-        height: ( icList.orientation === Qt.Vertical ) ? panel.implicitHeight+4 : 18
+    //    width: ( icList.orientation === Qt.Horizontal ) ? panel.implicitWidth+4 : 18
+    //    height: ( icList.orientation === Qt.Vertical ) ? panel.implicitHeight+4 : 18
+        width: ( icList.orientation === Qt.Horizontal ) ? icList.width+8 : 18
+        height: ( icList.orientation === Qt.Vertical ) ? icList.height+8 : 18
 
         Behavior on opacity{
             NumberAnimation { duration: 100 }
@@ -218,11 +221,11 @@ Item {
         }
 
         Behavior on width{
-            NumberAnimation { duration: 200 }
+            NumberAnimation { duration: 80 }
         }
 
         Behavior on height{
-            NumberAnimation { duration: 200 }
+            NumberAnimation { duration: 80 }
         }
 
         /*        PlasmaCore.FrameSvgItem{
@@ -241,6 +244,9 @@ Item {
 
         ListView {
             id:icList
+
+            //trigger updating scaling of neighbour delegates of zoomed delegate
+            signal updateScale(int delegateIndex, real newScale)
 
             anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
             anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
@@ -262,8 +268,10 @@ Item {
             property int tempWidthAnimations: (panel.inAnimation === true) ? runningWidth : contentWidth + 1
             property int tempHeightAnimations: (panel.inAnimation === true) ? runningHeight : contentHeight + 1
 
+
             width: (orientation === Qt.Horizontal) ? tempWidthAnimations : 120
             height: (orientation === Qt.Vertical) ? tempHeightAnimations : 120
+
 
             //   width: (orientation === Qt.Horizontal) ? contentWidth + 1  : 120
             //  height: (orientation === Qt.Vertical) ? contentHeight + 1  : 120
@@ -388,7 +396,7 @@ Item {
     }
 
     function updateImplicits(){
-        var zoomedLength = Math.floor( (iconSize+iconMargin) * panel.zoomFactor);
+        var zoomedLength = Math.floor( 2 * (iconSize+iconMargin) * (panel.zoomFactor));
         var bigAxis = (tasksModel.count-1) * (iconSize+iconMargin) + zoomedLength
         var smallAxis = zoomedLength + 1
 

@@ -45,8 +45,14 @@ Item{
     }
 
     Component.onCompleted: {
-        component.createObject(this);
-        component2.createObject(this);
+        if(panel.enableShadows === true){
+            component.createObject(this);
+            component2.createObject(this);
+        }
+        else{
+            componentns.createObject(this);
+            component2ns.createObject(this);
+        }
     }
 
     // Another way for the shadow must be found it increases the cpu cycles x2 alsmost,
@@ -124,7 +130,7 @@ Item{
 
                     active: false
                     enabled: true
-                    usesPlasmaTheme: false
+                    usesPlasmaTheme: true
 
                     source: decoration
 
@@ -195,7 +201,7 @@ Item{
 
                     active: true
                     enabled: true
-                    usesPlasmaTheme: false
+                    usesPlasmaTheme: true
 
                     source: decoration
 
@@ -245,5 +251,123 @@ Item{
 
         }
     }
+
+
+    ////////Components with no shadows//////////////
+    Component {
+        id: componentns
+        Item {
+            id: yourImageWithLoadedIconContainerns
+            anchors.fill: parent
+
+            Item{
+                id:fixedIconns
+                width: 2*panel.iconSize
+                height: width
+
+                visible:false
+
+                PlasmaCore.IconItem {
+                    id: iconImagens
+                    width: parent.width - 16
+                    height: parent.height - 16
+                    anchors.centerIn: parent
+
+                    active: false
+                    enabled: true
+                    usesPlasmaTheme: true
+
+                    source: decoration
+
+                    visible: true
+
+                    // use this when using Image instead of Rectangle
+                    Timer{
+                        id:tttns
+                        repeat:false
+                        interval: 1
+                        onTriggered: {
+                            fixedIconns.grabToImage(function(result) {
+                                simpleIcon.source = result.url;
+                                //    yourImageWithLoadedIconContainer.destroy()
+                            }, Qt.size(fixedIconns.width,fixedIconns.height) );
+                            ttt2ns.start();
+                        }
+                    }
+                    Timer{
+                        id:ttt2ns
+                        repeat:false
+                        interval: 40
+                        onTriggered: {
+                            yourImageWithLoadedIconContainerns.destroy();
+                        }
+                    }
+
+                    Component.onCompleted: {
+                        tttns.start();
+                    }
+                }
+            }
+        }
+    }
+
+    Component {
+        id: component2ns
+        Item {
+            id: yourImageWithLoadedIconContainer2ns
+            anchors.fill: parent
+
+            Item{
+                id:fixedIcon2ns
+                width: 2*panel.iconSize
+                height: width
+
+                visible:false
+
+                PlasmaCore.IconItem {
+                    id: iconImage2ns
+                    width: parent.width -  16
+                    height: parent.height - 16
+
+                    anchors.centerIn: parent
+
+                    active: true
+                    enabled: true
+                    usesPlasmaTheme: true
+
+                    source: decoration
+
+                    visible: true
+
+                    // use this when using Image instead of Rectangle
+                    Timer{
+                        id:ttt11ns
+                        repeat:false
+                        interval: 1
+                        onTriggered: {
+                            fixedIcon2ns.grabToImage(function(result) {
+                                activeIcon.source = result.url;
+                                //    yourImageWithLoadedIconContainer.destroy()
+                            }, Qt.size(fixedIcon2ns.width,fixedIcon2ns.height) );
+                            ttt22ns.start();
+                        }
+                    }
+                    Timer{
+                        id:ttt22ns
+                        repeat:false
+                        interval: 40
+                        onTriggered: {
+                            yourImageWithLoadedIconContainer2ns.destroy();
+                        }
+                    }
+
+                    Component.onCompleted: {
+                        ttt11ns.start();
+                    }
+                }
+            }
+        }
+    }
+
 
 }// Icon Item
