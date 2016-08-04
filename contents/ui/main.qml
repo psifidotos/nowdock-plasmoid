@@ -17,7 +17,7 @@ Item {
     Layout.minimumWidth: implicitWidth
     Layout.minimumHeight: implicitHeight
 
-    property real zoomFactor: 1.6
+    property real zoomFactor: 1.7
     property int iconSize: 64
     property int iconMargin: 5
     property bool glow: false
@@ -35,7 +35,7 @@ Item {
 
     property Item dragSource: null
     property bool inAnimation: false
-    property bool enableShadows: false
+    property bool enableShadows: true
 
     property QtObject contextMenuComponent: Qt.createComponent("ContextMenu.qml");
 
@@ -149,7 +149,7 @@ Item {
     Timer{
         id:checkListHovered
         repeat:false;
-        interval:20;
+        interval:60;
 
         onTriggered: {
             var tasks = icList.contentItem.children;
@@ -173,21 +173,22 @@ Item {
         }
     }
 
-
-
-
     Item{
         id:barLine
         //   property bool blockLoop: false
         opacity: tasksModel.count > 0 ? 1 : 0
 
-        property int spacing: panel.iconSize / 4
+        property int spacing: panel.iconSize / 2
+        property int currentSizeW: (icList.hoveredIndex >= 0) ? panel.implicitWidth : panel.clearWidth + spacing
+        property int currentSizeH: (icList.hoveredIndex >= 0) ? panel.implicitHeight : panel.clearHeight + spacing
 
-        property int currentSize: (icList.hoveredIndex >= 0) ? panel.implicitWidth + spacing : panel.clearWidth + spacing
-        width: ( icList.orientation === Qt.Horizontal ) ? currentSize : 18
-        height: ( icList.orientation === Qt.Vertical ) ? currentSize : 18
-        //    width: ( icList.orientation === Qt.Horizontal ) ? icList.width+8 : 18
-        //   height: ( icList.orientation === Qt.Vertical ) ? icList.height+8 : 18
+        width: ( icList.orientation === Qt.Horizontal ) ? currentSizeW : 18
+        height: ( icList.orientation === Qt.Vertical ) ? currentSizeH : 18
+
+        //debugging code
+        //      width: ( icList.orientation === Qt.Horizontal ) ? icList.width+8 : 18
+        //    height: ( icList.orientation === Qt.Vertical ) ? icList.height+8 : 18
+        //   onWidthChanged: console.log("!!!!! New Width:"+width);
 
 
         BorderImage{
@@ -223,11 +224,11 @@ Item {
         }
 
         Behavior on width{
-            NumberAnimation { duration: 80 }
+            NumberAnimation { duration: 40 }
         }
 
         Behavior on height{
-            NumberAnimation { duration: 80 }
+            NumberAnimation { duration: 40 }
         }
 
         /*        PlasmaCore.FrameSvgItem{
@@ -268,8 +269,8 @@ Item {
             property int runningWidth : (currentSpot  === -1000) ? panel.clearWidth : panel.implicitWidth
             property int runningHeight : (currentSpot === -1000) ? panel.clearHeight : panel.implicitHeight
 
-            property int tempWidthAnimations: (panel.inAnimation === true) ? runningWidth : contentWidth + 1
-            property int tempHeightAnimations: (panel.inAnimation === true) ? runningHeight : contentHeight + 1
+            property int tempWidthAnimations: (panel.inAnimation === true) ? runningWidth : contentWidth + 2
+            property int tempHeightAnimations: (panel.inAnimation === true) ? runningHeight : contentHeight + 2
 
 
             width: (orientation === Qt.Horizontal) ? tempWidthAnimations : 120
@@ -398,13 +399,13 @@ Item {
         }
     }
 
-   // property int ncounter:0
+    //   property int ncounter:0
 
     function updateImplicits(){
         if(icList.previousCount !== icList.count){
             icList.previousCount = icList.count;
 
-            var zoomedLength = Math.floor( 1.5 * (iconSize+iconMargin) * (panel.zoomFactor));
+            var zoomedLength = Math.floor( 1.7 * (iconSize+iconMargin) * (panel.zoomFactor));
             var bigAxis = (tasksModel.count-1) * (iconSize+iconMargin) + zoomedLength
             var smallAxis = zoomedLength + 1
 
@@ -412,9 +413,9 @@ Item {
             var clearSmallAxis = (iconSize+iconMargin);
 
 
-            //debugging code
-         //   ncounter++;
-        //    console.log(ncounter+". - "+tasksModel.count);
+            //  debugging code
+            //     ncounter++;
+            //    console.log("Implicits______ "+ncounter+". - "+tasksModel.count);
 
             if (panel.vertical){
                 panel.implicitWidth = smallAxis;

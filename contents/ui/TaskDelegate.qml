@@ -20,11 +20,12 @@ Component {
         property bool containsMouse : wrapper.containsMouse
         readonly property var m: model
 
-        width: wrapper.width+hiddenSpacerLeft.width+hiddenSpacerRight.width
-        height: wrapper.height
+        width: (icList.orientation === Qt.Horizontal) ? hiddenSpacerLeft.width+wrapper.width+hiddenSpacerRight.width : wrapper.width
+        height: (icList.orientation === Qt.Horizontal) ? wrapper.height : hiddenSpacerLeft.height + wrapper.height + hiddenSpacerRight.height
 
         property QtObject contextMenu: null
 
+        property int animationTime:40
 
         ListView.onRemove: SequentialAnimation {
             PropertyAction { target: panel; property: "inAnimation"; value: true }
@@ -45,14 +46,22 @@ Component {
             // IMPORTANT: hidden spacers must be tested on vertical !!!
             Item{
                 id: hiddenSpacerLeft
-
                 visible: (index === 0)
-                width: (nScale > 0) ? (panel.iconSize+wrapper.iconMargin)*nScale : 0
-                height: wrapper.height
+
+                property real nHiddenSize: (nScale > 0) ? (panel.iconSize+wrapper.iconMargin)*nScale : 0
+
+                //we add one missing pixel from calculations
+                width: (icList.orientation === Qt.Horizontal) ? nHiddenSize : wrapper.width
+                height: (icList.orientation === Qt.Vertical) ? nHiddenSize : wrapper.height
+
 
                 property real nScale: 0
 
-                /*    Rectangle{
+                Behavior on nScale {
+                    NumberAnimation { duration: mainItemContainer.animationTime }
+                }
+
+             /*   Rectangle{
                     width:parent.width
                     height:1
                     y:parent.height / 2
@@ -60,22 +69,12 @@ Component {
                     border.color: "red"
                     color: "transparent"
                 }*/
-
-
-                Behavior on nScale {
-                    NumberAnimation { duration: 80 }
-                }
             }
 
             MouseArea{
                 id: wrapper
-                //  anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
-                // anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
-                //   anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
-                //      anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
 
                 ///Dont use Math.floor it adds one pixel in animations and creates glitches
-
                 property real basicScalingSize : (panel.iconSize+iconMargin)*scale
 
                 width: (icList.orientation === Qt.Vertical ) ? basicScalingSize+addedSpace :
@@ -85,6 +84,7 @@ Component {
 
                 acceptedButtons: Qt.LeftButton | Qt.MidButton | Qt.RightButton
 
+                hoverEnabled: true
                 property int addedSpace: 12
 
                 property int itemIndex: index
@@ -97,13 +97,13 @@ Component {
                 property real appearScale: 1;
 
                 property int curIndex: icList.hoveredIndex
-                property int center: Math.floor(width / 2)
+                property real center: Math.floor(width / 2)
 
                 ///Dont use Math.floor it adds one pixel in animations and creates glitches
-                property int regulatorSize: basicScalingSize * wrapper.appearScale - 2;
+                property real regulatorSize: basicScalingSize * wrapper.appearScale - 2;
 
                 Behavior on scale {
-                    NumberAnimation { duration: 80 }
+                    NumberAnimation { duration: mainItemContainer.animationTime }
                 }
 
                 Flow{
@@ -111,7 +111,7 @@ Component {
                     width: parent.width
                     height: parent.height
 
-                    flow: Flow.LeftToRight
+                    flow: (panel.position === PlasmaCore.Types.BottomPositioned) ? Flow.TopToBottom : Flow.LeftToRight
                     layoutDirection: (panel.position === PlasmaCore.Types.LeftPositioned) ? Qt.RightToLeft : Qt.LeftToRight
 
                     TaskIconItem{}
@@ -125,7 +125,7 @@ Component {
                     width: parent.width
                     height: parent.height
 
-                    flow: Flow.LeftToRight
+                    flow: Flow.TopToBottom
                     layoutDirection: (panel.position === PlasmaCore.Types.LeftPositioned) ? Qt.RightToLeft : Qt.LeftToRight
 
                     TaskGroupItem{}
@@ -133,16 +133,9 @@ Component {
                     TaskIconItem{}
                 } //Flow Element
 
-                hoverEnabled: true
 
-
-                ////IMPORTANT: This shouldnt been calculated so many times for every task even those
-                ////that arent going to alter their scale, plus could be calculated with differences
-                ////instead of every step even 1px to calculate every 3 or 4
-                ////maybe a new algorithm is needed ... one that reduces flickering
                 function calculateScales( currentMousePosition ){
                     var distanceFromHovered = Math.abs(index - icList.hoveredIndex);
-
 
                     // A new algorithm tryig to make the zoom calculation only once
                     // and at the same time fixing glitches
@@ -182,6 +175,7 @@ Component {
 
                         //    console.debug(leftScale + "  " + rightScale + " " + index);
 
+
                         //activate messages to update the the neighbour scales
                         if(index < icList.contentItem.children.length - 1){
                             icList.updateScale(index+1, rightScale);
@@ -191,17 +185,20 @@ Component {
                             icList.updateScale(index-1,leftScale);
                         }
 
+                        //Left hiddenSpacer
 
-                        //testing shadowboxes
-                        if(index === 0 ){
-                            hiddenSpacerLeft.nScale = leftScale-1;
+
+                        if((index === 0 )&&(icList.count > 1)){
+                            hiddenSpacerLeft.nScale = leftScale - 1;
                         }
 
-                        if(index === icList.count - 1 ){
-                            hiddenSpacerRight.nScale = rightScale-1;
+                        //Right hiddenSpacer
+                        if((index === icList.count - 1 )&&(icList.count>1)){
+                            hiddenSpacerRight.nScale =  rightScale - 1;
                         }
 
                         scale = panel.zoomFactor;
+
 
                         //debugging code
                         /*    if (index === 1 ){
@@ -324,27 +321,28 @@ Component {
             // a hidden spacer on the right for the last item to add stability
             Item{
                 id: hiddenSpacerRight
-
-
                 visible: (index === icList.count - 1)
-                width: nScale > 0 ? (panel.iconSize+wrapper.iconMargin)*nScale : 0
-                height: wrapper.height
+
+                property real nHiddenSize: (nScale > 0) ? (panel.iconSize+wrapper.iconMargin)*nScale : 0
+
+                //we add one missing pixel from calculations
+                width: (icList.orientation === Qt.Horizontal) ? nHiddenSize : wrapper.width
+                height: (icList.orientation === Qt.Vertical) ? nHiddenSize : wrapper.height
 
                 property real nScale: 0
 
-                /*  Rectangle{
-                    width:parent.width
-                    height:1
-                    y:parent.height / 2
-                    border.width: 1
-                    border.color: "red"
-                    color: "transparent"
-                }*/
-
-
                 Behavior on nScale {
-                    NumberAnimation { duration: 80 }
+                    NumberAnimation { duration: mainItemContainer.animationTime }
                 }
+
+                /*     Rectangle{
+                         width:parent.width
+                         height:1
+                         y:parent.height / 2
+                         border.width: 1
+                         border.color: "red"
+                         color: "transparent"
+                     }*/
             }
 
         }// Flow with hidden spacers inside

@@ -12,6 +12,9 @@ Item{
     height: wrapper.regulatorSize
     property int doubleSize : 2 * panel.iconSize;
 
+    property int shadowInterval: 100
+    property int normalIconInterval: 40
+
     Image {
         id: iconImageBuffer
 
@@ -140,7 +143,7 @@ Item{
                     Timer{
                         id:ttt
                         repeat:false
-                        interval: 1
+                        interval: centralItem.shadowInterval
                         onTriggered: {
                             shadowImageNoActive.grabToImage(function(result) {
                                 simpleIcon.source = result.url;
@@ -152,7 +155,7 @@ Item{
                     Timer{
                         id:ttt2
                         repeat:false
-                        interval: 40
+                        interval: centralItem.shadowInterval
                         onTriggered: {
                             yourImageWithLoadedIconContainer.destroy();
                         }
@@ -211,7 +214,7 @@ Item{
                     Timer{
                         id:ttt11
                         repeat:false
-                        interval: 1
+                        interval: centralItem.shadowInterval
                         onTriggered: {
                             shadowImageNoActive2.grabToImage(function(result) {
                                 activeIcon.source = result.url;
@@ -223,7 +226,7 @@ Item{
                     Timer{
                         id:ttt22
                         repeat:false
-                        interval: 40
+                        interval: centralItem.shadowInterval
                         onTriggered: {
                             yourImageWithLoadedIconContainer2.destroy();
                         }
@@ -285,7 +288,7 @@ Item{
                     Timer{
                         id:tttns
                         repeat:false
-                        interval: 1
+                        interval: centralItem.normalIconInterval
                         onTriggered: {
                             fixedIconns.grabToImage(function(result) {
                                 simpleIcon.source = result.url;
@@ -297,7 +300,7 @@ Item{
                     Timer{
                         id:ttt2ns
                         repeat:false
-                        interval: 40
+                        interval: centralItem.normalIconInterval
                         onTriggered: {
                             yourImageWithLoadedIconContainerns.destroy();
                         }
@@ -343,7 +346,7 @@ Item{
                     Timer{
                         id:ttt11ns
                         repeat:false
-                        interval: 1
+                        interval: centralItem.normalIconInterval
                         onTriggered: {
                             fixedIcon2ns.grabToImage(function(result) {
                                 activeIcon.source = result.url;
@@ -355,7 +358,7 @@ Item{
                     Timer{
                         id:ttt22ns
                         repeat:false
-                        interval: 40
+                        interval: centralItem.normalIconInterval
                         onTriggered: {
                             yourImageWithLoadedIconContainer2ns.destroy();
                         }
