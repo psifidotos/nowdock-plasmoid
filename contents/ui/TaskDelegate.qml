@@ -8,7 +8,6 @@ import org.kde.plasma.components 2.0 as PlasmaComponents
 Component {
     id: iconDelegate
     Item{
-
         id: mainItemContainer
 
         anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
@@ -25,7 +24,7 @@ Component {
 
         property QtObject contextMenu: null
 
-        property int animationTime:40
+        property int animationTime: 60
 
         ListView.onRemove: SequentialAnimation {
             PropertyAction { target: panel; property: "inAnimation"; value: true }
@@ -243,7 +242,12 @@ Component {
 
                 // IMPORTANT: This must be improved ! even for small miliseconds  it reduces performance
                 onExited: {
-                    checkListHovered.start();
+                    if(mainItemContainer.contextMenu && mainItemContainer.contextMenu.status == PlasmaComponents.DialogStatus.Open){
+                        ///dont check to restore zooms
+                    }
+                    else{
+                        checkListHovered.start();
+                    }
                 }
 
                 onPositionChanged: {

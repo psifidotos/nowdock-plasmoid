@@ -43,6 +43,7 @@ PlasmaComponents.ContextMenu {
         if (visualParent && visualParent.m.LauncherUrlWithoutIcon != null && status == PlasmaComponents.DialogStatus.Open) {
             launcherToggleAction.checked = (tasksModel.launcherPosition(visualParent.m.LauncherUrlWithoutIcon) != -1);
         } else if (status == PlasmaComponents.DialogStatus.Closed) {
+            checkListHovered.start();
             menu.destroy();
         }
     }
