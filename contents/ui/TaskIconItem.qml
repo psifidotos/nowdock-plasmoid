@@ -5,6 +5,8 @@ import QtGraphicalEffects 1.0
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
 
+import org.kde.kquickcontrolsaddons 2.0 as KQuickControlAddons
+
 Item{
     id: centralItem
 
@@ -12,8 +14,43 @@ Item{
     height: wrapper.regulatorSize
     property int doubleSize : 2 * panel.iconSize;
 
-    property int shadowInterval: 100
+    property int shadowInterval: 40
     property int normalIconInterval: 40
+
+
+    function updateImages(){
+        if(panel.enableShadows === true){
+            if(activeWithShadow.item)
+                activeWithShadow.item.updateImage();
+
+            if(defaultWithShadow.item)
+                defaultWithShadow.item.updateImage();
+        }
+        else{
+            if(activeNoShadow.item)
+                activeNoShadow.item.updateImage();
+
+            if(defaultNoShadow.item)
+                defaultNoShadow.item.updateImage();
+        }
+    }
+
+    /* PlasmaCore.IconItem {
+        id: iconImage
+        property int newTempSize: panel.iconSize * wrapper.scale * wrapper.appearScale
+        width: newTempSize
+        height: newTempSize
+
+        anchors.centerIn: parent
+
+        active: wrapper.containsMouse
+        enabled: true
+        usesPlasmaTheme: false
+
+        source: decoration
+
+        visible: true
+    } */
 
     Image {
         id: iconImageBuffer
@@ -32,9 +69,17 @@ Item{
         }
 
         Behavior on opacity {
-            NumberAnimation { duration: 200 }
+            NumberAnimation { duration: 80 }
         }
 
+     /*   Rectangle{
+            anchors.fill: parent
+            border.width: 1
+            border.color: "red"
+            color: "transparent"
+
+            visible: IsStartup ? true : false
+        }*/
     }
 
     Image{
@@ -47,15 +92,28 @@ Item{
         visible:false
     }
 
-    Component.onCompleted: {
-        if(panel.enableShadows === true){
-            component.createObject(this);
-            component2.createObject(this);
-        }
-        else{
-            componentns.createObject(this);
-            component2ns.createObject(this);
-        }
+    Loader{
+        id:activeWithShadow
+        active: panel.enableShadows
+        sourceComponent: component
+    }
+
+    Loader{
+        id:defaultWithShadow
+        active: panel.enableShadows
+        sourceComponent: component2
+    }
+
+    Loader{
+        id:activeNoShadow
+        active: panel.enableShadows === false
+        sourceComponent: componentns
+    }
+
+    Loader{
+        id:defaultNoShadow
+        active: panel.enableShadows === false
+        sourceComponent: component2ns
     }
 
     // Another way for the shadow must be found it increases the cpu cycles x2 alsmost,
@@ -79,6 +137,7 @@ Item{
         source: decoration
 
     }*/
+
     /* Image{
         id:iconImage
         width: 64
@@ -118,6 +177,10 @@ Item{
             id: yourImageWithLoadedIconContainer
             anchors.fill: parent
 
+            function updateImage(){
+                ttt.restart();
+            }
+
             Item{
                 id:fixedIcon
                 width: 2*panel.iconSize
@@ -125,19 +188,18 @@ Item{
 
                 visible:false
 
-                PlasmaCore.IconItem {
+                KQuickControlAddons.QIconItem{
                     id: iconImage
                     width: parent.width - 16
                     height: parent.height - 16
                     anchors.centerIn: parent
 
-                    active: false
-                    enabled: true
-                    usesPlasmaTheme: true
-
-                    source: decoration
+                    state: KQuickControlAddons.QIconItem.DefaultState
+                    icon: decoration
 
                     visible: true
+
+                    onIconChanged: centralItem.updateImages();
 
                     // use this when using Image instead of Rectangle
                     Timer{
@@ -147,25 +209,16 @@ Item{
                         onTriggered: {
                             shadowImageNoActive.grabToImage(function(result) {
                                 simpleIcon.source = result.url;
-                                //    yourImageWithLoadedIconContainer.destroy()
                             }, Qt.size(fixedIcon.width,fixedIcon.height) );
-                            ttt2.start();
-                        }
-                    }
-                    Timer{
-                        id:ttt2
-                        repeat:false
-                        interval: centralItem.shadowInterval
-                        onTriggered: {
-                            yourImageWithLoadedIconContainer.destroy();
                         }
                     }
 
                     Component.onCompleted: {
-                        ttt.start();
+                        ttt.restart();
                     }
                 }
             }
+
             DropShadow {
                 id:shadowImageNoActive
                 visible:false
@@ -174,9 +227,9 @@ Item{
                 anchors.centerIn: fixedIcon
 
 
-                radius: 8.0
-                samples: 14
-                color: "#ff080808"
+                radius: 6
+                samples: 8
+                color: "#cc080808"
                 source: fixedIcon
             }
         }
@@ -187,6 +240,9 @@ Item{
         Item {
             id: yourImageWithLoadedIconContainer2
             anchors.fill: parent
+            function updateImage(){
+                ttt11.restart();
+            }
 
             Item{
                 id:fixedIcon2
@@ -195,18 +251,14 @@ Item{
 
                 visible:false
 
-                PlasmaCore.IconItem {
+                KQuickControlAddons.QIconItem{
                     id: iconImage2
-                    width: parent.width -  16
+                    width: parent.width - 16
                     height: parent.height - 16
-
                     anchors.centerIn: parent
 
-                    active: true
-                    enabled: true
-                    usesPlasmaTheme: true
-
-                    source: decoration
+                    state: KQuickControlAddons.QIconItem.ActiveState
+                    icon: decoration
 
                     visible: true
 
@@ -218,22 +270,12 @@ Item{
                         onTriggered: {
                             shadowImageNoActive2.grabToImage(function(result) {
                                 activeIcon.source = result.url;
-                                //    yourImageWithLoadedIconContainer.destroy()
                             }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
-                            ttt22.start();
-                        }
-                    }
-                    Timer{
-                        id:ttt22
-                        repeat:false
-                        interval: centralItem.shadowInterval
-                        onTriggered: {
-                            yourImageWithLoadedIconContainer2.destroy();
                         }
                     }
 
                     Component.onCompleted: {
-                        ttt11.start();
+                        ttt11.restart();
                     }
                 }
             }
@@ -246,9 +288,9 @@ Item{
                 anchors.centerIn: fixedIcon2
 
 
-                radius: 8
-                samples: 14
-                color: "#ff080808"
+                radius: 6
+                samples: 8
+                color: "#cc080808"
                 source: fixedIcon2
             }
 
@@ -263,6 +305,10 @@ Item{
             id: yourImageWithLoadedIconContainerns
             anchors.fill: parent
 
+            function updateImage(){
+                tttns.restart();
+            }
+
             Item{
                 id:fixedIconns
                 width: 2*panel.iconSize
@@ -270,19 +316,18 @@ Item{
 
                 visible:false
 
-                PlasmaCore.IconItem {
+                KQuickControlAddons.QIconItem{
                     id: iconImagens
                     width: parent.width - 16
                     height: parent.height - 16
                     anchors.centerIn: parent
 
-                    active: false
-                    enabled: true
-                    usesPlasmaTheme: true
-
-                    source: decoration
+                    state: KQuickControlAddons.QIconItem.DefaultState
+                    icon: decoration
 
                     visible: true
+
+                    onIconChanged: centralItem.updateImages();
 
                     // use this when using Image instead of Rectangle
                     Timer{
@@ -292,17 +337,7 @@ Item{
                         onTriggered: {
                             fixedIconns.grabToImage(function(result) {
                                 simpleIcon.source = result.url;
-                                //    yourImageWithLoadedIconContainer.destroy()
                             }, Qt.size(fixedIconns.width,fixedIconns.height) );
-                            ttt2ns.start();
-                        }
-                    }
-                    Timer{
-                        id:ttt2ns
-                        repeat:false
-                        interval: centralItem.normalIconInterval
-                        onTriggered: {
-                            yourImageWithLoadedIconContainerns.destroy();
                         }
                     }
 
@@ -320,6 +355,10 @@ Item{
             id: yourImageWithLoadedIconContainer2ns
             anchors.fill: parent
 
+            function updateImage(){
+                ttt11ns.restart();
+            }
+
             Item{
                 id:fixedIcon2ns
                 width: 2*panel.iconSize
@@ -327,18 +366,14 @@ Item{
 
                 visible:false
 
-                PlasmaCore.IconItem {
+                KQuickControlAddons.QIconItem{
                     id: iconImage2ns
-                    width: parent.width -  16
+                    width: parent.width - 16
                     height: parent.height - 16
-
                     anchors.centerIn: parent
 
-                    active: true
-                    enabled: true
-                    usesPlasmaTheme: true
-
-                    source: decoration
+                    state: KQuickControlAddons.QIconItem.ActiveState
+                    icon: decoration
 
                     visible: true
 
@@ -350,17 +385,7 @@ Item{
                         onTriggered: {
                             fixedIcon2ns.grabToImage(function(result) {
                                 activeIcon.source = result.url;
-                                //    yourImageWithLoadedIconContainer.destroy()
                             }, Qt.size(fixedIcon2ns.width,fixedIcon2ns.height) );
-                            ttt22ns.start();
-                        }
-                    }
-                    Timer{
-                        id:ttt22ns
-                        repeat:false
-                        interval: centralItem.normalIconInterval
-                        onTriggered: {
-                            yourImageWithLoadedIconContainer2ns.destroy();
                         }
                     }
 

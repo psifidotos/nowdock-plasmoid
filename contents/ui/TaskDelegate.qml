@@ -10,11 +10,12 @@ Component {
     Item{
         id: mainItemContainer
 
+     //   visible: (IsWindow || IsLauncher) ? true : false
+
         anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
         anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
         anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
         anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
-
 
         property bool containsMouse : wrapper.containsMouse
         readonly property var m: model
@@ -28,12 +29,12 @@ Component {
 
         ListView.onRemove: SequentialAnimation {
             PropertyAction { target: panel; property: "inAnimation"; value: true }
-            PropertyAction { target: mainItemContainer; property: "ListView.delayRemove"; value: true }
+     /*       PropertyAction { target: mainItemContainer; property: "ListView.delayRemove"; value: true }
             ParallelAnimation{
                 //    NumberAnimation { target: wrapper; property: "scale"; to: 0; duration: 350; easing.type: Easing.InOutQuad }
                 NumberAnimation { target: wrapper; property: "opacity"; to: 0; duration: 350; easing.type: Easing.InOutQuad }
             }
-            PropertyAction { target: mainItemContainer; property: "ListView.delayRemove"; value: false }
+            PropertyAction { target: mainItemContainer; property: "ListView.delayRemove"; value: false }*/
             PropertyAction { target: panel; property: "inAnimation"; value: false }
         }
 
@@ -301,6 +302,7 @@ Component {
                                 }
                             }
                         }
+                        icList.hoveredIndex = -1;
                     }
 
                     pressed = false;

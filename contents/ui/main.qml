@@ -79,12 +79,13 @@ Item {
         screen: plasmoid.screen
         activity: activityInfo.currentActivity
 
-        filterByActivity: true
+        filterByVirtualDesktop: plasmoid.configuration.showOnlyCurrentDesktop
+        filterByScreen: plasmoid.configuration.showOnlyCurrentScreen
+        filterByActivity: plasmoid.configuration.showOnlyCurrentActivity
 
         launchInPlace: true
+        separateLaunchers: false
 
-        separateLaunchers: true
-        // groupMode: TaskManager.TasksModel.GroupApplication
         groupMode: TaskManager.TasksModel.GroupApplications
         groupInline: false
 
