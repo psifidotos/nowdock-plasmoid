@@ -143,9 +143,9 @@ Item {
     }
 
 
-    IconsModel{
+  /*  IconsModel{
         id: iconsmdl
-    }
+    }*/
 
     //Timer to check if the mouse is still inside the ListView
     Timer{
@@ -302,13 +302,13 @@ Item {
                 PropertyAction { target: panel; property: "inAnimation"; value: false }
             }
 
-            displaced: Transition {
+       /*     displaced: Transition {
                 NumberAnimation { properties: "x,y"; duration: 350 }
                 //when the element because of displacement goest outside the listView and
                 //return the opacity must be fixed
                 NumberAnimation { property: "opacity"; to:1; duration: 200 }
             }
-
+*/
             //helps to calculate property the size of the panel on the first run...
             populate: Transition {
                 PropertyAction { target: panel; property: "inAnimation"; value: true }

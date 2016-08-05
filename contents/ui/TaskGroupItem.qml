@@ -24,12 +24,26 @@ Item{
                 height: width
 
                 visible: ( !IsLauncher ) ? true: false
+
+                onVisibleChanged: {
+                    if((model.AppId === "writer") &&(model.AppName ==="LibreOffice Writer")){
+                   //     console.log("Ok I am in !!!");
+                   //    panel.forceIconsUpdate = true;
+                    }
+                }
             }
             GlowPoint{
                 width: glowFrame.size
                 height: width
 
                 visible: (IsGroupParent) ? true: false
+
+                onVisibleChanged: {
+                    if((model.AppId === "writer") &&(model.AppName ==="LibreOffice Writer")){
+                     //   console.log("Ok I am in !!!");
+                     //   panel.forceIconsUpdate = true;
+                    }
+                }
             }
         }
     }

@@ -10,8 +10,6 @@ Component {
     Item{
         id: mainItemContainer
 
-     //   visible: (IsWindow || IsLauncher) ? true : false
-
         anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
         anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
         anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
@@ -29,12 +27,12 @@ Component {
 
         ListView.onRemove: SequentialAnimation {
             PropertyAction { target: panel; property: "inAnimation"; value: true }
-     /*       PropertyAction { target: mainItemContainer; property: "ListView.delayRemove"; value: true }
+            PropertyAction { target: mainItemContainer; property: "ListView.delayRemove"; value: true }
             ParallelAnimation{
                 //    NumberAnimation { target: wrapper; property: "scale"; to: 0; duration: 350; easing.type: Easing.InOutQuad }
                 NumberAnimation { target: wrapper; property: "opacity"; to: 0; duration: 350; easing.type: Easing.InOutQuad }
             }
-            PropertyAction { target: mainItemContainer; property: "ListView.delayRemove"; value: false }*/
+            PropertyAction { target: mainItemContainer; property: "ListView.delayRemove"; value: false }
             PropertyAction { target: panel; property: "inAnimation"; value: false }
         }
 
@@ -61,7 +59,7 @@ Component {
                     NumberAnimation { duration: mainItemContainer.animationTime }
                 }
 
-             /*   Rectangle{
+                /*   Rectangle{
                     width:parent.width
                     height:1
                     y:parent.height / 2
@@ -321,6 +319,7 @@ Component {
 
                 Component.onCompleted: {
                     icList.updateScale.connect(signalUpdateScale);
+              //      console.log(AppId+ " "+AppName);
                 }
             }// MouseArea
 

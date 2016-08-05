@@ -14,73 +14,84 @@ Item{
     height: wrapper.regulatorSize
     property int doubleSize : 2 * panel.iconSize;
 
-    property int shadowInterval: 40
+    //big interval to show shadows only after all the crappy adds and removes of tasks
+    //have happened
+    property int shadowInterval: 100
+
     property int normalIconInterval: 40
 
-
     function updateImages(){
-        if(panel.enableShadows === true){
-            if(activeWithShadow.item)
-                activeWithShadow.item.updateImage();
+        if(panel.inAnimation === false){
+            if(activeLoader.item)
+                activeLoader.item.updateImage();
 
-            if(defaultWithShadow.item)
-                defaultWithShadow.item.updateImage();
-        }
-        else{
-            if(activeNoShadow.item)
-                activeNoShadow.item.updateImage();
-
-            if(defaultNoShadow.item)
-                defaultNoShadow.item.updateImage();
+            if(panel.enableShadows === true){
+                if(defaultWithShadow.item){
+                    defaultWithShadow.item.updateImage();
+                }
+            }
+            else{
+                if(defaultNoShadow.item)
+                    defaultNoShadow.item.updateImage();
+            }
         }
     }
 
-    /* PlasmaCore.IconItem {
-        id: iconImage
-        property int newTempSize: panel.iconSize * wrapper.scale * wrapper.appearScale
-        width: newTempSize
-        height: newTempSize
+    //Something to show until the buffers are updated
+    KQuickControlAddons.QIconItem{
+        id: iconImageBackground
 
+        property real relatedSize: panel.iconSize *  ( (2*panel.iconSize - 16) / (2*panel.iconSize) );
+
+        width: relatedSize * wrapper.scale * wrapper.appearScale
+        height: width
         anchors.centerIn: parent
 
-        active: wrapper.containsMouse
-        enabled: true
-        usesPlasmaTheme: false
+        state: KQuickControlAddons.QIconItem.DefaultState
+        icon: decoration
 
-        source: decoration
-
-        visible: true
-    } */
+        Timer{
+            id:hideBackgroundTimer
+            repeat:false
+            interval: centralItem.shadowInterval
+            onTriggered: {
+                iconImageBackground.visible = false;
+              //  iconImageBuffer.visible = false;
+            }
+        }
+    }
 
     Image {
         id: iconImageBuffer
 
-        property int newTempSize: Math.floor(panel.iconSize * wrapper.scale * wrapper.appearScale)
+        property real newTempSize: panel.iconSize * wrapper.scale * wrapper.appearScale
         width: newTempSize
         height: newTempSize
 
         anchors.centerIn: parent
 
-        source: (wrapper.containsMouse === true)  ? activeIcon.source : simpleIcon.source
-        opacity: 0
+        source: simpleIcon.source
 
-        onSourceChanged: {
-            opacity = 1;
+        visible: true
+
+        // opacity: (wrapper.containsMouse === false) ? 1 : 0.4
+
+        //    Behavior on opacity {
+        //     NumberAnimation { duration: 100 }
+        //   }
+
+        Image{
+            anchors.fill: iconImageBuffer
+            source: activeIcon.source
+
+            opacity: wrapper.containsMouse ? 1 : 0
+
+            Behavior on opacity {
+                NumberAnimation { duration: 200 }
+            }
         }
-
-        Behavior on opacity {
-            NumberAnimation { duration: 80 }
-        }
-
-     /*   Rectangle{
-            anchors.fill: parent
-            border.width: 1
-            border.color: "red"
-            color: "transparent"
-
-            visible: IsStartup ? true : false
-        }*/
     }
+
 
     Image{
         id:activeIcon
@@ -93,28 +104,32 @@ Item{
     }
 
     Loader{
-        id:activeWithShadow
-        active: panel.enableShadows
+        id:defaultWithShadow
+        active: panel.enableShadows === true
         sourceComponent: component
     }
 
-    Loader{
-        id:defaultWithShadow
-        active: panel.enableShadows
-        sourceComponent: component2
-    }
 
+    //active state does not need shadow
+    //the shadow from defaultWithShadow is used if needed
     Loader{
-        id:activeNoShadow
-        active: panel.enableShadows === false
-        sourceComponent: componentns
+        id:activeLoader
+        sourceComponent: component2
     }
 
     Loader{
         id:defaultNoShadow
         active: panel.enableShadows === false
-        sourceComponent: component2ns
+        sourceComponent: componentns
     }
+
+
+    /* Loader{
+        id:activeNoShadow
+        active: panel.enableShadows === false
+        sourceComponent: componentns
+    }*/
+
 
     // Another way for the shadow must be found it increases the cpu cycles x2 alsmost,
     // even with the following caching mechanism.
@@ -199,17 +214,31 @@ Item{
 
                     visible: true
 
-                    onIconChanged: centralItem.updateImages();
+                    // too many draws must be disabled, instead
+                    // we can blacklist the application which creates
+                    // drawing errors (libreoffice writer)
+                    ///onIconChanged: centralItem.updateImages();
 
                     // use this when using Image instead of Rectangle
+
                     Timer{
                         id:ttt
                         repeat:false
                         interval: centralItem.shadowInterval
+
+                     //   property int counter: 0;
+
                         onTriggered: {
-                            shadowImageNoActive.grabToImage(function(result) {
-                                simpleIcon.source = result.url;
-                            }, Qt.size(fixedIcon.width,fixedIcon.height) );
+                            if(index !== -1){
+                                shadowImageNoActive.grabToImage(function(result) {
+                                    simpleIcon.source = result.url;
+                                }, Qt.size(fixedIcon.width,fixedIcon.height) );
+
+                          //      counter = counter + 1;
+                             //   console.log("_______ Pos:" +index+" Count:" + counter);
+
+                                hideBackgroundTimer.restart();
+                            }
                         }
                     }
 
@@ -226,9 +255,8 @@ Item{
                 height: fixedIcon.height
                 anchors.centerIn: fixedIcon
 
-
-                radius: 6
-                samples: 8
+                radius: 4
+                samples: 7
                 color: "#cc080808"
                 source: fixedIcon
             }
@@ -268,30 +296,18 @@ Item{
                         repeat:false
                         interval: centralItem.shadowInterval
                         onTriggered: {
-                            shadowImageNoActive2.grabToImage(function(result) {
-                                activeIcon.source = result.url;
-                            }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
+                            if(index !== -1){
+                                fixedIcon2.grabToImage(function(result) {
+                                    activeIcon.source = result.url;
+                                }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
+                            }
                         }
                     }
 
-                    Component.onCompleted: {
-                        ttt11.restart();
-                    }
+                    //                Component.onCompleted: {
+                    //             ttt11.restart();
+                    //         }
                 }
-            }
-
-            DropShadow {
-                id:shadowImageNoActive2
-                visible:false
-                width: fixedIcon2.width
-                height: fixedIcon2.height
-                anchors.centerIn: fixedIcon2
-
-
-                radius: 6
-                samples: 8
-                color: "#cc080808"
-                source: fixedIcon2
             }
 
         }
@@ -327,6 +343,7 @@ Item{
 
                     visible: true
 
+
                     onIconChanged: centralItem.updateImages();
 
                     // use this when using Image instead of Rectangle
@@ -335,9 +352,11 @@ Item{
                         repeat:false
                         interval: centralItem.normalIconInterval
                         onTriggered: {
-                            fixedIconns.grabToImage(function(result) {
-                                simpleIcon.source = result.url;
-                            }, Qt.size(fixedIconns.width,fixedIconns.height) );
+                            if(index !== -1){
+                                fixedIconns.grabToImage(function(result) {
+                                    simpleIcon.source = result.url;
+                                }, Qt.size(fixedIconns.width,fixedIconns.height) );
+                            }
                         }
                     }
 
@@ -348,54 +367,5 @@ Item{
             }
         }
     }
-
-    Component {
-        id: component2ns
-        Item {
-            id: yourImageWithLoadedIconContainer2ns
-            anchors.fill: parent
-
-            function updateImage(){
-                ttt11ns.restart();
-            }
-
-            Item{
-                id:fixedIcon2ns
-                width: 2*panel.iconSize
-                height: width
-
-                visible:false
-
-                KQuickControlAddons.QIconItem{
-                    id: iconImage2ns
-                    width: parent.width - 16
-                    height: parent.height - 16
-                    anchors.centerIn: parent
-
-                    state: KQuickControlAddons.QIconItem.ActiveState
-                    icon: decoration
-
-                    visible: true
-
-                    // use this when using Image instead of Rectangle
-                    Timer{
-                        id:ttt11ns
-                        repeat:false
-                        interval: centralItem.normalIconInterval
-                        onTriggered: {
-                            fixedIcon2ns.grabToImage(function(result) {
-                                activeIcon.source = result.url;
-                            }, Qt.size(fixedIcon2ns.width,fixedIcon2ns.height) );
-                        }
-                    }
-
-                    Component.onCompleted: {
-                        ttt11ns.start();
-                    }
-                }
-            }
-        }
-    }
-
 
 }// Icon Item
