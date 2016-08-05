@@ -85,6 +85,7 @@ Item {
 
         separateLaunchers: true
         // groupMode: TaskManager.TasksModel.GroupApplication
+        groupMode: TaskManager.TasksModel.GroupApplications
         groupInline: false
 
 
