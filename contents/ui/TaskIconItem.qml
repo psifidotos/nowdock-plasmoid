@@ -16,12 +16,12 @@ Item{
 
     //big interval to show shadows only after all the crappy adds and removes of tasks
     //have happened
-    property int shadowInterval: 100
+    property int shadowInterval: 2000
 
     property int normalIconInterval: 40
 
     function updateImages(){
-        if(panel.inAnimation === false){
+        if(panel){
             if(activeLoader.item)
                 activeLoader.item.updateImage();
 
@@ -56,7 +56,7 @@ Item{
             interval: centralItem.shadowInterval
             onTriggered: {
                 iconImageBackground.visible = false;
-              //  iconImageBuffer.visible = false;
+                //  iconImageBuffer.visible = false;
             }
         }
     }
@@ -130,6 +130,9 @@ Item{
         sourceComponent: componentns
     }*/
 
+    Component.onCompleted:{
+     //   panel.updateAllIcons.connect(updateImages);
+    }
 
     // Another way for the shadow must be found it increases the cpu cycles x2 alsmost,
     // even with the following caching mechanism.
@@ -217,7 +220,20 @@ Item{
                     // too many draws must be disabled, instead
                     // we can blacklist the application which creates
                     // drawing errors (libreoffice writer)
-                    ///onIconChanged: centralItem.updateImages();
+               //     property int counter:0;
+                    onIconChanged: {
+                        if((wrapper.oldAppId !== "") && (AppId !== wrapper.oldAppId)){
+                       //     counter++;
+                       //     console.log("FUCKKKKK "+index+":"+counter+" :"+ AppId+ " - "+ wrapper.oldAppId+" ,"+LauncherUrlWithoutIcon);
+                            //centralItem.updateImages();
+
+                           panelGeometryTimer.start();
+                        //    panel.updateAllIcons();
+                           // wrapper.oldAppId = AppId;
+                        }
+
+                        //   centralItem.updateImages();
+                    }
 
                     // use this when using Image instead of Rectangle
 
@@ -226,7 +242,7 @@ Item{
                         repeat:false
                         interval: centralItem.shadowInterval
 
-                     //   property int counter: 0;
+                     //   property int counter2: 0;
 
                         onTriggered: {
                             if(index !== -1){
@@ -234,8 +250,8 @@ Item{
                                     simpleIcon.source = result.url;
                                 }, Qt.size(fixedIcon.width,fixedIcon.height) );
 
-                          //      counter = counter + 1;
-                             //   console.log("_______ Pos:" +index+" Count:" + counter);
+                         //       counter2 = counter2 + 1;
+                         //       console.log("_______ Pos:" +index+" Count:" + counter2);
 
                                 hideBackgroundTimer.restart();
                             }

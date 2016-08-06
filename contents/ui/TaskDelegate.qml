@@ -317,9 +317,12 @@ Component {
                     }
                 }
 
+                property string oldAppId: ""
+
                 Component.onCompleted: {
                     icList.updateScale.connect(signalUpdateScale);
-              //      console.log(AppId+ " "+AppName);
+               //     console.log(AppId+ " ,"+AppName+" ,"+LauncherUrlWithoutIcon);
+                    oldAppId = AppId;
                 }
             }// MouseArea
 
