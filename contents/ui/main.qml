@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import QtQuick.Layouts 1.1
 import QtGraphicalEffects 1.0
 
@@ -26,7 +26,11 @@ Item {
     property int clearHeight
     property int delegateTransformOrigin
 
-    property int position
+    property int position : PlasmaCore.Types.BottomPositioned
+
+    onPositionChanged: {
+        console.log (position);
+    }
 
     Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
     Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground
@@ -96,7 +100,8 @@ Item {
         }
 
         onActivityChanged: {
-            panelGeometryTimer.start();
+      //      updateImplicits();
+            //panelGeometryTimer.start();
         }
 
         onLauncherListChanged: {
@@ -118,7 +123,7 @@ Item {
             groupingAppIdBlacklist = plasmoid.configuration.groupingAppIdBlacklist;
             groupingLauncherUrlBlacklist = plasmoid.configuration.groupingLauncherUrlBlacklist;
 
-            icList.model = tasksModel;
+            tasksListRepeater.model = tasksModel;
         }
     }
 
@@ -154,7 +159,7 @@ Item {
         interval:60;
 
         onTriggered: {
-            var tasks = icList.contentItem.children;
+            var tasks = icList.children;
             var lostMouse = true;
 
             //      console.debug("---------");
@@ -181,11 +186,12 @@ Item {
         opacity: tasksModel.count > 0 ? 1 : 0
 
         property int spacing: panel.iconSize / 2
-        property int currentSizeW: (icList.hoveredIndex >= 0) ? panel.implicitWidth : panel.clearWidth + spacing
-        property int currentSizeH: (icList.hoveredIndex >= 0) ? panel.implicitHeight : panel.clearHeight + spacing
+     //   property int currentSizeW: (icList.hoveredIndex >= 0) ? panel.implicitWidth : panel.clearWidth + spacing
+     //   property int currentSizeH: (icList.hoveredIndex >= 0) ? panel.implicitHeight : panel.clearHeight + spacing
 
-        width: ( icList.orientation === Qt.Horizontal ) ? currentSizeW : 18
-        height: ( icList.orientation === Qt.Vertical ) ? currentSizeH : 18
+
+        width: ( icList.orientation === Qt.Horizontal ) ? icList.width + spacing : 18
+        height: ( icList.orientation === Qt.Vertical ) ? icList.height + spacing : 18
 
         //debugging code
         //      width: ( icList.orientation === Qt.Horizontal ) ? icList.width+8 : 18
@@ -247,13 +253,13 @@ Item {
             color: "lightblue"
         }*/
 
-        ListView {
+        Grid {
             id:icList
 
             //trigger updating scaling of neighbour delegates of zoomed delegate
             signal updateScale(int delegateIndex, real newScale)
 
-            anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
+     /*       anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
             anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
             anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
             anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
@@ -262,21 +268,63 @@ Item {
                                        (panel.position === PlasmaCore.Types.TopPositioned)) ? parent.horizontalCenter : undefined
             anchors.verticalCenter: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
                                      (panel.position === PlasmaCore.Types.RightPositioned)) ? parent.verticalCenter : undefined
-
-
+*/
             property int currentSpot : -1000
             property int hoveredIndex : -1
             property int previousCount : 0
 
-            property int runningWidth : (currentSpot  === -1000) ? panel.clearWidth : panel.implicitWidth
-            property int runningHeight : (currentSpot === -1000) ? panel.clearHeight : panel.implicitHeight
+         //   property int runningWidth : (currentSpot  === -1000) ? panel.clearWidth : panel.implicitWidth
+          //  property int runningHeight : (currentSpot === -1000) ? panel.clearHeight : panel.implicitHeight
 
-            property int tempWidthAnimations: (panel.inAnimation === true) ? runningWidth : contentWidth + 2
-            property int tempHeightAnimations: (panel.inAnimation === true) ? runningHeight : contentHeight + 2
+         //   property int tempWidthAnimations: (panel.inAnimation === true) ? runningWidth : contentWidth + 2
+         //   property int tempHeightAnimations: (panel.inAnimation === true) ? runningHeight : contentHeight + 2
+
+            property int count: children ? children.length : 0
+
+           // property int vItemAlignment: (panel.position === PlasmaCore.Types.BottomPositioned) ? Grid.AlignBottom : Grid.AlignTop
+           // property int hItemAlignment: (panel.position === PlasmaCore.Types.LeftPositioned) ? Grid.AlignLeft : Grid.AlignRight
 
 
-            width: (orientation === Qt.Horizontal) ? tempWidthAnimations : 120
-            height: (orientation === Qt.Vertical) ? tempHeightAnimations : 120
+          //  verticalItemAlignment: (orientation === Qt.Vertical) ? vItemAlignment : undefined// : Grid.AlignVCenter
+          //  horizontalItemAlignment: (orientation == Qt.Horizontal) ? hItemAlignment : undefined //: Grid.AlignHCenter
+
+            verticalItemAlignment: (panel.position === PlasmaCore.Types.BottomPositioned) ? Grid.AlignBottom : Grid.AlignTop
+            horizontalItemAlignment: (panel.position === PlasmaCore.Types.LeftPositioned) ? Grid.AlignLeft : Grid.AlignRight
+
+         //   LayoutMirroring.enabled: ((panel.position === PlasmaCore.Types.RightPositioned) ||
+                          //            (panel.position === PlasmaCore.Types.TopPositioned)) ? true : false
+
+            rows: ((panel.position === PlasmaCore.Types.BottomPositioned) ||
+                   (panel.position === PlasmaCore.Types.TopPositioned)) ? 1 : 0
+
+            columns: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
+                      (panel.position === PlasmaCore.Types.RightPositioned)) ? 1 : 0
+
+            property int orientation: Qt.Horizontal
+
+
+
+            flow: (panel.position === PlasmaCore.Types.BottomPositioned) ? Flow.LeftToRight : Flow.TopToBottom
+          //  layoutDirection: (panel.position === PlasmaCore.Types.LeftPositioned) ? Qt.RightToLeft : Qt.LeftToRight
+
+
+            Repeater {
+                id: tasksListRepeater
+                delegate: TaskDelegate{}
+
+                onItemAdded: {
+                    panel.inAnimation = true;
+                    panel.inAnimation = false;
+                }
+
+                onItemRemoved: {
+                    panel.inAnimation = true;
+                    panel.inAnimation = false;
+                }
+            }
+
+       //     width: (orientation === Qt.Horizontal) ? tempWidthAnimations : 120
+     //       height: (orientation === Qt.Vertical) ? tempHeightAnimations : 120
 
 
             //   width: (orientation === Qt.Horizontal) ? contentWidth + 1  : 120
@@ -288,18 +336,18 @@ Item {
                 color: "transparent"
             }*/
 
-            interactive: false
+        //    interactive: false
 
             //  model: tasksModel
-            delegate: TaskDelegate{}
-            orientation: Qt.Horizontal
+
+
 
             add: Transition {
-                PropertyAction { target: panel; property: "inAnimation"; value: true }
+      //          PropertyAction { target: panel; property: "inAnimation"; value: true }
                 ParallelAnimation{
-                    NumberAnimation { property: "opacity"; from:0; to:1; duration: 300 }
+                   NumberAnimation { property: "opacity"; from:0; to:1; duration: 300 }
                 }
-                PropertyAction { target: panel; property: "inAnimation"; value: false }
+          //      PropertyAction { target: panel; property: "inAnimation"; value: false }
             }
 
        /*     displaced: Transition {
@@ -310,10 +358,10 @@ Item {
             }
 */
             //helps to calculate property the size of the panel on the first run...
-            populate: Transition {
+     /*       populate: Transition {
                 PropertyAction { target: panel; property: "inAnimation"; value: true }
                 PropertyAction { target: panel; property: "inAnimation"; value: false }
-            }
+            }*/
 
         }
     }
@@ -328,7 +376,7 @@ Item {
 
         onTriggered: {
             //    console.debug("Found children: "+icList.contentItem.children.length);
-            TaskTools.publishIconGeometries(icList.contentItem.children);
+            TaskTools.publishIconGeometries(icList.children);
         }
     }
 
@@ -343,8 +391,10 @@ Item {
         repeat: false
 
         onTriggered: {
-            icList.model = 0;
-            icList.model = tasksModel;
+            //icList.model = 0;
+        //    tasksListRepeater.model = 0;
+        //    tasksListRepeater.model = tasksModel;
+          //  icList.model = tasksModel;
 
             /// Debugging loop
             /*    var taskItems = icList.contentItem.children;
@@ -365,8 +415,8 @@ Item {
         //    iconGeometryTimer.start();
     }
 
-    function movePanel(newPosition){
-        var bLine = barLine;
+    function movePanel(obj, newPosition){
+        var bLine = obj;
         if (newPosition === PlasmaCore.Types.BottomPositioned){
             bLine.anchors.horizontalCenter = bLine.parent.horizontalCenter;
             bLine.anchors.verticalCenter = undefined;
@@ -414,7 +464,6 @@ Item {
             var clearBigAxis = tasksModel.count * (iconSize+iconMargin);
             var clearSmallAxis = (iconSize+iconMargin);
 
-
             //  debugging code
             //     ncounter++;
             //    console.log("Implicits______ "+ncounter+". - "+tasksModel.count);
@@ -457,7 +506,8 @@ Item {
             newPosition = PlasmaCore.Types.BottomPositioned;
         }
 
-        movePanel(newPosition);
+        movePanel(barLine,newPosition);
+        movePanel(icList,newPosition);
 
         if(tempVertical)
             icList.orientation = Qt.Vertical;
@@ -465,7 +515,6 @@ Item {
             icList.orientation = Qt.Horizontal;
 
         panel.position = newPosition;
-        //  updateDelegateTransformOrigin();
     }
 
     function hasLauncher(url) {

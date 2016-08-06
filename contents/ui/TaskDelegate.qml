@@ -10,10 +10,10 @@ Component {
     Item{
         id: mainItemContainer
 
-        anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
-        anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
-        anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
-        anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
+     //   anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
+      //  anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
+     //   anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
+     //   anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
 
         property bool containsMouse : wrapper.containsMouse
         readonly property var m: model
@@ -25,7 +25,7 @@ Component {
 
         property int animationTime: 60
 
-        ListView.onRemove: SequentialAnimation {
+    /*    ListView.onRemove: SequentialAnimation {
             PropertyAction { target: panel; property: "inAnimation"; value: true }
             PropertyAction { target: mainItemContainer; property: "ListView.delayRemove"; value: true }
             ParallelAnimation{
@@ -34,7 +34,7 @@ Component {
             }
             PropertyAction { target: mainItemContainer; property: "ListView.delayRemove"; value: false }
             PropertyAction { target: panel; property: "inAnimation"; value: false }
-        }
+        }*/
 
         Flow{
             width: parent.width
@@ -44,7 +44,7 @@ Component {
             // IMPORTANT: hidden spacers must be tested on vertical !!!
             Item{
                 id: hiddenSpacerLeft
-                visible: (index === 0)
+                visible: (mainItemContainer.Positioner.index === 0)
 
                 property real nHiddenSize: (nScale > 0) ? (panel.iconSize+wrapper.iconMargin)*nScale : 0
 
@@ -85,7 +85,7 @@ Component {
                 hoverEnabled: true
                 property int addedSpace: 12
 
-                property int itemIndex: index
+         //       property int itemIndex: mainItemContainer.index
 
                 property bool pressed: false
                 property int iconMargin: panel.iconMargin
@@ -95,6 +95,7 @@ Component {
                 property real appearScale: 1;
 
                 property int curIndex: icList.hoveredIndex
+                property int index: mainItemContainer.Positioner.index
                 property real center: Math.floor(width / 2)
 
                 ///Dont use Math.floor it adds one pixel in animations and creates glitches
@@ -175,7 +176,7 @@ Component {
 
 
                         //activate messages to update the the neighbour scales
-                        if(index < icList.contentItem.children.length - 1){
+                        if(index < icList.children.length - 1){
                             icList.updateScale(index+1, rightScale);
                         }
 
@@ -329,7 +330,7 @@ Component {
             // a hidden spacer on the right for the last item to add stability
             Item{
                 id: hiddenSpacerRight
-                visible: (index === icList.count - 1)
+                visible: (mainItemContainer.Positioner.index === icList.count - 1)
 
                 property real nHiddenSize: (nScale > 0) ? (panel.iconSize+wrapper.iconMargin)*nScale : 0
 

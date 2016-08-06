@@ -16,7 +16,7 @@ Item{
 
     //big interval to show shadows only after all the crappy adds and removes of tasks
     //have happened
-    property int shadowInterval: 2000
+    property int shadowInterval: 500
 
     property int normalIconInterval: 40
 
@@ -33,30 +33,6 @@ Item{
             else{
                 if(defaultNoShadow.item)
                     defaultNoShadow.item.updateImage();
-            }
-        }
-    }
-
-    //Something to show until the buffers are updated
-    KQuickControlAddons.QIconItem{
-        id: iconImageBackground
-
-        property real relatedSize: panel.iconSize *  ( (2*panel.iconSize - 16) / (2*panel.iconSize) );
-
-        width: relatedSize * wrapper.scale * wrapper.appearScale
-        height: width
-        anchors.centerIn: parent
-
-        state: KQuickControlAddons.QIconItem.DefaultState
-        icon: decoration
-
-        Timer{
-            id:hideBackgroundTimer
-            repeat:false
-            interval: centralItem.shadowInterval
-            onTriggered: {
-                iconImageBackground.visible = false;
-                //  iconImageBuffer.visible = false;
             }
         }
     }
@@ -91,6 +67,32 @@ Item{
             }
         }
     }
+
+
+    //Something to show until the buffers are updated
+    KQuickControlAddons.QIconItem{
+        id: iconImageBackground
+
+        property real relatedSize: panel.iconSize *  ( (2*panel.iconSize - 16) / (2*panel.iconSize) );
+
+        width: relatedSize * wrapper.scale * wrapper.appearScale
+        height: width
+        anchors.centerIn: parent
+
+        state: KQuickControlAddons.QIconItem.DefaultState
+        icon: decoration
+
+        Timer{
+            id:hideBackgroundTimer
+            repeat:false
+            interval: centralItem.shadowInterval
+            onTriggered: {
+               iconImageBackground.visible = false;
+               //   iconImageBuffer.visible = false;
+            }
+        }
+    }
+
 
 
     Image{
@@ -220,17 +222,22 @@ Item{
                     // too many draws must be disabled, instead
                     // we can blacklist the application which creates
                     // drawing errors (libreoffice writer)
-               //     property int counter:0;
+                    property int counter:0;
                     onIconChanged: {
-                        if((wrapper.oldAppId !== "") && (AppId !== wrapper.oldAppId)){
+                        iconImageBackground.visible = true;
+                        centralItem.updateImages();
+                        //console.log(decoration.state);
+                        //    counter++;
+                         //    console.log("FUCKKKKK :"+counter+" :"+ AppId+ " - "+ wrapper.oldAppId+" ,"+LauncherUrlWithoutIcon);
+                  //     if((wrapper.oldAppId !== "") && (AppId !== wrapper.oldAppId)){
                        //     counter++;
                        //     console.log("FUCKKKKK "+index+":"+counter+" :"+ AppId+ " - "+ wrapper.oldAppId+" ,"+LauncherUrlWithoutIcon);
                             //centralItem.updateImages();
 
-                           panelGeometryTimer.start();
+                     //      panelGeometryTimer.start();
                         //    panel.updateAllIcons();
                            // wrapper.oldAppId = AppId;
-                        }
+                    //    }
 
                         //   centralItem.updateImages();
                     }
