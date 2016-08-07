@@ -56,16 +56,16 @@ PlasmaComponents.ContextMenu {
 
     function newMenuItem(parent) {
         return Qt.createQmlObject(
-            "import org.kde.plasma.components 2.0 as PlasmaComponents;" +
-            "PlasmaComponents.MenuItem {}",
-            parent);
+                    "import org.kde.plasma.components 2.0 as PlasmaComponents;" +
+                    "PlasmaComponents.MenuItem {}",
+                    parent);
     }
 
     function newSeparator(parent) {
         return Qt.createQmlObject(
-            "import org.kde.plasma.components 2.0 as PlasmaComponents;" +
-            "PlasmaComponents.MenuItem { separator: true }",
-            parent);
+                    "import org.kde.plasma.components 2.0 as PlasmaComponents;" +
+                    "PlasmaComponents.MenuItem { separator: true }",
+                    parent);
     }
 
     function loadDynamicLaunchActions(launcherUrl) {
@@ -98,9 +98,9 @@ PlasmaComponents.ContextMenu {
         id: virtualDesktopsMenuItem
 
         visible: virtualDesktopInfo.numberOfDesktops > 1
-            && (visualParent && visualParent.m.IsLauncher !== true
-            && visualParent.m.IsStartup !== true
-            && visualParent.m.IsVirtualDesktopChangeable === true)
+                 && (visualParent && visualParent.m.IsLauncher !== true
+                     && visualParent.m.IsStartup !== true
+                     && visualParent.m.IsVirtualDesktopChangeable === true)
 
         enabled: visible
 
@@ -173,6 +173,104 @@ PlasmaComponents.ContextMenu {
         }
     }
 
+   // function activitiesInfo.runningActivities() can not be found
+   // must be debugged
+/*
+    PlasmaComponents.MenuItem {
+        id: activitiesDesktopsMenuItem
+
+        visible: activityInfo.numberOfRunningActivities > 1
+                 && (visualParent && !visualParent.m.IsLauncher
+                     && !visualParent.m.IsStartup)
+
+        enabled: visible
+
+        text: i18n("Move To Activity")
+
+        Connections {
+            target: activityInfo
+
+            onNumberOfRunningActivitiesChanged: activitiesDesktopsMenu.refresh()
+        }
+
+        PlasmaComponents.ContextMenu {
+            id: activitiesDesktopsMenu
+
+            visualParent: activitiesDesktopsMenuItem.action
+
+            function refresh() {
+                clearMenuItems();
+
+                if (activityInfo.numberOfRunningActivities <= 1) {
+                    return;
+                }
+
+                var menuItem = menu.newMenuItem(activitiesDesktopsMenu);
+                menuItem.text = i18n("Add To Current Activity");
+                menuItem.enabled = Qt.binding(function() {
+                    return menu.visualParent && menu.visualParent.m.Activities.length > 0 &&
+                            menu.visualParent.m.Activities.indexOf(activityInfo.currentActivity) < 0;
+                });
+                menuItem.clicked.connect(function() {
+                    tasksModel.requestActivities(menu.visualParent.modelIndex(), menu.visualParent.m.Activities.concat(activityInfo.currentActivity));
+                });
+
+                menuItem = menu.newMenuItem(activitiesDesktopsMenu);
+                menuItem.text = i18n("All Activities");
+                menuItem.checkable = true;
+                menuItem.checked = Qt.binding(function() {
+                    return menu.visualParent && menu.visualParent.m.Activities.length === 0;
+                });
+                menuItem.clicked.connect(function() {
+                    var checked = menuItem.checked;
+                    var newActivities = undefined; // will cast to an empty QStringList i.e all activities
+                    if (!checked) {
+                        newActivities = new Array(activityInfo.currentActivity);
+                    }
+                    tasksModel.requestActivities(menu.visualParent.modelIndex(), newActivities);
+                });
+
+                menu.newSeparator(activitiesDesktopsMenu);
+
+                var runningActivities = activityInfo.runningActivities();
+
+                for (var i = 0; i < runningActivities.length; ++i) {
+                    var activityId = runningActivities[i];
+
+                    menuItem = menu.newMenuItem(activitiesDesktopsMenu);
+                    menuItem.text = activityInfo.activityName(runningActivities[i]);
+                    menuItem.checkable = true;
+                    menuItem.checked = Qt.binding( (function(activityId) {
+                        return function() {
+                            return menu.visualParent && menu.visualParent.m.Activities.indexOf(activityId) >= 0;
+                        };
+                    })(activityId));
+                    menuItem.clicked.connect((function(activityId) {
+                        return function () {
+                            var checked = menuItem.checked;
+                            var newActivities = menu.visualParent.m.Activities;
+                            if (checked) {
+                                newActivities = newActivities.concat(activityId);
+                            } else {
+                                var index = newActivities.indexOf(activityId)
+                                if (index < 0) {
+                                    return;
+                                }
+                                newActivities = newActivities.splice(index, 1);
+                            }
+                            return tasksModel.requestActivities(menu.visualParent.modelIndex(), newActivities);
+                        };
+                    })(activityId));
+                }
+
+                menu.newSeparator(activitiesDesktopsMenu);
+            }
+
+            Component.onCompleted: refresh()
+        }
+    }
+*/
+
     /*
     PlasmaComponents.MenuItem {
         visible: (visualParent && visualParent.m.IsLauncher !== true && visualParent.m.IsStartup !== true)
@@ -239,7 +337,7 @@ PlasmaComponents.ContextMenu {
         onClicked: tasksModel.requestRemoveLauncher(visualParent.m.LauncherUrlWithoutIcon);
     }
 
-/*
+    /*
     PlasmaComponents.MenuItem {
         id: moreActionsMenuItem
 

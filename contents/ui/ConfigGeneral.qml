@@ -37,8 +37,35 @@ Item {
     property alias cfg_showOnlyCurrentDesktop: showOnlyCurrentDesktop.checked
     property alias cfg_showOnlyCurrentActivity: showOnlyCurrentActivity.checked
 
+    property alias cfg_showBarLine: showBarLine.checked
+    property alias cfg_showShadows: showShadows.checked
 
     ColumnLayout {
+        spacing: 15
+
+        GroupBox {
+            Layout.fillWidth: true
+
+            title: i18n("Appearance")
+            flat: true
+
+            ColumnLayout {
+                Layout.fillWidth: true
+
+                CheckBox {
+                    id: showBarLine
+                    text: i18n("Show bar line for tasks")
+                    enabled: true
+                }
+
+
+                CheckBox {
+                    id: showShadows
+                    text: i18n("Enable shadows for icons")
+                    enabled: true
+                }
+            }
+        }
 
         GroupBox {
             Layout.fillWidth: true

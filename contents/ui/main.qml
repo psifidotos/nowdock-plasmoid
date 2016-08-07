@@ -28,10 +28,6 @@ Item {
 
     property int position : PlasmaCore.Types.BottomPositioned
 
-    onPositionChanged: {
-        console.log (position);
-    }
-
     Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
     Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground
 
@@ -39,7 +35,7 @@ Item {
 
     property Item dragSource: null
     property bool inAnimation: false
-    property bool enableShadows: true
+    property bool enableShadows: plasmoid.configuration.showShadows
 
     property QtObject contextMenuComponent: Qt.createComponent("ContextMenu.qml");
 
@@ -100,7 +96,7 @@ Item {
         }
 
         onActivityChanged: {
-      //      updateImplicits();
+            //      updateImplicits();
             //panelGeometryTimer.start();
         }
 
@@ -148,7 +144,7 @@ Item {
     }
 
 
-  /*  IconsModel{
+    /*  IconsModel{
         id: iconsmdl
     }*/
 
@@ -186,8 +182,8 @@ Item {
         opacity: tasksModel.count > 0 ? 1 : 0
 
         property int spacing: panel.iconSize / 2
-     //   property int currentSizeW: (icList.hoveredIndex >= 0) ? panel.implicitWidth : panel.clearWidth + spacing
-     //   property int currentSizeH: (icList.hoveredIndex >= 0) ? panel.implicitHeight : panel.clearHeight + spacing
+        //   property int currentSizeW: (icList.hoveredIndex >= 0) ? panel.implicitWidth : panel.clearWidth + spacing
+        //   property int currentSizeH: (icList.hoveredIndex >= 0) ? panel.implicitHeight : panel.clearHeight + spacing
 
 
         width: ( icList.orientation === Qt.Horizontal ) ? icList.width + spacing : 18
@@ -204,8 +200,16 @@ Item {
             source: "../images/panel-west.png"
             border { left:8; right:8; top:8; bottom:8 }
 
+            opacity: plasmoid.configuration.showBarLine ? 1 : 0
+
+            visible: (opacity == 0) ? false : true
+
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
+
+            Behavior on opacity{
+                NumberAnimation { duration: 200 }
+            }
         }
 
         /*  Rectangle{
@@ -231,13 +235,13 @@ Item {
             NumberAnimation { duration: 150 }
         }
 
-        Behavior on width{
+   /*     Behavior on width{
             NumberAnimation { duration: 40 }
         }
 
         Behavior on height{
             NumberAnimation { duration: 40 }
-        }
+        }*/
 
         /*        PlasmaCore.FrameSvgItem{
             anchors.fill:parent
@@ -259,40 +263,17 @@ Item {
             //trigger updating scaling of neighbour delegates of zoomed delegate
             signal updateScale(int delegateIndex, real newScale)
 
-     /*       anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
-            anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
-            anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
-            anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
-
-            anchors.horizontalCenter: ((panel.position === PlasmaCore.Types.BottomPositioned) ||
-                                       (panel.position === PlasmaCore.Types.TopPositioned)) ? parent.horizontalCenter : undefined
-            anchors.verticalCenter: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
-                                     (panel.position === PlasmaCore.Types.RightPositioned)) ? parent.verticalCenter : undefined
-*/
             property int currentSpot : -1000
             property int hoveredIndex : -1
             property int previousCount : 0
 
-         //   property int runningWidth : (currentSpot  === -1000) ? panel.clearWidth : panel.implicitWidth
-          //  property int runningHeight : (currentSpot === -1000) ? panel.clearHeight : panel.implicitHeight
-
-         //   property int tempWidthAnimations: (panel.inAnimation === true) ? runningWidth : contentWidth + 2
-         //   property int tempHeightAnimations: (panel.inAnimation === true) ? runningHeight : contentHeight + 2
-
             property int count: children ? children.length : 0
-
-           // property int vItemAlignment: (panel.position === PlasmaCore.Types.BottomPositioned) ? Grid.AlignBottom : Grid.AlignTop
-           // property int hItemAlignment: (panel.position === PlasmaCore.Types.LeftPositioned) ? Grid.AlignLeft : Grid.AlignRight
-
-
-          //  verticalItemAlignment: (orientation === Qt.Vertical) ? vItemAlignment : undefined// : Grid.AlignVCenter
-          //  horizontalItemAlignment: (orientation == Qt.Horizontal) ? hItemAlignment : undefined //: Grid.AlignHCenter
 
             verticalItemAlignment: (panel.position === PlasmaCore.Types.BottomPositioned) ? Grid.AlignBottom : Grid.AlignTop
             horizontalItemAlignment: (panel.position === PlasmaCore.Types.LeftPositioned) ? Grid.AlignLeft : Grid.AlignRight
 
-         //   LayoutMirroring.enabled: ((panel.position === PlasmaCore.Types.RightPositioned) ||
-                          //            (panel.position === PlasmaCore.Types.TopPositioned)) ? true : false
+            //   LayoutMirroring.enabled: ((panel.position === PlasmaCore.Types.RightPositioned) ||
+            //            (panel.position === PlasmaCore.Types.TopPositioned)) ? true : false
 
             rows: ((panel.position === PlasmaCore.Types.BottomPositioned) ||
                    (panel.position === PlasmaCore.Types.TopPositioned)) ? 1 : 0
@@ -305,7 +286,7 @@ Item {
 
 
             flow: (panel.position === PlasmaCore.Types.BottomPositioned) ? Flow.LeftToRight : Flow.TopToBottom
-          //  layoutDirection: (panel.position === PlasmaCore.Types.LeftPositioned) ? Qt.RightToLeft : Qt.LeftToRight
+            //  layoutDirection: (panel.position === PlasmaCore.Types.LeftPositioned) ? Qt.RightToLeft : Qt.LeftToRight
 
 
             Repeater {
@@ -323,12 +304,6 @@ Item {
                 }
             }
 
-       //     width: (orientation === Qt.Horizontal) ? tempWidthAnimations : 120
-     //       height: (orientation === Qt.Vertical) ? tempHeightAnimations : 120
-
-
-            //   width: (orientation === Qt.Horizontal) ? contentWidth + 1  : 120
-            //  height: (orientation === Qt.Vertical) ? contentHeight + 1  : 120
             /*Rectangle{
                 anchors.fill: parent
                 border.width: 1
@@ -336,21 +311,22 @@ Item {
                 color: "transparent"
             }*/
 
-        //    interactive: false
+            //    interactive: false
 
             //  model: tasksModel
 
 
 
-            add: Transition {
-      //          PropertyAction { target: panel; property: "inAnimation"; value: true }
-                ParallelAnimation{
-                   NumberAnimation { property: "opacity"; from:0; to:1; duration: 300 }
-                }
-          //      PropertyAction { target: panel; property: "inAnimation"; value: false }
-            }
+            //    add: Transition {
+            //          PropertyAction { target: panel; property: "inAnimation"; value: true }
+            //       ParallelAnimation{
+            //         NumberAnimation { property: "opacity"; to:1; duration: 300 }
+            //      }
+            //      PropertyAction { target: panel; property: "inAnimation"; value: false }
+            //  }
 
-       /*     displaced: Transition {
+
+            /*     displaced: Transition {
                 NumberAnimation { properties: "x,y"; duration: 350 }
                 //when the element because of displacement goest outside the listView and
                 //return the opacity must be fixed
@@ -358,10 +334,24 @@ Item {
             }
 */
             //helps to calculate property the size of the panel on the first run...
-     /*       populate: Transition {
-                PropertyAction { target: panel; property: "inAnimation"; value: true }
-                PropertyAction { target: panel; property: "inAnimation"; value: false }
+            //      populate: Transition {
+            //     NumberAnimation { property: "opacity"; to:1; duration: 300 }
+            //  }
+
+
+        /*    property int durationA: 0;
+
+            move: Transition {
+                NumberAnimation { properties: "x,y"; duration: durationA; easing.type: Easing.OutBounce }
+                PropertyAction { target:icList; property: "durationA"; value: 0 }
             }*/
+/*
+            add: Transition {
+                ParallelAnimation{
+                    NumberAnimation { property: "opacity"; from:0.2; to:1; duration: 150 }
+                }
+            }
+            */
 
         }
     }
@@ -392,9 +382,9 @@ Item {
 
         onTriggered: {
             //icList.model = 0;
-        //    tasksListRepeater.model = 0;
-        //    tasksListRepeater.model = tasksModel;
-          //  icList.model = tasksModel;
+            //    tasksListRepeater.model = 0;
+            //    tasksListRepeater.model = tasksModel;
+            //  icList.model = tasksModel;
 
             /// Debugging loop
             /*    var taskItems = icList.contentItem.children;

@@ -5,15 +5,20 @@ import QtGraphicalEffects 1.0
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
 
+import org.kde.plasma.private.taskmanager 0.1 as TaskManagerApplet
+
 Component {
     id: iconDelegate
     Item{
         id: mainItemContainer
 
-     //   anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
-      //  anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
-     //   anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
-     //   anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
+        //   anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
+        //  anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
+        //   anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
+        //   anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
+
+        visible: (opacity > 0)
+        opacity: 0
 
         property bool containsMouse : wrapper.containsMouse
         readonly property var m: model
@@ -25,7 +30,11 @@ Component {
 
         property int animationTime: 60
 
-    /*    ListView.onRemove: SequentialAnimation {
+        Behavior on opacity {
+            NumberAnimation { duration: 400 }
+        }
+
+        /*    ListView.onRemove: SequentialAnimation {
             PropertyAction { target: panel; property: "inAnimation"; value: true }
             PropertyAction { target: mainItemContainer; property: "ListView.delayRemove"; value: true }
             ParallelAnimation{
@@ -85,7 +94,7 @@ Component {
                 hoverEnabled: true
                 property int addedSpace: 12
 
-         //       property int itemIndex: mainItemContainer.index
+                //       property int itemIndex: mainItemContainer.index
 
                 property bool pressed: false
                 property int iconMargin: panel.iconMargin
@@ -285,7 +294,13 @@ Component {
                 onReleased: {
                     if(pressed){
                         if (mouse.button == Qt.MidButton){
-                            tasksModel.requestNewInstance(modelIndex());
+                            if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.NewInstance) {
+                                tasksModel.requestNewInstance(modelIndex());
+                            } else if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.Close) {
+                                tasksModel.requestClose(modelIndex());
+                            } else if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.ToggleMinimized) {
+                                tasksModel.requestToggleMinimized(modelIndex());
+                            }
                         } else if (mouse.button == Qt.LeftButton) {
                             if (model.IsGroupParent)
                                 panel.presentWindows(model.LegacyWinIdList);
@@ -322,7 +337,7 @@ Component {
 
                 Component.onCompleted: {
                     icList.updateScale.connect(signalUpdateScale);
-               //     console.log(AppId+ " ,"+AppName+" ,"+LauncherUrlWithoutIcon);
+                    //     console.log(AppId+ " ,"+AppName+" ,"+LauncherUrlWithoutIcon);
                     oldAppId = AppId;
                 }
             }// MouseArea
@@ -356,5 +371,14 @@ Component {
 
         }// Flow with hidden spacers inside
 
+        Component.onCompleted: {
+            //   if(IsWindow || IsLauncher)
+            //    icList.durationA = 300;
+            opacity = 1;
+        }
+
+        Component.onDestruction: {
+            //    console.log("Destroying... "+index);
+        }
     }// main Item
 }

@@ -42,6 +42,12 @@
     <entry name="smartLaunchersEnabled" type="Bool">
       <default>true</default>
     </entry>
+    <entry name="showBarLine" type="Bool">
+      <default>true</default>
+    </entry>
+    <entry name="showShadows" type="Bool">
+      <default>true</default>
+    </entry>
   </group>
 
 </kcfg>
