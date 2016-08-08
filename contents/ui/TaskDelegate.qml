@@ -22,6 +22,7 @@ Component {
 
         property bool containsMouse : wrapper.containsMouse
         readonly property var m: model
+        property bool isWindow: model.IsWindow ? model.IsWindow : false
 
         width: (icList.orientation === Qt.Horizontal) ? hiddenSpacerLeft.width+wrapper.width+hiddenSpacerRight.width : wrapper.width
         height: (icList.orientation === Qt.Horizontal) ? wrapper.height : hiddenSpacerLeft.height + wrapper.height + hiddenSpacerRight.height
@@ -30,8 +31,16 @@ Component {
 
         property int animationTime: 60
 
+
+
         Behavior on opacity {
             NumberAnimation { duration: 400 }
+        }
+
+        onIsWindowChanged: {
+            if (isWindow) {
+                taskInitComponent.createObject(mainItemContainer);
+            }
         }
 
         /*    ListView.onRemove: SequentialAnimation {
@@ -91,7 +100,7 @@ Component {
 
                 acceptedButtons: Qt.LeftButton | Qt.MidButton | Qt.RightButton
 
-                hoverEnabled: true
+                hoverEnabled: false
                 property int addedSpace: 12
 
                 //       property int itemIndex: mainItemContainer.index
@@ -371,10 +380,38 @@ Component {
 
         }// Flow with hidden spacers inside
 
+        Component {
+            id: taskInitComponent
+
+            Timer {
+                id: timer
+
+                interval: units.longDuration * 2
+                repeat: false
+
+                onTriggered: {
+                    wrapper.hoverEnabled = true;
+
+                    if (parent.isWindow) {
+                        tasksModel.requestPublishDelegateGeometry(wrapper.modelIndex(),
+                            backend.globalRect(mainItemContainer), mainItemContainer);
+                    }
+
+                    timer.destroy();
+                }
+
+                Component.onCompleted: timer.start()
+            }
+        }
+
         Component.onCompleted: {
             //   if(IsWindow || IsLauncher)
             //    icList.durationA = 300;
             opacity = 1;
+
+            if (model.IsWindow !== true) {
+                taskInitComponent.createObject(wrapper);
+            }
         }
 
         Component.onDestruction: {

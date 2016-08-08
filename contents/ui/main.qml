@@ -68,7 +68,7 @@ Item {
     onInAnimationChanged: {
         if (inAnimation === false){
             panel.updateImplicits();
-            //            iconGeometryTimer.restart();
+            iconGeometryTimer.restart();
         }
     }
 
@@ -92,11 +92,11 @@ Item {
 
         onCountChanged: {
             //    panel.updateImplicits()  // is going to triger it the inAnimation ending
-            iconGeometryTimer.restart();
+          //  iconGeometryTimer.restart();
         }
 
         onActivityChanged: {
-            //      updateImplicits();
+            panel.updateImplicits();
             //panelGeometryTimer.start();
         }
 
@@ -361,7 +361,7 @@ Item {
     Timer {
         id: iconGeometryTimer
         // INVESTIGATE: such big interval but unfortunately it doesnot work otherwise
-        interval: 1000
+        interval: 500
         repeat: false
 
         onTriggered: {
