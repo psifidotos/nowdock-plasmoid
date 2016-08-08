@@ -57,13 +57,13 @@ Item{
             }
         }
 
-        RectangularGlow {
+       RectangularGlow {
             anchors.fill: smallCircle
-            glowRadius: 9
-            spread: 0.3
+            glowRadius: 2 * smallCircle.width
+            spread: 0.01
             color: smallCircle.color
             cornerRadius: smallCircle.radius + glowRadius
-            opacity: 0.5
+            opacity: 0.4
             visible: panel.glow
         }
 
@@ -72,7 +72,7 @@ Item{
             source: smallCircle
             anchors.margins: 1
             brightness: 0.4
-            contrast: 0.4
+            contrast: 0.3
             visible: panel.glow
         }
     }

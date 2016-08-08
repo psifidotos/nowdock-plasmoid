@@ -26,7 +26,6 @@ Item{
                 visible: ( !IsLauncher ) ? true: false
 
                 showAttention: model.IsDemandingAttention ? true : false
-               //  showAttention: true
 
                 onVisibleChanged: {
                     if((model.AppId === "writer") &&(model.AppName ==="LibreOffice Writer")){
