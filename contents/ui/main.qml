@@ -20,8 +20,7 @@ Item {
     property real zoomFactor: 1.7
     property int iconSize: 64
     property int iconMargin: 5
-    property bool glow: false
-
+    property bool glow: plasmoid.configuration.showGlow
     property int clearWidth
     property int clearHeight
     property int delegateTransformOrigin

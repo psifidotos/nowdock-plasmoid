@@ -6,33 +6,77 @@ import QtGraphicalEffects 1.0
 
 Item{
     //   property string color
-    Rectangle {
-        id: smallCircle
-        width: Math.round(parent.width / 1.8)
-        height: Math.round(parent.height / 1.8)
-        color: theme.highlightColor
-        radius: width*0.5
-        anchors.centerIn: parent
+    id: glowItem
+
+    property color basicColor: theme.highlightColor
+    property color attentionColor: "#ffff1717"
+
+    property bool showAttention: false
+
+    property int animation: 1500
+
+    onShowAttentionChanged: {
+        if(showAttention == false){
+            smallCircle.color = basicColor;
+        }
     }
 
-    RectangularGlow {
-        id: effect
-        anchors.fill: smallCircle
-        glowRadius: 9
-        spread: 0.3
-        color: theme.highlightColor
-        cornerRadius: smallCircle.radius + glowRadius
-        opacity: 0.5
-        visible: panel.glow
+    Item{
+        id:mainGlow
+        anchors.fill: parent
+
+        Rectangle {
+            id: smallCircle
+            property int incSizeAttention: (showAttention == false) ? 0 : 0
+
+            width: Math.round(parent.width / 1.8) + incSizeAttention
+            height: Math.round(parent.height / 1.8) + incSizeAttention
+            color: glowItem.basicColor
+            radius: width*0.5
+            anchors.centerIn: parent
+
+            SequentialAnimation{
+                running: (glowItem.showAttention == true)
+                loops: Animation.Infinite
+
+                PropertyAnimation {
+                    target: smallCircle
+                    property: "color"
+                    to: glowItem.attentionColor
+                    duration: glowItem.animation
+                    easing.type: Easing.InOutQuad
+                }
+
+                PropertyAnimation {
+                    target:smallCircle
+                    property: "color"
+                    to: glowItem.basicColor
+                    duration: glowItem.animation
+                    easing.type: Easing.InOutQuad
+                }
+            }
+        }
+
+        RectangularGlow {
+            anchors.fill: smallCircle
+            glowRadius: 9
+            spread: 0.3
+            color: smallCircle.color
+            cornerRadius: smallCircle.radius + glowRadius
+            opacity: 0.5
+            visible: panel.glow
+        }
+
+        BrightnessContrast {
+            anchors.fill: smallCircle
+            source: smallCircle
+            anchors.margins: 1
+            brightness: 0.4
+            contrast: 0.4
+            visible: panel.glow
+        }
     }
 
-    BrightnessContrast {
-        anchors.fill: smallCircle
-        source: smallCircle
-        anchors.margins: 1
-        brightness: 0.4
-        contrast: 0.4
-        visible: panel.glow
-    }
+
 
 }

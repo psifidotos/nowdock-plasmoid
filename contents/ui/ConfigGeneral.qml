@@ -39,6 +39,7 @@ Item {
 
     property alias cfg_showBarLine: showBarLine.checked
     property alias cfg_showShadows: showShadows.checked
+    property alias cfg_showGlow: showGlow.checked
 
     ColumnLayout {
         spacing: 15
@@ -62,6 +63,12 @@ Item {
                 CheckBox {
                     id: showShadows
                     text: i18n("Enable shadows for icons")
+                    enabled: true
+                }
+
+                CheckBox {
+                    id: showGlow
+                    text: i18n("Show glow around windows points")
                     enabled: true
                 }
             }

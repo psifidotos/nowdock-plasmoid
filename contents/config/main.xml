@@ -48,6 +48,9 @@
     <entry name="showShadows" type="Bool">
       <default>true</default>
     </entry>
+    <entry name="showGlow" type="Bool">
+      <default>true</default>
+    </entry>
   </group>
 
 </kcfg>
