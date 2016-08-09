@@ -12,11 +12,6 @@ Component {
     Item{
         id: mainItemContainer
 
-        //   anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
-        //  anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
-        //   anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
-        //   anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
-
         visible: (opacity > 0)
         opacity: 0
 
@@ -117,6 +112,7 @@ Component {
                 property int curIndex: icList.hoveredIndex
                 property int index: mainItemContainer.Positioner.index
                 property real center: Math.floor(width / 2)
+                property real animationStep: panel.iconSize / 8  ;
 
                 ///Dont use Math.floor it adds one pixel in animations and creates glitches
                 property real regulatorSize: basicScalingSize * wrapper.appearScale - 2;
@@ -287,7 +283,6 @@ Component {
                 }
 
                 onPositionChanged: {
-                    var animationStep = 3;
 
                     if (icList.orientation == Qt.Horizontal){
                         var step = Math.abs(icList.currentSpot-mouse.x);
