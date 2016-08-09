@@ -178,7 +178,7 @@ Component {
 
                             TaskGroupItem{}
                             TaskActiveItem{}
-                            TaskIconItem{}
+                       //     TaskIconItem{}
                         } //Flow Element
                     }
                 }

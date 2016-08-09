@@ -7,6 +7,11 @@ import org.kde.plasma.components 2.0 as PlasmaComponents
 
 import org.kde.kquickcontrolsaddons 2.0 as KQuickControlAddons
 
+
+//I am using  KQuickControlAddons.QIconItem even though onExit it triggers the following error
+//QObject::~QObject: Timers cannot be stopped from another thread
+//but it increases performance almost to double during animation
+
 Item{
     id: centralItem
 
@@ -29,18 +34,16 @@ Item{
 
         anchors.centerIn: parent
 
-        source: simpleIcon.source
-
         visible: true
 
         Image{
             id: iconHoveredBuffer
-            anchors.fill: iconImageBuffer
-            source: activeIcon.source
+            anchors.fill: parent
 
             opacity: wrapper.containsMouse ? 1 : 0
 
-            visible: (activateTaskAnimation.running == false)
+            visible: ((activateTaskAnimation.running == false) &&
+                      (launcherAnimation.running == false) )
 
             Behavior on opacity {
                 NumberAnimation { duration: 300 }
@@ -57,76 +60,26 @@ Item{
         visible: activateTaskAnimation.running
     }
 
-    ///////Activate animation/////
-
-    SequentialAnimation{
-        id: activateTaskAnimation
-        property int speed: 120
-
-        SequentialAnimation{
-            ParallelAnimation{
-                PropertyAnimation {
-                    target: brightnessTaskEffect
-                    property: "brightness"
-                    to: -0.5
-                    duration: activateTaskAnimation.speed
-                    easing.type: Easing.InOutQuad
-                }
-                PropertyAnimation {
-                    target: wrapper
-                    property: "scale"
-                    to: wrapper.scale - 0.3
-                    duration: activateTaskAnimation.speed
-                    easing.type: Easing.InOutQuad
-                }
-            }
-
-            ParallelAnimation{
-                PropertyAnimation {
-                    target: brightnessTaskEffect
-                    property: "brightness"
-                    to: 0
-                    duration: activateTaskAnimation.speed
-                    easing.type: Easing.InOutQuad
-                }
-                PropertyAnimation {
-                    target: wrapper
-                    property: "scale"
-                    to: panel.zoomFactor
-                    duration: activateTaskAnimation.speed
-                    easing.type: Easing.InOutQuad
-                }
-            }
-
-        }
-        onStopped: {
-            wrapper.animationEnded();
-        }
-
-        function startAnimation(){
-            start();
-        }
-
-        Component.onCompleted: {
-            wrapper.runActivateAnimation.connect(startAnimation);
-        }
-    }
-    ////end of activate animation////
-
-
 
     //Something to show until the buffers are updated
     KQuickControlAddons.QIconItem{
         id: iconImageBackground
 
-        property real relatedSize: panel.iconSize *  ( (2*panel.iconSize - 16) / (2*panel.iconSize) );
+        property real relatedSize: panel.iconSize  *  ( (doubleSize  - 7) / doubleSize );
 
         width: relatedSize * wrapper.scale
         height: width
         anchors.centerIn: parent
 
-        state: KQuickControlAddons.QIconItem.DefaultState
+        state: wrapper.containsMouse ? KQuickControlAddons.QIconItem.ActiveState : KQuickControlAddons.QIconItem.DefaultState
+
         icon: decoration
+   /*     Rectangle{
+            anchors.fill: parent
+            border.width: 1
+            border.color: "red"
+            color: "transparent"
+        }*/
 
         Component{
             id:hideBackTimer
@@ -147,49 +100,74 @@ Item{
         }
     }
 
-
-
-    Image{
-        id:activeIcon
-        visible:false
-    }
-
-    Image{
-        id:simpleIcon
-        visible:false
-    }
-
     Loader{
         id:defaultWithShadow
-        active: panel.enableShadows === true
         sourceComponent: component
     }
 
-
-    //active state does not need shadow
-    //the shadow from defaultWithShadow is used if needed
     Loader{
         id:activeLoader
         sourceComponent: component2
     }
 
-    Loader{
-        id:defaultNoShadow
-        active: panel.enableShadows === false
-        sourceComponent: componentns
+    ///////Activate animation/////
+
+    SequentialAnimation{
+        id: activateTaskAnimation
+        property int speed: 120
+
+        SequentialAnimation{
+
+            ParallelAnimation{
+                PropertyAnimation {
+                    target: brightnessTaskEffect
+                    property: "brightness"
+                    to: -0.5
+                    duration: activateTaskAnimation.speed
+                    easing.type: Easing.OutQuad
+                }
+                PropertyAnimation {
+                    target: wrapper
+                    property: "scale"
+                    to: wrapper.scale - 0.3
+                    duration: activateTaskAnimation.speed
+                    easing.type: Easing.OutQuad
+                }
+            }
+
+            ParallelAnimation{
+                PropertyAnimation {
+                    target: brightnessTaskEffect
+                    property: "brightness"
+                    to: 0
+                    duration: activateTaskAnimation.speed
+                    easing.type: Easing.OutQuad
+                }
+                PropertyAnimation {
+                    target: wrapper
+                    property: "scale"
+                    to: panel.zoomFactor
+                    duration: activateTaskAnimation.speed
+                    easing.type: Easing.OutQuad
+                }
+            }
+
+        }
+        onStopped: {
+            wrapper.animationEnded();
+        }
+
+        function startAnimation(){
+            start();
+        }
+
+        Component.onCompleted: {
+            wrapper.runActivateAnimation.connect(startAnimation);
+        }
     }
+    ////end of activate animation////
 
 
-    /* Loader{
-        id:activeNoShadow
-        active: panel.enableShadows === false
-        sourceComponent: componentns
-    }*/
-
-    Component.onCompleted:{
-
-        //   panel.updateAllIcons.connect(updateImages);
-    }
 
 
     SequentialAnimation{
@@ -236,13 +214,13 @@ Item{
             iconImageBuffer.anchors.centerIn = undefined;
 
             if(panel.position === PlasmaCore.Types.LeftPositioned)
-              iconImageBuffer.anchors.right = iconImageBuffer.parent.right;
+                iconImageBuffer.anchors.right = iconImageBuffer.parent.right;
             else if(panel.position === PlasmaCore.Types.RightPositioned)
-              iconImageBuffer.anchors.left = iconImageBuffer.parent.left;
+                iconImageBuffer.anchors.left = iconImageBuffer.parent.left;
             else if(panel.position === PlasmaCore.Types.TopPositioned)
-              iconImageBuffer.anchors.bottom = iconImageBuffer.parent.bottom;
+                iconImageBuffer.anchors.bottom = iconImageBuffer.parent.bottom;
             else if(panel.position === PlasmaCore.Types.BottomPositioned)
-              iconImageBuffer.anchors.top = iconImageBuffer.parent.top;
+                iconImageBuffer.anchors.top = iconImageBuffer.parent.top;
 
             icList.hoveredIndex = -1;
         }
@@ -264,18 +242,11 @@ Item{
             if(activeLoader.item)
                 activeLoader.item.updateImage();
 
-            if(panel.enableShadows === true){
-                if(defaultWithShadow.item){
-                    defaultWithShadow.item.updateImage();
-                }
-            }
-            else{
-                if(defaultNoShadow.item)
-                    defaultNoShadow.item.updateImage();
+            if(defaultWithShadow.item){
+                defaultWithShadow.item.updateImage();
             }
         }
     }
-
 
     // Another way for the shadow must be found it increases the cpu cycles x2 alsmost,
     // even with the following caching mechanism.
@@ -338,6 +309,8 @@ Item{
             id: yourImageWithLoadedIconContainer
             anchors.fill: parent
 
+            visible: false
+
             function updateImage(){
                 tttTimer.createObject(iconImage);
             }
@@ -364,8 +337,8 @@ Item{
                     // we can blacklist the application which creates
                     // drawing errors (libreoffice writer)
                     property int counter:0;
+
                     onIconChanged: {
-                        iconImageBackground.visible = true;
                         centralItem.updateImages();
                     }
 
@@ -383,19 +356,28 @@ Item{
 
                             onTriggered: {
                                 if(index !== -1){
-                                    shadowImageNoActive.grabToImage(function(result) {
-                                        simpleIcon.source = result.url;
-                                    }, Qt.size(fixedIcon.width,fixedIcon.height) );
+                                    if(panel.enableShadows == true){
+                                        shadowImageNoActive.grabToImage(function(result) {
+                                            iconImageBuffer.source = result.url;
+                                        }, Qt.size(fixedIcon.width,fixedIcon.height) );
+                                    }
+                                    else{
+
+                                        fixedIcon.grabToImage(function(result) {
+                                            iconImageBuffer.source = result.url;
+                                        }, Qt.size(fixedIcon.width,fixedIcon.height) );
+                                    }
 
                                     hideBackTimer.createObject(iconImageBackground);
 
-                                    //            ttt.destroy();
+                                    // ttt.destroy();
                                 }
                             }
 
                             Component.onCompleted: ttt.start();
-                        }
-                    }
+                        }// end of timer
+
+                    }//end of component of timer
 
                     Component.onCompleted: {
                         tttTimer.createObject(iconImage);
@@ -405,7 +387,7 @@ Item{
 
             DropShadow {
                 id:shadowImageNoActive
-                visible:false
+                visible: false
                 width: fixedIcon.width
                 height: fixedIcon.height
                 anchors.centerIn: fixedIcon
@@ -423,6 +405,8 @@ Item{
         Item {
             id: yourImageWithLoadedIconContainer2
             anchors.fill: parent
+            visible: false
+
             function updateImage(){
                 ttt11Timer.createObject(iconImage2);
             }
@@ -455,10 +439,10 @@ Item{
                             onTriggered: {
                                 if(index !== -1){
                                     fixedIcon2.grabToImage(function(result) {
-                                        activeIcon.source = result.url;
+                                        iconHoveredBuffer.source = result.url;
                                     }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
                                 }
-                                //         ttt11.destroy();
+                                //     ttt11.destroy();
                             }
 
                             Component.onCompleted: ttt11.start();
@@ -467,70 +451,6 @@ Item{
 
                     Component.onCompleted: {
                         ttt11Timer.createObject(iconImage2);
-                    }
-
-                }
-            }
-
-        }
-    }
-
-
-    ////////Components with no shadows//////////////
-    Component {
-        id: componentns
-        Item {
-            id: yourImageWithLoadedIconContainerns
-            anchors.fill: parent
-
-            function updateImage(){
-                tttnsTimer.createObject(iconImagens);
-            }
-
-            Item{
-                id:fixedIconns
-                width: 2*panel.iconSize
-                height: width
-
-                visible:false
-
-                KQuickControlAddons.QIconItem{
-                    id: iconImagens
-                    width: parent.width - 16
-                    height: parent.height - 16
-                    anchors.centerIn: parent
-
-                    state: KQuickControlAddons.QIconItem.DefaultState
-                    icon: decoration
-
-                    visible: true
-
-
-                    onIconChanged: centralItem.updateImages();
-
-
-                    Component{
-                        id:componentnsTimer
-
-                        Timer{
-                            id:tttns
-                            repeat:false
-                            interval: centralItem.normalIconInterval
-                            onTriggered: {
-                                if(index !== -1){
-                                    fixedIconns.grabToImage(function(result) {
-                                        simpleIcon.source = result.url;
-                                    }, Qt.size(fixedIconns.width,fixedIconns.height) );
-                                }
-                                //       tttns.destroy();
-                            }
-
-                            Component.onCompleted: tttns.start();
-                        }
-                    }
-
-                    Component.onCompleted: {
-                        componentnsTimer.createObject(iconImagens);
                     }
 
                 }
