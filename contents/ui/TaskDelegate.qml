@@ -100,17 +100,16 @@ Component {
                 hoverEnabled: false
                 property int addedSpace: 12
 
-                //       property int itemIndex: mainItemContainer.index
-
                 property bool pressed: false
                 property int iconMargin: panel.iconMargin
-
                 property real scale: 1;
 
                 property int curIndex: icList.hoveredIndex
                 property int index: mainItemContainer.Positioner.index
                 property real center: Math.floor(width / 2)
                 property real animationStep: panel.iconSize / 8  ;
+
+                property bool inAnimation: false
 
                 ///Dont use Math.floor it adds one pixel in animations and creates glitches
                 property real regulatorSize: basicScalingSize - 2;
@@ -282,20 +281,22 @@ Component {
 
                 onPositionChanged: {
 
-                    if (icList.orientation == Qt.Horizontal){
-                        var step = Math.abs(icList.currentSpot-mouse.x);
-                        if (step >= animationStep){
-                            icList.hoveredIndex = index;
-                            icList.currentSpot = mouse.x;
-                            calculateScales(mouse.x);
+                    if(inAnimation == false){
+                        if (icList.orientation == Qt.Horizontal){
+                            var step = Math.abs(icList.currentSpot-mouse.x);
+                            if (step >= animationStep){
+                                icList.hoveredIndex = index;
+                                icList.currentSpot = mouse.x;
+                                calculateScales(mouse.x);
+                            }
                         }
-                    }
-                    else{
-                        var step = Math.abs(icList.currentSpot-mouse.y);
-                        if (step >= animationStep){
-                            icList.hoveredIndex = index;
-                            icList.currentSpot = mouse.y;
-                            calculateScales(mouse.y);
+                        else{
+                            var step = Math.abs(icList.currentSpot-mouse.y);
+                            if (step >= animationStep){
+                                icList.hoveredIndex = index;
+                                icList.currentSpot = mouse.y;
+                                calculateScales(mouse.y);
+                            }
                         }
                     }
                 }
@@ -320,11 +321,13 @@ Component {
                         icList.hoveredIndex = -1;
 
                     pressed = false;
+                    inAnimation = false;
                 }
 
                 onPressed: {
                     if ((mouse.button == Qt.LeftButton)||(mouse.button == Qt.MidButton)) {
                         pressed = true;
+                        inAnimation = true;
                         runAnimation();
                         /*     if(mouse.button == Qt.LeftButton){
                             //create small decrease in size

@@ -17,7 +17,6 @@ Item{
     //big interval to show shadows only after all the crappy adds and removes of tasks
     //have happened
     property int shadowInterval: 500
-
     property int normalIconInterval: 40
 
     function updateImages(){
@@ -82,22 +81,22 @@ Item{
 
     SequentialAnimation{
         id: activateTaskAnimation
+        property int speed: 120
 
-        SequentialAnimation{
-
+        SequentialAnimation{ 
             ParallelAnimation{
                 PropertyAnimation {
                     target: brightnessTaskEffect
                     property: "brightness"
                     to: -0.5
-                    duration: 200
+                    duration: activateTaskAnimation.speed
                     easing.type: Easing.InOutQuad
                 }
                 PropertyAnimation {
                     target: wrapper
                     property: "scale"
-                    to: wrapper.scale - 0.2
-                    duration: 200
+                    to: wrapper.scale - 0.3
+                    duration: activateTaskAnimation.speed
                     easing.type: Easing.InOutQuad
                 }
             }
@@ -107,14 +106,14 @@ Item{
                     target: brightnessTaskEffect
                     property: "brightness"
                     to: 0
-                    duration: 200
+                    duration: activateTaskAnimation.speed
                     easing.type: Easing.InOutQuad
                 }
                 PropertyAnimation {
                     target: wrapper
                     property: "scale"
                     to: panel.zoomFactor
-                    duration: 200
+                    duration: activateTaskAnimation.speed
                     easing.type: Easing.InOutQuad
                 }
             }
@@ -299,20 +298,6 @@ Item{
                     onIconChanged: {
                         iconImageBackground.visible = true;
                         centralItem.updateImages();
-                        //console.log(decoration.state);
-                        //    counter++;
-                        //    console.log("FUCKKKKK :"+counter+" :"+ AppId+ " - "+ wrapper.oldAppId+" ,"+LauncherUrlWithoutIcon);
-                        //     if((wrapper.oldAppId !== "") && (AppId !== wrapper.oldAppId)){
-                        //     counter++;
-                        //     console.log("FUCKKKKK "+index+":"+counter+" :"+ AppId+ " - "+ wrapper.oldAppId+" ,"+LauncherUrlWithoutIcon);
-                        //centralItem.updateImages();
-
-                        //      panelGeometryTimer.start();
-                        //    panel.updateAllIcons();
-                        // wrapper.oldAppId = AppId;
-                        //    }
-
-                        //   centralItem.updateImages();
                     }
 
                     // use this when using Image instead of Rectangle
