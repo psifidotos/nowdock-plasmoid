@@ -59,7 +59,7 @@ Component {
                 id: hiddenSpacerLeft
                 visible: (mainItemContainer.Positioner.index === 0)
 
-                property real nHiddenSize: (nScale > 0) ? (panel.iconSize+wrapper.iconMargin)*nScale : 0
+                property real nHiddenSize: (nScale > 0) ? (panel.realSize * nScale) : 0
 
                 //we add one missing pixel from calculations
                 width: (icList.orientation === Qt.Horizontal) ? nHiddenSize : wrapper.width
@@ -88,7 +88,7 @@ Component {
                 signal runAnimation();
 
                 ///Dont use Math.floor it adds one pixel in animations and creates glitches
-                property real basicScalingSize : (panel.iconSize+iconMargin)*scale
+                property real basicScalingSize : (panel.realSize * scale)
 
                 width: (icList.orientation === Qt.Vertical ) ? basicScalingSize+addedSpace :
                                                                basicScalingSize
@@ -101,7 +101,6 @@ Component {
                 property int addedSpace: 12
 
                 property bool pressed: false
-                property int iconMargin: panel.iconMargin
                 property real scale: 1;
 
                 property int curIndex: icList.hoveredIndex
@@ -412,7 +411,7 @@ Component {
                 id: hiddenSpacerRight
                 visible: (mainItemContainer.Positioner.index === icList.count - 1)
 
-                property real nHiddenSize: (nScale > 0) ? (panel.iconSize+wrapper.iconMargin)*nScale : 0
+                property real nHiddenSize: (nScale > 0) ? (panel.realSize * nScale) : 0
 
                 //we add one missing pixel from calculations
                 width: (icList.orientation === Qt.Horizontal) ? nHiddenSize : wrapper.width
