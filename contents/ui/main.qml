@@ -91,7 +91,7 @@ Item {
 
         onCountChanged: {
             //    panel.updateImplicits()  // is going to triger it the inAnimation ending
-          //  iconGeometryTimer.restart();
+            //  iconGeometryTimer.restart();
         }
 
         onActivityChanged: {
@@ -234,7 +234,7 @@ Item {
             NumberAnimation { duration: 150 }
         }
 
-   /*     Behavior on width{
+        /*     Behavior on width{
             NumberAnimation { duration: 40 }
         }
 
@@ -338,13 +338,13 @@ Item {
             //  }
 
 
-        /*    property int durationA: 0;
+            /*    property int durationA: 0;
 
             move: Transition {
                 NumberAnimation { properties: "x,y"; duration: durationA; easing.type: Easing.OutBounce }
                 PropertyAction { target:icList; property: "durationA"; value: 0 }
             }*/
-/*
+            /*
             add: Transition {
                 ParallelAnimation{
                     NumberAnimation { property: "opacity"; from:0.2; to:1; duration: 150 }
@@ -373,7 +373,7 @@ Item {
     //Because of many suddent moves, deletes and adds
     //sometimes the ListView appearance breaks
     //this timer makes a full repaint for the ListView
-    Timer {
+    /*   Timer {
         id: panelGeometryTimer
 
         interval: 2000
@@ -391,8 +391,8 @@ Item {
                 var task = taskItems[i];
                 console.debug(i+": "+task.objectName+" "+task.width+" "+task.height);
             }*/
-        }
-    }
+    //     }
+    //   }
 
 
     Component.onCompleted:  {

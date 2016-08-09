@@ -122,7 +122,7 @@ Item{
         }
 
         onStopped: {
-                wrapper.animationEnded();
+            wrapper.animationEnded();
         }
 
         function startAnimation(){
@@ -147,13 +147,21 @@ Item{
         state: KQuickControlAddons.QIconItem.DefaultState
         icon: decoration
 
-        Timer{
-            id:hideBackgroundTimer
-            repeat:false
-            interval: centralItem.shadowInterval
-            onTriggered: {
-                iconImageBackground.visible = false;
-                //   iconImageBuffer.visible = false;
+        Component{
+            id:hideBackTimer
+
+            Timer{
+                id:hideBackgroundTimer
+                repeat:false
+                interval: centralItem.shadowInterval
+
+                onTriggered: {
+                    iconImageBackground.visible = false;
+                    hideBackgroundTimer.destroy();
+                    //   iconImageBuffer.visible = false;
+                }
+
+                Component.onCompleted: hideBackgroundTimer.start();
             }
         }
     }
@@ -263,7 +271,7 @@ Item{
             anchors.fill: parent
 
             function updateImage(){
-                ttt.restart();
+                tttTimer.createObject(iconImage);
             }
 
             Item{
@@ -309,29 +317,34 @@ Item{
 
                     // use this when using Image instead of Rectangle
 
-                    Timer{
-                        id:ttt
-                        repeat:false
-                        interval: centralItem.shadowInterval
+                    Component{
+                        id:tttTimer
 
-                        //   property int counter2: 0;
+                        Timer{
+                            id:ttt
+                            repeat:false
+                            interval: centralItem.shadowInterval
 
-                        onTriggered: {
-                            if(index !== -1){
-                                shadowImageNoActive.grabToImage(function(result) {
-                                    simpleIcon.source = result.url;
-                                }, Qt.size(fixedIcon.width,fixedIcon.height) );
+                            //   property int counter2: 0;
 
-                                //       counter2 = counter2 + 1;
-                                //       console.log("_______ Pos:" +index+" Count:" + counter2);
+                            onTriggered: {
+                                if(index !== -1){
+                                    shadowImageNoActive.grabToImage(function(result) {
+                                        simpleIcon.source = result.url;
+                                    }, Qt.size(fixedIcon.width,fixedIcon.height) );
 
-                                hideBackgroundTimer.restart();
+                                    hideBackTimer.createObject(iconImageBackground);
+
+                        //            ttt.destroy();
+                                }
                             }
+
+                            Component.onCompleted: ttt.start();
                         }
                     }
 
                     Component.onCompleted: {
-                        ttt.restart();
+                        tttTimer.createObject(iconImage);
                     }
                 }
             }
@@ -357,7 +370,7 @@ Item{
             id: yourImageWithLoadedIconContainer2
             anchors.fill: parent
             function updateImage(){
-                ttt11.restart();
+                ttt11Timer.createObject(iconImage2);
             }
 
             Item{
@@ -378,23 +391,30 @@ Item{
 
                     visible: true
 
-                    // use this when using Image instead of Rectangle
-                    Timer{
-                        id:ttt11
-                        repeat:false
-                        interval: centralItem.shadowInterval
-                        onTriggered: {
-                            if(index !== -1){
-                                fixedIcon2.grabToImage(function(result) {
-                                    activeIcon.source = result.url;
-                                }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
+                    Component{
+                        id:ttt11Timer
+
+                        Timer{
+                            id:ttt11
+                            repeat:false
+                            interval: centralItem.shadowInterval
+                            onTriggered: {
+                                if(index !== -1){
+                                    fixedIcon2.grabToImage(function(result) {
+                                        activeIcon.source = result.url;
+                                    }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
+                                }
+                       //         ttt11.destroy();
                             }
+
+                            Component.onCompleted: ttt11.start();
                         }
                     }
 
-                    //                Component.onCompleted: {
-                    //             ttt11.restart();
-                    //         }
+                    Component.onCompleted: {
+                        ttt11Timer.createObject(iconImage2);
+                    }
+
                 }
             }
 
@@ -410,7 +430,7 @@ Item{
             anchors.fill: parent
 
             function updateImage(){
-                tttns.restart();
+                tttnsTimer.createObject(iconImagens);
             }
 
             Item{
@@ -434,23 +454,31 @@ Item{
 
                     onIconChanged: centralItem.updateImages();
 
-                    // use this when using Image instead of Rectangle
-                    Timer{
-                        id:tttns
-                        repeat:false
-                        interval: centralItem.normalIconInterval
-                        onTriggered: {
-                            if(index !== -1){
-                                fixedIconns.grabToImage(function(result) {
-                                    simpleIcon.source = result.url;
-                                }, Qt.size(fixedIconns.width,fixedIconns.height) );
+
+                    Component{
+                        id:componentnsTimer
+
+                        Timer{
+                            id:tttns
+                            repeat:false
+                            interval: centralItem.normalIconInterval
+                            onTriggered: {
+                                if(index !== -1){
+                                    fixedIconns.grabToImage(function(result) {
+                                        simpleIcon.source = result.url;
+                                    }, Qt.size(fixedIconns.width,fixedIconns.height) );
+                                }
+                         //       tttns.destroy();
                             }
+
+                            Component.onCompleted: tttns.start();
                         }
                     }
 
                     Component.onCompleted: {
-                        tttns.start();
+                        componentnsTimer.createObject(iconImagens);
                     }
+
                 }
             }
         }

@@ -442,7 +442,6 @@ Component {
 
         Component {
             id: taskInitComponent
-
             Timer {
                 id: timer
 
