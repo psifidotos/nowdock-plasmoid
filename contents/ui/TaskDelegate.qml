@@ -90,6 +90,8 @@ Component {
             MouseArea{
                 id: wrapper
 
+                signal runAnimation();
+
                 ///Dont use Math.floor it adds one pixel in animations and creates glitches
                 property real basicScalingSize : (panel.iconSize+iconMargin)*scale
 
@@ -123,32 +125,48 @@ Component {
                     NumberAnimation { duration: mainItemContainer.animationTime }
                 }
 
-                Flow{
-                    visible: (panel.position === PlasmaCore.Types.TopPositioned) ? false : true
-                    width: parent.width
-                    height: parent.height
+                Loader{
+                    active: (panel.position !== PlasmaCore.Types.TopPositioned)
+                    sourceComponent: states3Flow
 
-                    flow: (panel.position === PlasmaCore.Types.BottomPositioned) ? Flow.TopToBottom : Flow.LeftToRight
-                    layoutDirection: (panel.position === PlasmaCore.Types.LeftPositioned) ? Qt.RightToLeft : Qt.LeftToRight
+                    Component{
+                        id: states3Flow
+                        Flow{
+                            //    visible: (panel.position === PlasmaCore.Types.TopPositioned) ? false : true
+                            width: wrapper.width
+                            height: wrapper.height
 
-                    TaskIconItem{}
-                    TaskActiveItem{}
-                    TaskGroupItem{}
-                }//Flow
+                            flow: (panel.position === PlasmaCore.Types.BottomPositioned) ? Flow.TopToBottom : Flow.LeftToRight
+                            layoutDirection: (panel.position === PlasmaCore.Types.LeftPositioned) ? Qt.RightToLeft : Qt.LeftToRight
 
-                //Flow which is used only when the listview is on Top and we are hiding the main one
-                Flow{
-                    visible: (panel.position === PlasmaCore.Types.TopPositioned) ? true : false
-                    width: parent.width
-                    height: parent.height
+                            TaskIconItem{}
+                            TaskActiveItem{}
+                            TaskGroupItem{}
+                        }//Flow
+                    }
+                }
 
-                    flow: Flow.TopToBottom
-                    layoutDirection: (panel.position === PlasmaCore.Types.LeftPositioned) ? Qt.RightToLeft : Qt.LeftToRight
+                Loader{
+                    active: (panel.position === PlasmaCore.Types.TopPositioned)
+                    sourceComponent: topStateFlow
 
-                    TaskGroupItem{}
-                    TaskActiveItem{}
-                    TaskIconItem{}
-                } //Flow Element
+                    Component{
+                        id: topStateFlow
+                        //Flow which is used only when the listview is on Top and we are hiding the main one
+                        Flow{
+                            visible: (panel.position === PlasmaCore.Types.TopPositioned) ? true : false
+                            width: wrapper.width
+                            height: wrapper.height
+
+                            flow: Flow.TopToBottom
+                            layoutDirection: (panel.position === PlasmaCore.Types.LeftPositioned) ? Qt.RightToLeft : Qt.LeftToRight
+
+                            TaskGroupItem{}
+                            TaskActiveItem{}
+                            TaskIconItem{}
+                        } //Flow Element
+                    }
+                }
 
 
                 function calculateScales( currentMousePosition ){
@@ -194,13 +212,13 @@ Component {
 
 
                         //activate messages to update the the neighbour scales
-                        if(index < icList.children.length - 1){
-                            icList.updateScale(index+1, rightScale);
-                        }
+                        // if(index < icList.children.length - 1){
+                        icList.updateScale(index+1, rightScale, 0);
+                        //   }
 
-                        if(index > 0){
-                            icList.updateScale(index-1,leftScale);
-                        }
+                        //   if(index > 0){
+                        icList.updateScale(index-1,leftScale, 0);
+                        //  }
 
                         //Left hiddenSpacer
 
@@ -289,9 +307,46 @@ Component {
                     }
                 }
 
+
+                function animationEnded(){
+                    if (model.IsGroupParent)
+                        panel.presentWindows(model.LegacyWinIdList);
+                    else {
+                        if (IsMinimized === true) {
+                            var i = modelIndex();
+                            tasksModel.requestToggleMinimized(i);
+                            tasksModel.requestActivate(i);
+                        } else if (IsActive === true) {
+                            tasksModel.requestToggleMinimized(modelIndex());
+                        } else {
+                            tasksModel.requestActivate(modelIndex());
+                        }
+                    }
+
+                    if(IsLauncher)
+                        icList.hoveredIndex = -1;
+
+                    pressed = false;
+                }
+
                 onPressed: {
                     if ((mouse.button == Qt.LeftButton)||(mouse.button == Qt.MidButton)) {
                         pressed = true;
+                        runAnimation();
+                        /*     if(mouse.button == Qt.LeftButton){
+                            //create small decrease in size
+                            var smallS = -0.15;
+                            scale = scale + smallS;
+                            icList.updateScale(index-1, -1, smallS);
+                            icList.updateScale(index+1, -1, smallS);
+                            /////
+                            //create small increase in size
+                            smallS = - smallS;
+                            scale = scale + smallS;
+                            icList.updateScale(index-1, -1, smallS);
+                            icList.updateScale(index+1, -1, smallS);
+                        }*/
+
                     }
                     else if (mouse.button == Qt.RightButton){
                         mainItemContainer.contextMenu = panel.contextMenuComponent.createObject(mainItemContainer);
@@ -310,8 +365,10 @@ Component {
                             } else if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.ToggleMinimized) {
                                 tasksModel.requestToggleMinimized(modelIndex());
                             }
+
+                            pressed = false;
                         } else if (mouse.button == Qt.LeftButton) {
-                            if (model.IsGroupParent)
+                            /*     if (model.IsGroupParent)
                                 panel.presentWindows(model.LegacyWinIdList);
                             else {
                                 if (IsMinimized === true) {
@@ -323,12 +380,12 @@ Component {
                                 } else {
                                     tasksModel.requestActivate(modelIndex());
                                 }
-                            }
+                            }*/
                         }
-                        icList.hoveredIndex = -1;
+
                     }
 
-                    pressed = false;
+
                 }
 
                 function modelIndex(){
@@ -336,9 +393,12 @@ Component {
                 }
 
 
-                function signalUpdateScale(nIndex, nScale){
+                function signalUpdateScale(nIndex, nScale, step){
                     if( index === nIndex){
-                        scale = nScale;
+                        if(nScale >= 0)
+                            scale = nScale + step;
+                        else
+                            scale = scale + step;
                     }
                 }
 
@@ -394,7 +454,7 @@ Component {
 
                     if (parent.isWindow) {
                         tasksModel.requestPublishDelegateGeometry(wrapper.modelIndex(),
-                            backend.globalRect(mainItemContainer), mainItemContainer);
+                                                                  backend.globalRect(mainItemContainer), mainItemContainer);
                     }
 
                     timer.destroy();
@@ -417,5 +477,9 @@ Component {
         Component.onDestruction: {
             //    console.log("Destroying... "+index);
         }
+
+
+        /////Animations
+
     }// main Item
 }

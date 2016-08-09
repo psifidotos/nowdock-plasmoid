@@ -57,18 +57,79 @@ Item{
         //   }
 
         Image{
+            id: iconHoveredBuffer
             anchors.fill: iconImageBuffer
             source: activeIcon.source
 
             opacity: wrapper.containsMouse ? 1 : 0
 
+            visible: (activateTaskAnimation.running == false)
+
             Behavior on opacity {
-                NumberAnimation { duration: 200 }
+                NumberAnimation { duration: 300 }
             }
         }
+
     }
 
+    BrightnessContrast {
+        id: brightnessTaskEffect
+        anchors.fill: iconImageBuffer
+        source: iconImageBuffer
+    }
 
+    SequentialAnimation{
+        id: activateTaskAnimation
+        //   running: (wrapper.pressed == true)
+
+        SequentialAnimation{
+            ParallelAnimation{
+                PropertyAnimation {
+                    target: brightnessTaskEffect
+                    property: "brightness"
+                    to: -0.5
+                    duration: 200
+                    easing.type: Easing.InOutQuad
+                }
+                PropertyAnimation {
+                    target: wrapper
+                    property: "scale"
+                    to: wrapper.scale - 0.2
+                    duration: 200
+                    easing.type: Easing.InOutQuad
+                }
+            }
+
+            ParallelAnimation{
+                PropertyAnimation {
+                    target: brightnessTaskEffect
+                    property: "brightness"
+                    to: 0
+                    duration: 200
+                    easing.type: Easing.InOutQuad
+                }
+                PropertyAnimation {
+                    target: wrapper
+                    property: "scale"
+                    to: wrapper.scale + 0.2
+                    duration: 200
+                    easing.type: Easing.InOutQuad
+                }
+            }
+        }
+
+        onStopped: {
+                wrapper.animationEnded();
+        }
+
+        function startAnimation(){
+            start();
+        }
+
+        Component.onCompleted: {
+            wrapper.runAnimation.connect(startAnimation);
+        }
+    }
     //Something to show until the buffers are updated
     KQuickControlAddons.QIconItem{
         id: iconImageBackground
@@ -87,8 +148,8 @@ Item{
             repeat:false
             interval: centralItem.shadowInterval
             onTriggered: {
-               iconImageBackground.visible = false;
-               //   iconImageBuffer.visible = false;
+                iconImageBackground.visible = false;
+                //   iconImageBuffer.visible = false;
             }
         }
     }
@@ -133,7 +194,7 @@ Item{
     }*/
 
     Component.onCompleted:{
-     //   panel.updateAllIcons.connect(updateImages);
+        //   panel.updateAllIcons.connect(updateImages);
     }
 
     // Another way for the shadow must be found it increases the cpu cycles x2 alsmost,
@@ -228,16 +289,16 @@ Item{
                         centralItem.updateImages();
                         //console.log(decoration.state);
                         //    counter++;
-                         //    console.log("FUCKKKKK :"+counter+" :"+ AppId+ " - "+ wrapper.oldAppId+" ,"+LauncherUrlWithoutIcon);
-                  //     if((wrapper.oldAppId !== "") && (AppId !== wrapper.oldAppId)){
-                       //     counter++;
-                       //     console.log("FUCKKKKK "+index+":"+counter+" :"+ AppId+ " - "+ wrapper.oldAppId+" ,"+LauncherUrlWithoutIcon);
-                            //centralItem.updateImages();
+                        //    console.log("FUCKKKKK :"+counter+" :"+ AppId+ " - "+ wrapper.oldAppId+" ,"+LauncherUrlWithoutIcon);
+                        //     if((wrapper.oldAppId !== "") && (AppId !== wrapper.oldAppId)){
+                        //     counter++;
+                        //     console.log("FUCKKKKK "+index+":"+counter+" :"+ AppId+ " - "+ wrapper.oldAppId+" ,"+LauncherUrlWithoutIcon);
+                        //centralItem.updateImages();
 
-                     //      panelGeometryTimer.start();
+                        //      panelGeometryTimer.start();
                         //    panel.updateAllIcons();
-                           // wrapper.oldAppId = AppId;
-                    //    }
+                        // wrapper.oldAppId = AppId;
+                        //    }
 
                         //   centralItem.updateImages();
                     }
@@ -249,7 +310,7 @@ Item{
                         repeat:false
                         interval: centralItem.shadowInterval
 
-                     //   property int counter2: 0;
+                        //   property int counter2: 0;
 
                         onTriggered: {
                             if(index !== -1){
@@ -257,8 +318,8 @@ Item{
                                     simpleIcon.source = result.url;
                                 }, Qt.size(fixedIcon.width,fixedIcon.height) );
 
-                         //       counter2 = counter2 + 1;
-                         //       console.log("_______ Pos:" +index+" Count:" + counter2);
+                                //       counter2 = counter2 + 1;
+                                //       console.log("_______ Pos:" +index+" Count:" + counter2);
 
                                 hideBackgroundTimer.restart();
                             }

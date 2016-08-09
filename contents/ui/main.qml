@@ -260,7 +260,7 @@ Item {
             id:icList
 
             //trigger updating scaling of neighbour delegates of zoomed delegate
-            signal updateScale(int delegateIndex, real newScale)
+            signal updateScale(int delegateIndex, real newScale, real step)
 
             property int currentSpot : -1000
             property int hoveredIndex : -1
