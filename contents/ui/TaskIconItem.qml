@@ -76,13 +76,15 @@ Item{
         id: brightnessTaskEffect
         anchors.fill: iconImageBuffer
         source: iconImageBuffer
+
+        visible: activateTaskAnimation.running
     }
 
     SequentialAnimation{
         id: activateTaskAnimation
-        //   running: (wrapper.pressed == true)
 
         SequentialAnimation{
+
             ParallelAnimation{
                 PropertyAnimation {
                     target: brightnessTaskEffect
@@ -111,11 +113,12 @@ Item{
                 PropertyAnimation {
                     target: wrapper
                     property: "scale"
-                    to: wrapper.scale + 0.2
+                    to: panel.zoomFactor
                     duration: 200
                     easing.type: Easing.InOutQuad
                 }
             }
+
         }
 
         onStopped: {
@@ -130,6 +133,7 @@ Item{
             wrapper.runAnimation.connect(startAnimation);
         }
     }
+
     //Something to show until the buffers are updated
     KQuickControlAddons.QIconItem{
         id: iconImageBackground
