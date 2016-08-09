@@ -40,7 +40,7 @@ Item{
     Image {
         id: iconImageBuffer
 
-        property real newTempSize: panel.iconSize * wrapper.scale * wrapper.appearScale
+        property real newTempSize: panel.iconSize * wrapper.scale
         width: newTempSize
         height: newTempSize
 
@@ -140,7 +140,7 @@ Item{
 
         property real relatedSize: panel.iconSize *  ( (2*panel.iconSize - 16) / (2*panel.iconSize) );
 
-        width: relatedSize * wrapper.scale * wrapper.appearScale
+        width: relatedSize * wrapper.scale
         height: width
         anchors.centerIn: parent
 
@@ -244,7 +244,7 @@ Item{
         width: 64
         height: 64
 
-        scale: wrapper.scale * wrapper.appearScale
+        scale: wrapper.scale
 
         anchors.centerIn: parent
 

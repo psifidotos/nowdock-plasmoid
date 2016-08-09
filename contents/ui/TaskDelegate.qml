@@ -107,15 +107,13 @@ Component {
 
                 property real scale: 1;
 
-                property real appearScale: 1;
-
                 property int curIndex: icList.hoveredIndex
                 property int index: mainItemContainer.Positioner.index
                 property real center: Math.floor(width / 2)
                 property real animationStep: panel.iconSize / 8  ;
 
                 ///Dont use Math.floor it adds one pixel in animations and creates glitches
-                property real regulatorSize: basicScalingSize * wrapper.appearScale - 2;
+                property real regulatorSize: basicScalingSize - 2;
 
                 Behavior on scale {
                     NumberAnimation { duration: mainItemContainer.animationTime }
