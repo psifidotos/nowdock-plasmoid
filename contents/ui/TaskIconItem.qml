@@ -10,36 +10,20 @@ import org.kde.kquickcontrolsaddons 2.0 as KQuickControlAddons
 Item{
     id: centralItem
 
-    width: wrapper.regulatorSize
-    height: wrapper.regulatorSize
-    property int doubleSize : 2 * panel.iconSize;
+    width: wrapper.regulatorWidth
+    height: wrapper.regulatorHeight
 
+    property int doubleSize : 2 * panel.iconSize;
     //big interval to show shadows only after all the crappy adds and removes of tasks
     //have happened
     property int shadowInterval: 500
     property int normalIconInterval: 40
 
-    function updateImages(){
-        if(panel){
-            if(activeLoader.item)
-                activeLoader.item.updateImage();
-
-            if(panel.enableShadows === true){
-                if(defaultWithShadow.item){
-                    defaultWithShadow.item.updateImage();
-                }
-            }
-            else{
-                if(defaultNoShadow.item)
-                    defaultNoShadow.item.updateImage();
-            }
-        }
-    }
-
     Image {
         id: iconImageBuffer
 
-        property real newTempSize: panel.iconSize * wrapper.scale
+        //property real newTempSize: panel.iconSize * wrapper.scale
+        property real newTempSize: Math.min(wrapper.basicScalingWidth, wrapper.basicScalingHeight)
         width: newTempSize
         height: newTempSize
 
@@ -48,12 +32,6 @@ Item{
         source: simpleIcon.source
 
         visible: true
-
-        // opacity: (wrapper.containsMouse === false) ? 1 : 0.4
-
-        //    Behavior on opacity {
-        //     NumberAnimation { duration: 100 }
-        //   }
 
         Image{
             id: iconHoveredBuffer
@@ -79,11 +57,13 @@ Item{
         visible: activateTaskAnimation.running
     }
 
+    ///////Activate animation/////
+
     SequentialAnimation{
         id: activateTaskAnimation
         property int speed: 120
 
-        SequentialAnimation{ 
+        SequentialAnimation{
             ParallelAnimation{
                 PropertyAnimation {
                     target: brightnessTaskEffect
@@ -119,7 +99,6 @@ Item{
             }
 
         }
-
         onStopped: {
             wrapper.animationEnded();
         }
@@ -129,9 +108,12 @@ Item{
         }
 
         Component.onCompleted: {
-            wrapper.runAnimation.connect(startAnimation);
+            wrapper.runActivateAnimation.connect(startAnimation);
         }
     }
+    ////end of activate animation////
+
+
 
     //Something to show until the buffers are updated
     KQuickControlAddons.QIconItem{
@@ -205,8 +187,95 @@ Item{
     }*/
 
     Component.onCompleted:{
+
         //   panel.updateAllIcons.connect(updateImages);
     }
+
+
+    SequentialAnimation{
+        id:launcherAnimation
+        property int speed: 300
+
+        SequentialAnimation{
+            ParallelAnimation{
+                PropertyAnimation {
+                    target: wrapper
+                    property: (icList.orientation == Qt.Vertical) ? "tempScaleWidth" : "tempScaleHeight"
+                    to: panel.zoomFactor + 0.3
+                    duration: launcherAnimation.speed
+                    easing.type: Easing.OutQuad
+                }
+
+                PropertyAnimation {
+                    target: wrapper
+                    property: (icList.orientation == Qt.Horizontal) ? "tempScaleWidth" : "tempScaleHeight"
+                    to: 1
+                    duration: launcherAnimation.speed
+                    easing.type: Easing.OutQuad
+                }
+            }
+
+            PropertyAnimation {
+                target: wrapper
+                property: (icList.orientation == Qt.Vertical) ? "tempScaleWidth" : "tempScaleHeight"
+                to: 1
+                duration: 3 * launcherAnimation.speed
+                easing.type: Easing.OutBounce
+            }
+        }
+
+
+        onStopped: {
+            wrapper.animationEnded();
+        }
+
+        function init(){
+            wrapper.tempScaleWidth = wrapper.scale;
+            wrapper.tempScaleHeight = wrapper.scale;
+
+            iconImageBuffer.anchors.centerIn = undefined;
+
+            if(panel.position === PlasmaCore.Types.LeftPositioned)
+              iconImageBuffer.anchors.right = iconImageBuffer.parent.right;
+            else if(panel.position === PlasmaCore.Types.RightPositioned)
+              iconImageBuffer.anchors.left = iconImageBuffer.parent.left;
+            else if(panel.position === PlasmaCore.Types.TopPositioned)
+              iconImageBuffer.anchors.bottom = iconImageBuffer.parent.bottom;
+            else if(panel.position === PlasmaCore.Types.BottomPositioned)
+              iconImageBuffer.anchors.top = iconImageBuffer.parent.top;
+
+            icList.hoveredIndex = -1;
+        }
+
+        function bounceLauncher(){
+            init();
+            start();
+        }
+
+        Component.onCompleted: {wrapper.runLauncherAnimation.connect(bounceLauncher);}
+    }
+
+
+
+    ////
+
+    function updateImages(){
+        if(panel){
+            if(activeLoader.item)
+                activeLoader.item.updateImage();
+
+            if(panel.enableShadows === true){
+                if(defaultWithShadow.item){
+                    defaultWithShadow.item.updateImage();
+                }
+            }
+            else{
+                if(defaultNoShadow.item)
+                    defaultNoShadow.item.updateImage();
+            }
+        }
+    }
+
 
     // Another way for the shadow must be found it increases the cpu cycles x2 alsmost,
     // even with the following caching mechanism.
@@ -320,7 +389,7 @@ Item{
 
                                     hideBackTimer.createObject(iconImageBackground);
 
-                        //            ttt.destroy();
+                                    //            ttt.destroy();
                                 }
                             }
 
@@ -389,7 +458,7 @@ Item{
                                         activeIcon.source = result.url;
                                     }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
                                 }
-                       //         ttt11.destroy();
+                                //         ttt11.destroy();
                             }
 
                             Component.onCompleted: ttt11.start();
@@ -453,7 +522,7 @@ Item{
                                         simpleIcon.source = result.url;
                                     }, Qt.size(fixedIconns.width,fixedIconns.height) );
                                 }
-                         //       tttns.destroy();
+                                //       tttns.destroy();
                             }
 
                             Component.onCompleted: tttns.start();

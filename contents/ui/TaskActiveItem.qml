@@ -10,7 +10,7 @@ Rectangle{
     opacity: m.IsActive ? 1 : 0
 
     color: theme.highlightColor
-    width: ( icList.orientation === Qt.Horizontal ) ? wrapper.regulatorSize : 3
-    height: ( icList.orientation === Qt.Vertical ) ? wrapper.regulatorSize : 3
+    width: ( icList.orientation === Qt.Horizontal ) ? wrapper.regulatorWidth : 3
+    height: ( icList.orientation === Qt.Vertical ) ? wrapper.regulatorHeight : 3
 
 }// active indicator

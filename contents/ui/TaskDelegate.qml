@@ -85,23 +85,41 @@ Component {
             MouseArea{
                 id: wrapper
 
-                signal runAnimation();
+                signal runActivateAnimation();
+                signal runLauncherAnimation();
 
-                ///Dont use Math.floor it adds one pixel in animations and creates glitches
-                property real basicScalingSize : (panel.realSize * scale)
-
-                width: (icList.orientation === Qt.Vertical ) ? basicScalingSize+addedSpace :
-                                                               basicScalingSize
-                height: (icList.orientation === Qt.Vertical ) ? basicScalingSize :
-                                                                basicScalingSize + addedSpace
+                width: (icList.orientation === Qt.Vertical ) ? basicScalingWidth+addedSpace :
+                                                               basicScalingWidth
+                height: (icList.orientation === Qt.Vertical ) ? basicScalingHeight :
+                                                                basicScalingHeight + addedSpace
 
                 acceptedButtons: Qt.LeftButton | Qt.MidButton | Qt.RightButton
 
-                hoverEnabled: false
+                hoverEnabled: (inAnimation !== true)
                 property int addedSpace: 12
 
                 property bool pressed: false
+
+                //scales which are used mainly for activating InLauncher
+                ////Scalers///////
+
                 property real scale: 1;
+                property real tempScaleWidth: 1
+                property real tempScaleHeight: 1
+                property bool inTempScaling: ((tempScaleWidth !== 1) || (tempScaleHeight !== 1) )
+
+                property real scaleWidth: (inTempScaling == true) ? tempScaleWidth : scale
+                property real scaleHeight: (inTempScaling == true) ? tempScaleHeight : scale
+
+                ///Dont use Math.floor it adds one pixel in animations and creates glitches
+                property real cleanScaling: panel.realSize * scale
+
+                property real basicScalingWidth : (inTempScaling == true) ? (panel.realSize * scaleWidth) : cleanScaling
+                property real basicScalingHeight : (inTempScaling == true) ? (panel.realSize * scaleHeight) : cleanScaling
+
+                property real regulatorWidth: basicScalingWidth - 2;
+                property real regulatorHeight: basicScalingHeight - 2;
+                /// end of Scalers///////
 
                 property int curIndex: icList.hoveredIndex
                 property int index: mainItemContainer.Positioner.index
@@ -110,8 +128,12 @@ Component {
 
                 property bool inAnimation: false
 
-                ///Dont use Math.floor it adds one pixel in animations and creates glitches
-                property real regulatorSize: basicScalingSize - 2;
+               /* Rectangle{
+                    anchors.fill: parent
+                    border.width: 1
+                    border.color: "red"
+                    color: "transparent"
+                } */
 
                 Behavior on scale {
                     NumberAnimation { duration: mainItemContainer.animationTime }
@@ -134,6 +156,7 @@ Component {
                             TaskIconItem{}
                             TaskActiveItem{}
                             TaskGroupItem{}
+
                         }//Flow
                     }
                 }
@@ -316,8 +339,8 @@ Component {
                         }
                     }
 
-                    if(IsLauncher)
-                        icList.hoveredIndex = -1;
+                //    if(IsLauncher)
+                    //    icList.hoveredIndex = -1;
 
                     pressed = false;
                     inAnimation = false;
@@ -327,20 +350,11 @@ Component {
                     if ((mouse.button == Qt.LeftButton)||(mouse.button == Qt.MidButton)) {
                         pressed = true;
                         inAnimation = true;
-                        runAnimation();
-                        /*     if(mouse.button == Qt.LeftButton){
-                            //create small decrease in size
-                            var smallS = -0.15;
-                            scale = scale + smallS;
-                            icList.updateScale(index-1, -1, smallS);
-                            icList.updateScale(index+1, -1, smallS);
-                            /////
-                            //create small increase in size
-                            smallS = - smallS;
-                            scale = scale + smallS;
-                            icList.updateScale(index-1, -1, smallS);
-                            icList.updateScale(index+1, -1, smallS);
-                        }*/
+
+                        if( model.IsLauncher )
+                            runLauncherAnimation();
+                        else
+                            runActivateAnimation();
 
                     }
                     else if (mouse.button == Qt.RightButton){

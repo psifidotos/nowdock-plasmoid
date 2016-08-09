@@ -7,8 +7,8 @@ import org.kde.plasma.components 2.0 as PlasmaComponents
 
 Item{
     id:glowFrame
-    width: ( icList.orientation === Qt.Horizontal ) ? wrapper.regulatorSize : size
-    height: ( icList.orientation === Qt.Vertical ) ? wrapper.regulatorSize : size
+    width: ( icList.orientation === Qt.Horizontal ) ? wrapper.regulatorWidth : size
+    height: ( icList.orientation === Qt.Vertical ) ? wrapper.regulatorHeight : size
 
     property int size: 8
 
