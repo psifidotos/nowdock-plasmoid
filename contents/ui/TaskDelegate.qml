@@ -26,7 +26,7 @@ Component {
 
         property int animationTime: 60
 
-      /*  Rectangle{
+      /*Rectangle{
             anchors.fill: parent
             border.width: 1
             border.color: "red"
@@ -479,8 +479,6 @@ Component {
         }
 
         Component.onCompleted: {
-            //   if(IsWindow || IsLauncher)
-            //    icList.durationA = 300;
             opacity = 1;
 
             if (model.IsWindow !== true) {
@@ -489,7 +487,7 @@ Component {
         }
 
         Component.onDestruction: {
-            //    console.log("Destroying... "+index);
+                //    console.log("Destroying... "+index);
         }
 
 
