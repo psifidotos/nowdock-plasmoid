@@ -62,24 +62,19 @@ Item{
 
 
     //Something to show until the buffers are updated
+
     KQuickControlAddons.QIconItem{
         id: iconImageBackground
 
         property real relatedSize: panel.iconSize  *  ( (doubleSize  - 7) / doubleSize );
 
-        width: relatedSize * wrapper.scale
+        width: (visible) ? relatedSize * wrapper.scale : panel.iconSize
         height: width
         anchors.centerIn: parent
 
         state: wrapper.containsMouse ? KQuickControlAddons.QIconItem.ActiveState : KQuickControlAddons.QIconItem.DefaultState
-
         icon: decoration
-   /*     Rectangle{
-            anchors.fill: parent
-            border.width: 1
-            border.color: "red"
-            color: "transparent"
-        }*/
+
 
         Component{
             id:hideBackTimer
