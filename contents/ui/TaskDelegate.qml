@@ -26,7 +26,7 @@ Component {
 
         property int animationTime: 60
 
-      /*Rectangle{
+        /*Rectangle{
             anchors.fill: parent
             border.width: 1
             border.color: "red"
@@ -479,19 +479,51 @@ Component {
         }
 
         Component.onCompleted: {
-            opacity = 1;
 
             if (model.IsWindow !== true) {
                 taskInitComponent.createObject(wrapper);
             }
+            else{
+                showWindowAnimation.showWindow();
+            }
+
+            opacity = 1;
         }
 
         Component.onDestruction: {
-                //    console.log("Destroying... "+index);
+            //    console.log("Destroying... "+index);
         }
 
 
         /////Animations
+        SequentialAnimation{
+            id:showWindowAnimation
+            property int speed: 400
+
+            PropertyAnimation {
+                target: wrapper
+                property: (icList.orientation == Qt.Vertical) ? "tempScaleWidth" : "tempScaleHeight"
+                to: 1
+                duration: showWindowAnimation.speed
+                easing.type: Easing.OutQuad
+            }
+
+            function init(){
+                if (icList.orientation == Qt.Vertical)
+                    wrapper.tempScaleWidth = 0;
+                else
+                    wrapper.tempScaleHeight = 0;
+            }
+
+            function showWindow(){
+                init();
+                start();
+            }
+
+            //  Component.onCompleted: {wrapper.runLauncherAnimation.connect(bounceLauncher);}
+        }
+
+
 
     }// main Item
 }
