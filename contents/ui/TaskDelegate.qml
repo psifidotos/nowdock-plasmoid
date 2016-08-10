@@ -26,10 +26,16 @@ Component {
 
         property int animationTime: 60
 
-
+      /*  Rectangle{
+            anchors.fill: parent
+            border.width: 1
+            border.color: "red"
+            color: "transparent"
+            visible: IsStartup ? true : false
+        }*/
 
         Behavior on opacity {
-            NumberAnimation { duration: 400 }
+            NumberAnimation { duration: (IsStartup || (IsLauncher) ) ? 0 : 400 }
         }
 
         onIsWindowChanged: {
@@ -128,7 +134,7 @@ Component {
 
                 property bool inAnimation: false
 
-               /* Rectangle{
+                /* Rectangle{
                     anchors.fill: parent
                     border.width: 1
                     border.color: "red"
@@ -178,7 +184,7 @@ Component {
 
                             TaskGroupItem{}
                             TaskActiveItem{}
-                       //     TaskIconItem{}
+                            //     TaskIconItem{}
                         } //Flow Element
                     }
                 }
@@ -339,7 +345,7 @@ Component {
                         }
                     }
 
-                //    if(IsLauncher)
+                    //    if(IsLauncher)
                     //    icList.hoveredIndex = -1;
 
                     pressed = false;
