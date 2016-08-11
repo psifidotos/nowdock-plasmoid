@@ -241,8 +241,8 @@ Item{
 
     function updateImages(){
         if(panel){
-         //   if(activeLoader.item)
-             //   activeLoader.item.updateImage();
+            //   if(activeLoader.item)
+            //   activeLoader.item.updateImage();
             if(defaultWithShadow.item){
                 defaultWithShadow.item.updateImage();
             }

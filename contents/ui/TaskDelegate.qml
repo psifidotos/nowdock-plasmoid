@@ -19,6 +19,11 @@ Component {
         readonly property var m: model
         property bool isWindow: model.IsWindow ? true : false
 
+        anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
+        anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
+        anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
+        anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
+
         width: (icList.orientation === Qt.Horizontal) ? hiddenSpacerLeft.width+wrapper.width+hiddenSpacerRight.width : wrapper.width
         height: (icList.orientation === Qt.Horizontal) ? wrapper.height : hiddenSpacerLeft.height + wrapper.height + hiddenSpacerRight.height
 
@@ -63,7 +68,7 @@ Component {
             // IMPORTANT: hidden spacers must be tested on vertical !!!
             Item{
                 id: hiddenSpacerLeft
-                visible: (mainItemContainer.Positioner.index === 0)
+                visible: (index === 0)
 
                 property real nHiddenSize: (nScale > 0) ? (panel.realSize * nScale) : 0
 
@@ -128,7 +133,7 @@ Component {
                 /// end of Scalers///////
 
                 property int curIndex: icList.hoveredIndex
-                property int index: mainItemContainer.Positioner.index
+              //  property int index: mainItemContainer.Positioner.index
                 property real center: Math.floor(width / 2)
                 property real animationStep: panel.iconSize / 8  ;
 
@@ -184,7 +189,7 @@ Component {
 
                             TaskGroupItem{}
                             TaskActiveItem{}
-                            //     TaskIconItem{}
+                            TaskIconItem{}
                         } //Flow Element
                     }
                 }
@@ -436,7 +441,7 @@ Component {
             // a hidden spacer on the right for the last item to add stability
             Item{
                 id: hiddenSpacerRight
-                visible: (mainItemContainer.Positioner.index === icList.count - 1)
+                visible: (index === icList.count - 1)
 
                 property real nHiddenSize: (nScale > 0) ? (panel.realSize * nScale) : 0
 

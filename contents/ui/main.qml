@@ -32,7 +32,8 @@ Item {
     Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
     Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground
 
-    property bool vertical: (plasmoid.formFactor === PlasmaCore.Types.Vertical)
+    property bool vertical: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
+                             (panel.position === PlasmaCore.Types.RightPositioned)) ? true : false
 
     property Item dragSource: null
     property bool inAnimation: false
@@ -92,6 +93,8 @@ Item {
 
 
         onCountChanged: {
+            panel.inAnimation = true;
+            panel.inAnimation = false;
             //    panel.updateImplicits()  // is going to triger it the inAnimation ending
             //  iconGeometryTimer.restart();
         }
@@ -120,7 +123,7 @@ Item {
             groupingAppIdBlacklist = plasmoid.configuration.groupingAppIdBlacklist;
             groupingLauncherUrlBlacklist = plasmoid.configuration.groupingLauncherUrlBlacklist;
 
-            tasksListRepeater.model = tasksModel;
+            icList.model = tasksModel;
         }
     }
 
@@ -156,7 +159,7 @@ Item {
         interval:60;
 
         onTriggered: {
-            var tasks = icList.children;
+            var tasks = icList.contentItem.children;
             var lostMouse = true;
 
             //      console.debug("---------");
@@ -257,14 +260,14 @@ Item {
             border.color: "red"
             color: "lightblue"
         }*/
-       /* Rectangle{
+        /* Rectangle{
             anchors.fill: icList
             border.width: 1
             border.color: "red"
             color: "white"
-        } */
+        }*/
 
-        Grid {
+        ListView {
             id:icList
 
             //trigger updating scaling of neighbour delegates of zoomed delegate
@@ -274,42 +277,26 @@ Item {
             property int hoveredIndex : -1
             property int previousCount : 0
 
-            property int count: children ? children.length : 0
+          //  property int count: children ? children.length : 0
+            anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
+            anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
+            anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
+            anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
 
-            verticalItemAlignment: (panel.position === PlasmaCore.Types.BottomPositioned) ? Grid.AlignBottom : Grid.AlignTop
-            horizontalItemAlignment: (panel.position === PlasmaCore.Types.LeftPositioned) ? Grid.AlignLeft : Grid.AlignRight
-
-            //   LayoutMirroring.enabled: ((panel.position === PlasmaCore.Types.RightPositioned) ||
-            //            (panel.position === PlasmaCore.Types.TopPositioned)) ? true : false
-
-            rows: ((panel.position === PlasmaCore.Types.BottomPositioned) ||
-                   (panel.position === PlasmaCore.Types.TopPositioned)) ? 1 : 0
-
-            columns: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
-                      (panel.position === PlasmaCore.Types.RightPositioned)) ? 1 : 0
-
-            property int orientation: Qt.Horizontal
+            anchors.horizontalCenter: ((panel.position === PlasmaCore.Types.BottomPositioned) ||
+                                       (panel.position === PlasmaCore.Types.TopPositioned)) ? parent.horizontalCenter : undefined
+            anchors.verticalCenter: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
+                                     (panel.position === PlasmaCore.Types.RightPositioned)) ? parent.verticalCenter : undefined
 
 
+            width: contentWidth+1
+            height: contentHeight+1
 
-            flow: (panel.position === PlasmaCore.Types.BottomPositioned) ? Flow.LeftToRight : Flow.TopToBottom
-            //  layoutDirection: (panel.position === PlasmaCore.Types.LeftPositioned) ? Qt.RightToLeft : Qt.LeftToRight
+            orientation: Qt.Horizontal
 
+            model: tasksModel
 
-            Repeater {
-                id: tasksListRepeater
-                delegate: TaskDelegate{}
-
-                onItemAdded: {
-                    panel.inAnimation = true;
-                    panel.inAnimation = false;
-                }
-
-                onItemRemoved: {
-                    panel.inAnimation = true;
-                    panel.inAnimation = false;
-                }
-            }
+            delegate: TaskDelegate{}
 
             /*Rectangle{
                 anchors.fill: parent
@@ -373,7 +360,7 @@ Item {
 
         onTriggered: {
             //    console.debug("Found children: "+icList.contentItem.children.length);
-            TaskTools.publishIconGeometries(icList.children);
+            TaskTools.publishIconGeometries(icList.contentItem.children);
         }
     }
 
@@ -448,7 +435,7 @@ Item {
         }
     }
 
-    //   property int ncounter:0
+       property int ncounter:0
 
     function updateImplicits(){
         if(icList.previousCount !== icList.count){
@@ -502,6 +489,8 @@ Item {
         default:
             newPosition = PlasmaCore.Types.BottomPositioned;
         }
+
+            newPosition = PlasmaCore.Types.TopPositioned;
 
         movePanel(barLine,newPosition);
         movePanel(icList,newPosition);
