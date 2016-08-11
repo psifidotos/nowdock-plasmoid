@@ -294,9 +294,15 @@ Item {
 
             orientation: Qt.Horizontal
 
-            model: tasksModel
-
             delegate: TaskDelegate{}
+
+            removeDisplaced: Transition {
+                NumberAnimation { properties: "x,y"; duration: durationA; easing.type: Easing.OutQuad }
+            }
+
+            addDisplaced: Transition {
+                NumberAnimation { properties: "x,y"; duration: durationA; easing.type: Easing.OutQuad }
+            }
 
             /*Rectangle{
                 anchors.fill: parent
@@ -489,8 +495,6 @@ Item {
         default:
             newPosition = PlasmaCore.Types.BottomPositioned;
         }
-
-            newPosition = PlasmaCore.Types.TopPositioned;
 
         movePanel(barLine,newPosition);
         movePanel(icList,newPosition);

@@ -12,8 +12,7 @@ Component {
     Item{
         id: mainItemContainer
 
-        visible: (opacity > 0)
-        opacity: 0
+        visible: (IsStartup) ? false : true
 
         property bool containsMouse : wrapper.containsMouse
         readonly property var m: model
@@ -49,16 +48,24 @@ Component {
             }
         }
 
-        /*    ListView.onRemove: SequentialAnimation {
-            PropertyAction { target: panel; property: "inAnimation"; value: true }
+        ListView.onRemove: SequentialAnimation {
             PropertyAction { target: mainItemContainer; property: "ListView.delayRemove"; value: true }
             ParallelAnimation{
-                //    NumberAnimation { target: wrapper; property: "scale"; to: 0; duration: 350; easing.type: Easing.InOutQuad }
-                NumberAnimation { target: wrapper; property: "opacity"; to: 0; duration: 350; easing.type: Easing.InOutQuad }
+                id: removalAnimation
+
+                property int speed: 400
+                NumberAnimation { target: wrapper; property: "opacity"; to: 0; duration: removalAnimation.speed; easing.type: Easing.OutQuad }
+
+                PropertyAnimation {
+                    target: wrapper
+                    property: (icList.orientation == Qt.Vertical) ? "tempScaleWidth" : "tempScaleHeight"
+                    to: 0
+                    duration: showWindowAnimation.speed
+                    easing.type: Easing.OutQuad
+                }
             }
             PropertyAction { target: mainItemContainer; property: "ListView.delayRemove"; value: false }
-            PropertyAction { target: panel; property: "inAnimation"; value: false }
-        }*/
+        }
 
         Flow{
             width: parent.width
@@ -99,14 +106,18 @@ Component {
                 signal runActivateAnimation();
                 signal runLauncherAnimation();
 
-                width: (icList.orientation === Qt.Vertical ) ? basicScalingWidth+addedSpace :
-                                                               basicScalingWidth
-                height: (icList.orientation === Qt.Vertical ) ? basicScalingHeight :
-                                                                basicScalingHeight + addedSpace
+                property int showDelegateWidth: (icList.orientation === Qt.Vertical ) ? basicScalingWidth+addedSpace :
+                                                                                        basicScalingWidth
+
+                property int showDelegateheight: (icList.orientation === Qt.Vertical ) ? basicScalingHeight :
+                                                                                         basicScalingHeight + addedSpace
+
+                width: (IsStartup) ? 0 : showDelegateWidth
+                height: (IsStartup) ? 0 : showDelegateheight
 
                 acceptedButtons: Qt.LeftButton | Qt.MidButton | Qt.RightButton
 
-                hoverEnabled: (inAnimation !== true)
+                hoverEnabled: (inAnimation !== true)&& (!IsStartup)
                 property int addedSpace: 12
 
                 property bool pressed: false
@@ -133,7 +144,7 @@ Component {
                 /// end of Scalers///////
 
                 property int curIndex: icList.hoveredIndex
-              //  property int index: mainItemContainer.Positioner.index
+                //  property int index: mainItemContainer.Positioner.index
                 property real center: Math.floor(width / 2)
                 property real animationStep: panel.iconSize / 8  ;
 
@@ -151,7 +162,8 @@ Component {
                 }
 
                 Loader{
-                    active: (panel.position !== PlasmaCore.Types.TopPositioned)
+                    active: (panel.position !== PlasmaCore.Types.TopPositioned) &&
+                            (!IsStartup)
                     sourceComponent: states3Flow
 
                     Component{
@@ -173,7 +185,8 @@ Component {
                 }
 
                 Loader{
-                    active: (panel.position === PlasmaCore.Types.TopPositioned)
+                    active: (panel.position === PlasmaCore.Types.TopPositioned) &&
+                            (!IsStartup)
                     sourceComponent: topStateFlow
 
                     Component{
@@ -384,7 +397,7 @@ Component {
                     }
                 }
 
-          /*      onReleased: {
+                /*      onReleased: {
                     if(pressed){
                         if (mouse.button == Qt.MidButton){
                             if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.NewInstance) {
@@ -495,7 +508,8 @@ Component {
             if (model.IsWindow !== true) {
                 taskInitComponent.createObject(wrapper);
             }
-            else{
+
+            if (model.IsWindow || model.IsLauncher) {
                 showWindowAnimation.showWindow();
             }
 
@@ -508,13 +522,22 @@ Component {
 
 
         /////Animations
-        SequentialAnimation{
+        ParallelAnimation{
             id:showWindowAnimation
             property int speed: 400
 
             PropertyAnimation {
                 target: wrapper
                 property: (icList.orientation == Qt.Vertical) ? "tempScaleWidth" : "tempScaleHeight"
+                to: 1
+                duration: showWindowAnimation.speed
+                easing.type: Easing.OutQuad
+            }
+
+            PropertyAnimation {
+                target: wrapper
+                property: "opacity"
+                from: 0
                 to: 1
                 duration: showWindowAnimation.speed
                 easing.type: Easing.OutQuad

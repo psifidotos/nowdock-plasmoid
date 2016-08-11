@@ -28,7 +28,8 @@ Item{
         id: iconImageBuffer
 
         //property real newTempSize: panel.iconSize * wrapper.scale
-        property real newTempSize: Math.min(wrapper.basicScalingWidth, wrapper.basicScalingHeight)
+        property real newTempSize: (wrapper.opacity == 1) ?  Math.min(wrapper.basicScalingWidth, wrapper.basicScalingHeight) :
+                                                            Math.max(wrapper.basicScalingWidth, wrapper.basicScalingHeight)
         width: newTempSize
         height: newTempSize
 
@@ -108,12 +109,6 @@ Item{
         sourceComponent: component
         active: (IsStartup && (!panel.enableShadows) ) ? false : true
     }
-
-    /*
-    Loader{
-        id:activeLoader
-        sourceComponent: component2
-    }*/
 
     ///////Activate animation/////
 
