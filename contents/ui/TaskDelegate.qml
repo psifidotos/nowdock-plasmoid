@@ -39,7 +39,8 @@ Component {
         }*/
 
         Behavior on opacity {
-            NumberAnimation { duration: (IsStartup || (IsLauncher) ) ? 0 : 400 }
+            // NumberAnimation { duration: (IsStartup || (IsLauncher) ) ? 0 : 400 }
+            NumberAnimation { duration: 400 }
         }
 
         onIsWindowChanged: {
@@ -144,8 +145,7 @@ Component {
                 }
 
                 Loader{
-                    active: (panel.position !== PlasmaCore.Types.TopPositioned) &&
-                            (!IsStartup)
+                    active: (panel.position !== PlasmaCore.Types.TopPositioned)
                     sourceComponent: states3Flow
 
                     Component{
@@ -167,8 +167,7 @@ Component {
                 }
 
                 Loader{
-                    active: (panel.position === PlasmaCore.Types.TopPositioned) &&
-                            (!IsStartup)
+                    active: (panel.position === PlasmaCore.Types.TopPositioned)
                     sourceComponent: topStateFlow
 
                     Component{
@@ -467,16 +466,14 @@ Component {
             Timer {
                 id: timer
 
-                interval: units.longDuration * 2
+                interval: 800
                 repeat: false
 
                 onTriggered: {
                     wrapper.hoverEnabled = true;
 
-                    if (model.isWindow) {
-                        tasksModel.requestPublishDelegateGeometry(wrapper.modelIndex(),
-                                                                  backend.globalRect(mainItemContainer), mainItemContainer);
-                    }
+                    tasksModel.requestPublishDelegateGeometry(wrapper.modelIndex(),
+                                                              backend.globalRect(mainItemContainer), mainItemContainer);
 
                     timer.destroy();
                 }
@@ -486,16 +483,10 @@ Component {
         }
 
         Component.onCompleted: {
-
-            if (model.IsWindow !== true) {
-                taskInitComponent.createObject(wrapper);
-            }
-
-            if (model.IsWindow || model.IsLauncher) {
+            if (model.IsWindow || model.IsLauncher)
                 showWindowAnimation.showWindow();
-            }
-
-            //  opacity = 1;
+            else
+                delayShowWindow.createObject(mainItemContainer);
         }
 
         Component.onDestruction: {
@@ -539,11 +530,11 @@ Component {
                 }
             }
 
-            /*    onStopped: {
-                if(IsWindow || IsLauncher){
-                    panel.updateImplicits();
+            onStopped: {
+                if(IsWindow || IsStartup){
+                    taskInitComponent.createObject(wrapper);
                 }
-            }*/
+            }
 
             function init(){
                 wrapper.tempScaleWidth = 0;
@@ -551,36 +542,50 @@ Component {
             }
 
             function showWindow(){
-                init();
-
-                if(!icList.delayingRemoval)
+                if(IsLauncher || IsStartup){
+                    delayShowWindow.createObject(mainItemContainer);
+                }
+                else{
+                    init();
                     start();
+                }
             }
-            //  Component.onCompleted: {wrapper.runLauncherAnimation.connect(bounceLauncher);}
+        }
+
+        ///trying to compete with the crazy situation in the tasksModel
+        ///with launchers and startups... There are windows that stay
+        ///startup mode e.g. chrome, libreoffice... not showing startups
+        ///the user can lose windows...
+        ///Based on the animations, windows are shown directly, startups
+        ///are shown after 5secs of existence, and launchers after 200ms
+        ///for launchers this is set in order to give to a window the time
+        ///to desappear and then show the launcher...
+        ///    BE CAREFUL: there are situations that the launchers are lost
+        ///    in this situations some times... Needs investigations...
+        ///    e.g. chrome launcher
+        property int windowDelay: IsStartup ? 5000 : 200
+
+        Component {
+            id: delayShowWindow
+            Timer {
+                id: timerWindow
+
+                interval: windowDelay
+
+                repeat: false
+
+                onTriggered: {
+                    //console.log("I am in here: "+mainItemContainer.windowDelay);
+                    showWindowAnimation.init();
+                    showWindowAnimation.start();
+                    timerWindow.destroy();
+                }
+
+                Component.onCompleted: timerWindow.start()
+            }
         }
 
         ///Item's Removal Animation
-
-        property bool delayingRemoval: icList.delayingRemoval
-
-        property bool mustCompleteShowAnimation: false
-        onDelayingRemovalChanged: {
-            mustCompleteShowAnimation = true;
-            if (delayingRemoval && showWindowAnimation.running){
-                showWindowAnimation.stop();
-            }
-            else if(!delayingRemoval && mustCompleteShowAnimation){
-                showWindowAnimation.start();
-            }
-
-            mustCompleteShowAnimation = false;
-        }
-
-        //change the size panel only when the removal animation has ended;
-        /*   onDelayRemoveChanged: {
-            if((!delayRemove) && (IsStartup !== true))
-                panel.updateImplicits();
-        } */
 
         ListView.onRemove: SequentialAnimation {
             PropertyAction { target: mainItemContainer; property: "ListView.delayRemove"; value: true }
@@ -588,7 +593,8 @@ Component {
             ParallelAnimation{
                 id: removalAnimation
 
-                property int speed: IsStartup ? 0 : 400
+                property int speed: (IsStartup && !mainItemContainer.visible)? 0 : 400
+
                 NumberAnimation { target: wrapper; property: "opacity"; to: 0; duration: removalAnimation.speed; easing.type: Easing.OutQuad }
 
                 PropertyAnimation {
@@ -611,8 +617,6 @@ Component {
             PropertyAction { target: mainItemContainer; property: "ListView.delayRemove"; value: false }
             PropertyAction { target: icList; property: "delayingRemoval"; value: false }
         }
-
-
 
     }// main Item
 }

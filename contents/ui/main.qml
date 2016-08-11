@@ -277,6 +277,7 @@ Item {
             property int hoveredIndex : -1
             property int previousCount : 0
 
+
             property bool delayingRemoval: false
 
           //  property int count: children ? children.length : 0
@@ -291,8 +292,8 @@ Item {
                                      (panel.position === PlasmaCore.Types.RightPositioned)) ? parent.verticalCenter : undefined
 
 
-            width: contentWidth+1
-            height: contentHeight+1
+            width: contentWidth+2
+            height: contentHeight+2
 
             orientation: Qt.Horizontal
 
