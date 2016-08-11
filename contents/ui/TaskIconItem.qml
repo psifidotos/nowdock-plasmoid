@@ -267,7 +267,7 @@ Item{
 
             Item{
                 id:fixedIcon
-                width: panel.zoomFactor*panel.iconSize
+                width: 2*panel.iconSize
                 height: width
 
                 visible:false
@@ -275,8 +275,8 @@ Item{
                //KQuickControlAddons.QIconItem{
                 PlasmaCore.IconItem{
                     id: iconImage
-                    width: parent.width - 16
-                    height: parent.height - 16
+                    width: parent.width - 12
+                    height: parent.height - 12
                     anchors.centerIn: parent
 
                    // state: KQuickControlAddons.QIconItem.DefaultState
