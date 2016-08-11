@@ -299,10 +299,6 @@ Item {
             width: contentWidth+2
             height: contentHeight+2
 
-            onWidthChanged: {
-                console.log(width);
-            }
-
             orientation: Qt.Horizontal
 
             delegate: TaskDelegate{}

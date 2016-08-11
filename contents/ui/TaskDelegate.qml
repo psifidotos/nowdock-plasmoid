@@ -30,6 +30,13 @@ Component {
 
         property int animationTime: 60
 
+        onContainsMouseChanged:{
+            if(!containsMouse){
+                hiddenSpacerLeft.nScale = 0;
+                hiddenSpacerRight.nScale = 0;
+            }
+        }
+
         /*Rectangle{
             anchors.fill: parent
             border.width: 1
@@ -88,10 +95,10 @@ Component {
                 signal runActivateAnimation();
                 signal runLauncherAnimation();
 
-                property int showDelegateWidth: (icList.orientation === Qt.Vertical ) ? basicScalingWidth+addedSpace :
+                property real showDelegateWidth: (icList.orientation === Qt.Vertical ) ? basicScalingWidth+addedSpace :
                                                                                         basicScalingWidth
 
-                property int showDelegateheight: (icList.orientation === Qt.Vertical ) ? basicScalingHeight :
+                property real showDelegateheight: (icList.orientation === Qt.Vertical ) ? basicScalingHeight :
                                                                                          basicScalingHeight + addedSpace
 
                 width: (IsStartup) ? 0 : showDelegateWidth
@@ -228,21 +235,15 @@ Component {
                             leftScale = bigNeighbourZoom;
                         }
 
-                        //    console.debug(leftScale + "  " + rightScale + " " + index);
+                       // console.debug(leftScale + "  " + rightScale + " " + index);
 
 
                         //activate messages to update the the neighbour scales
-                        // if(index < icList.children.length - 1){
                         icList.updateScale(index+1, rightScale, 0);
-                        //   }
-
-                        //   if(index > 0){
                         icList.updateScale(index-1,leftScale, 0);
-                        //  }
+
 
                         //Left hiddenSpacer
-
-
                         if((index === 0 )&&(icList.count > 1)){
                             hiddenSpacerLeft.nScale = leftScale - 1;
                         }
@@ -253,20 +254,7 @@ Component {
                         }
 
                         scale = panel.zoomFactor;
-
-
-                        //debugging code
-                        /*    if (index === 1 ){
-                            var left = icList.contentItem.children[index-1];
-                            var right = icList.contentItem.children[index+1];
-                            console.debug("LW: "+left.width+" C: "+width+" RW:"+right.width);
-                            console.debug("Total Width: "+(width+left.width+right.width));
-                        } */
                     }
-
-                    //if( (distanceFromHovered > 1)||(icList.currentSpot < 0)){
-                    // scale = 1;
-                    //  }
 
                 } //scale
 
@@ -413,13 +401,14 @@ Component {
                     return tasksModel.makeModelIndex(index);
                 }
 
-
                 function signalUpdateScale(nIndex, nScale, step){
                     if( index === nIndex){
                         if(nScale >= 0)
                             scale = nScale + step;
                         else
                             scale = scale + step;
+
+                   //     console.log(index+ ", "+scale);
                     }
                 }
 
