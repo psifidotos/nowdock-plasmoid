@@ -542,7 +542,7 @@ Component {
             }
 
             function showWindow(){
-                if(IsLauncher || IsStartup){
+                if(IsLauncher || IsStartup || icList.delayingRemoval){
                     delayShowWindow.createObject(mainItemContainer);
                 }
                 else{
@@ -563,7 +563,9 @@ Component {
         ///    BE CAREFUL: there are situations that the launchers are lost
         ///    in this situations some times... Needs investigations...
         ///    e.g. chrome launcher
-        property int windowDelay: IsStartup ? 5000 : 200
+
+        property int mainDelay: IsLauncher ? 200 : 300
+        property int windowDelay: IsStartup ? 5000 : mainDelay
 
         Component {
             id: delayShowWindow
