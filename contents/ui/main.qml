@@ -260,12 +260,16 @@ Item {
             border.color: "red"
             color: "lightblue"
         }*/
-        /* Rectangle{
-            anchors.fill: icList
+/*
+         Rectangle{
+            width:icList.width
+            anchors.bottom: parent.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+            height: 120
             border.width: 1
             border.color: "red"
             color: "white"
-        }*/
+        } */
 
         ListView {
             id:icList
@@ -294,6 +298,10 @@ Item {
 
             width: contentWidth+2
             height: contentHeight+2
+
+            onWidthChanged: {
+                console.log(width);
+            }
 
             orientation: Qt.Horizontal
 

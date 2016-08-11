@@ -21,7 +21,8 @@ Item{
     property int doubleSize : 2 * panel.iconSize;
     //big interval to show shadows only after all the crappy adds and removes of tasks
     //have happened
-    property int shadowInterval: 50
+    property bool firstDrawed: false
+    property int shadowInterval: firstDrawed ? 400 : 80
     property int normalIconInterval: 40
 
     Image {
@@ -70,17 +71,22 @@ Item{
 
     //Something to show until the buffers are updated
 
-    KQuickControlAddons.QIconItem{
+    //KQuickControlAddons.QIconItem{
+        PlasmaCore.IconItem{
         id: iconImageBackground
 
-        property real relatedSize: panel.iconSize  *  ( (doubleSize  - 7) / doubleSize );
+        //property real relatedSize: panel.iconSize  *  ( (doubleSize  - 7) / doubleSize );
 
-        width: (visible) ? relatedSize * wrapper.scale : panel.iconSize
+    //    width: (visible) ? relatedSize * wrapper.scale : panel.iconSize
+        width: (visible) ? panel.iconSize * wrapper.scale : panel.iconSize
         height: width
         anchors.centerIn: parent
 
-        state: wrapper.containsMouse ? KQuickControlAddons.QIconItem.ActiveState : KQuickControlAddons.QIconItem.DefaultState
-        icon: decoration
+//        state: wrapper.containsMouse ? KQuickControlAddons.QIconItem.ActiveState : KQuickControlAddons.QIconItem.DefaultState
+ //       icon: decoration
+        active: wrapper.containsMouse
+        enabled: true
+        source: decoration
 
         visible: ((iconImageBuffer.opacity == 1) && (panel.enableShadows)) ? false : true
 
@@ -261,19 +267,23 @@ Item{
 
             Item{
                 id:fixedIcon
-                width: 2*panel.iconSize
+                width: panel.zoomFactor*panel.iconSize
                 height: width
 
                 visible:false
 
-                KQuickControlAddons.QIconItem{
+               //KQuickControlAddons.QIconItem{
+                PlasmaCore.IconItem{
                     id: iconImage
                     width: parent.width - 16
                     height: parent.height - 16
                     anchors.centerIn: parent
 
-                    state: KQuickControlAddons.QIconItem.DefaultState
-                    icon: decoration
+                   // state: KQuickControlAddons.QIconItem.DefaultState
+                    //icon: decoration
+                    active: false
+                    enabled: true
+                    source: decoration
 
                     visible: true
 
@@ -282,7 +292,7 @@ Item{
                     // drawing errors (libreoffice writer)
                     property int counter:0;
 
-                    onIconChanged: {
+                    onSourceChanged: {
                         centralItem.updateImages();
                     }
 
@@ -300,6 +310,8 @@ Item{
 
                             onTriggered: {
                                 if(index !== -1){
+                                    centralItem.firstDrawed = true;
+
                                     if(panel.enableShadows == true){
                                         shadowImageNoActive.grabToImage(function(result) {
                                             iconImageBuffer.source.destroy();
@@ -323,7 +335,8 @@ Item{
 
 
                                     hideBackTimer.createObject(iconImageBackground);
-                                    // ttt.destroy();
+
+                                    ttt.destroy(100);
                                 }
                             }
 
