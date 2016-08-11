@@ -17,7 +17,7 @@ Component {
 
         property bool containsMouse : wrapper.containsMouse
         readonly property var m: model
-        property bool isWindow: model.IsWindow ? model.IsWindow : false
+        property bool isWindow: model.IsWindow ? true : false
 
         width: (icList.orientation === Qt.Horizontal) ? hiddenSpacerLeft.width+wrapper.width+hiddenSpacerRight.width : wrapper.width
         height: (icList.orientation === Qt.Horizontal) ? wrapper.height : hiddenSpacerLeft.height + wrapper.height + hiddenSpacerRight.height
@@ -329,24 +329,33 @@ Component {
                     }
                 }
 
+                property int lastButtonClicked: -1;
 
                 function animationEnded(){
-                    if (model.IsGroupParent)
-                        panel.presentWindows(model.LegacyWinIdList);
-                    else {
-                        if (IsMinimized === true) {
-                            var i = modelIndex();
-                            tasksModel.requestToggleMinimized(i);
-                            tasksModel.requestActivate(i);
-                        } else if (IsActive === true) {
+                    if (lastButtonClicked == Qt.MidButton){
+                        if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.NewInstance) {
+                            tasksModel.requestNewInstance(modelIndex());
+                        } else if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.Close) {
+                            tasksModel.requestClose(modelIndex());
+                        } else if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.ToggleMinimized) {
                             tasksModel.requestToggleMinimized(modelIndex());
-                        } else {
-                            tasksModel.requestActivate(modelIndex());
                         }
                     }
-
-                    //    if(IsLauncher)
-                    //    icList.hoveredIndex = -1;
+                    else if (lastButtonClicked == Qt.LeftButton) {
+                        if (model.IsGroupParent)
+                            panel.presentWindows(model.LegacyWinIdList);
+                        else {
+                            if (IsMinimized === true) {
+                                var i = modelIndex();
+                                tasksModel.requestToggleMinimized(i);
+                                tasksModel.requestActivate(i);
+                            } else if (IsActive === true) {
+                                tasksModel.requestToggleMinimized(modelIndex());
+                            } else {
+                                tasksModel.requestActivate(modelIndex());
+                            }
+                        }
+                    }
 
                     pressed = false;
                     inAnimation = false;
@@ -356,12 +365,12 @@ Component {
                     if ((mouse.button == Qt.LeftButton)||(mouse.button == Qt.MidButton)) {
                         pressed = true;
                         inAnimation = true;
+                        lastButtonClicked = mouse.button;
 
                         if( model.IsLauncher )
                             runLauncherAnimation();
                         else
                             runActivateAnimation();
-
                     }
                     else if (mouse.button == Qt.RightButton){
                         mainItemContainer.contextMenu = panel.contextMenuComponent.createObject(mainItemContainer);
@@ -370,7 +379,7 @@ Component {
                     }
                 }
 
-                onReleased: {
+          /*      onReleased: {
                     if(pressed){
                         if (mouse.button == Qt.MidButton){
                             if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.NewInstance) {
@@ -383,7 +392,7 @@ Component {
 
                             pressed = false;
                         } else if (mouse.button == Qt.LeftButton) {
-                            /*     if (model.IsGroupParent)
+                                 if (model.IsGroupParent)
                                 panel.presentWindows(model.LegacyWinIdList);
                             else {
                                 if (IsMinimized === true) {
@@ -395,13 +404,11 @@ Component {
                                 } else {
                                     tasksModel.requestActivate(modelIndex());
                                 }
-                            }*/
+                            }
                         }
-
                     }
 
-
-                }
+                } */
 
                 function modelIndex(){
                     return tasksModel.makeModelIndex(index);
