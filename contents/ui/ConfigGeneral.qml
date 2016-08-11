@@ -93,7 +93,7 @@ Item {
                 Slider {
                     id: zoomLevel
                     Layout.fillWidth: true
-                    minimumValue: 1
+                    minimumValue: 0
                     maximumValue: 20
                     stepSize: 1
                     tickmarksEnabled: true
