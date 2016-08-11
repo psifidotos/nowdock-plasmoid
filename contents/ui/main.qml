@@ -19,8 +19,10 @@ Item {
     Layout.fillWidth: true
     Layout.fillHeight: true
 
-    property real zoomFactor: 1.7
-    property int iconSize: units.iconSizes.huge
+
+    //property real zoomFactor: 1.7
+    property real zoomFactor: ( 1 + (plasmoid.configuration.zoomLevel / 20) )
+    property int iconSize: units.iconSizes.huge + plasmoid.configuration.iconSize
     property int iconMargin: 5
     property int realSize: iconSize + iconMargin
 
@@ -260,12 +262,12 @@ Item {
             border.color: "red"
             color: "lightblue"
         }*/
-/*
-         Rectangle{
+
+       /*  Rectangle{
             width:icList.width
             anchors.bottom: parent.bottom
             anchors.horizontalCenter: parent.horizontalCenter
-            height: 120
+            height: 240
             border.width: 1
             border.color: "red"
             color: "white"

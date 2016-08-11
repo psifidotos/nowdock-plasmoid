@@ -25,6 +25,26 @@ Item{
     property int shadowInterval: firstDrawed ? 400 : 80
     property int normalIconInterval: 40
 
+
+    ///just for catching the signals
+    property int tempIconSize: panel.iconSize
+    property bool tempEnableShadows: panel.enableShadows
+
+    onTempIconSizeChanged: {
+        if (panel.enableShadows)
+            updateImages();
+    }
+
+    onTempEnableShadowsChanged: {
+        if(tempEnableShadows){
+            updateImages();
+        }
+        else{
+            iconImageBuffer.source.destroy();
+            iconHoveredBuffer.source.destroy();
+        }
+    }
+
     Image {
         id: iconImageBuffer
 
@@ -242,8 +262,6 @@ Item{
 
     function updateImages(){
         if(panel){
-            //   if(activeLoader.item)
-            //   activeLoader.item.updateImage();
             if(defaultWithShadow.item){
                 defaultWithShadow.item.updateImage();
             }
@@ -275,8 +293,8 @@ Item{
                //KQuickControlAddons.QIconItem{
                 PlasmaCore.IconItem{
                     id: iconImage
-                    width: parent.width - 12
-                    height: parent.height - 12
+                    width: parent.width - (3*shadowImageNoActive.radius)
+                    height: parent.height - (3*shadowImageNoActive.radius)
                     anchors.centerIn: parent
 
                    // state: KQuickControlAddons.QIconItem.DefaultState
@@ -358,8 +376,8 @@ Item{
                 height: fixedIcon.height
                 anchors.centerIn: fixedIcon
 
-                radius: 4
-                samples: 7
+                radius: panel.iconSize / 16
+                samples: 2 * radius
                 color: "#cc080808"
                 source: fixedIcon
             }

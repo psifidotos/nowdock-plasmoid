@@ -22,6 +22,7 @@ import QtQuick.Controls 1.0
 import QtQuick.Layouts 1.0
 
 import org.kde.plasma.core 2.0 as PlasmaCore
+import org.kde.plasma.components 2.0 as PlasmaComponents
 
 Item {
     width: childrenRect.width
@@ -40,15 +41,17 @@ Item {
     property alias cfg_showBarLine: showBarLine.checked
     property alias cfg_showShadows: showShadows.checked
     property alias cfg_showGlow: showGlow.checked
+    property alias cfg_zoomLevel: zoomLevel.value
+    property alias cfg_iconSize: iconSize.value
 
     ColumnLayout {
         spacing: 15
+        Layout.fillWidth: true
 
         GroupBox {
-            Layout.fillWidth: true
-
             title: i18n("Appearance")
             flat: true
+            Layout.fillWidth: true
 
             ColumnLayout {
                 Layout.fillWidth: true
@@ -58,7 +61,6 @@ Item {
                     text: i18n("Show bar line for tasks")
                     enabled: true
                 }
-
 
                 CheckBox {
                     id: showShadows
@@ -75,10 +77,68 @@ Item {
         }
 
         GroupBox {
+            title: i18n("Zoom")
+            flat: true
             Layout.fillWidth: true
 
+
+            GridLayout{
+                Layout.fillWidth: true
+                columns: 3
+
+                Label {
+                    text: i18n("Zoom Level: ")
+                }
+
+                Slider {
+                    id: zoomLevel
+                    Layout.fillWidth: true
+                    minimumValue: 1
+                    maximumValue: 20
+                    stepSize: 1
+                    tickmarksEnabled: true
+                }
+
+                Label {
+                    Layout.maximumWidth: 25
+                    text: ( 1 + (zoomLevel.value / 20) )
+                }
+
+                Label {
+                    text: i18n("Icon size: ")
+                }
+
+                Slider {
+                    id: iconSize
+                    Layout.fillWidth: true
+                    minimumValue: -32
+                    maximumValue: 64
+                    stepSize: 1
+                }
+
+                Label {
+                    Layout.maximumWidth: 25
+                    text: iconSize.value + i18n(" px.")
+                }
+
+                Label {
+                    text: ""
+                }
+
+                Label {
+                    text: i18n("Notice: 0px. is the default Huge icon size in Plasma")
+                    font.italic: true
+                    Layout.columnSpan: 2
+                }
+            }
+
+        }
+
+
+        GroupBox {
             title: i18n("Behavior")
             flat: true
+            Layout.fillWidth: true
 
             ColumnLayout {
                 Layout.fillWidth: true
