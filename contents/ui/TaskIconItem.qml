@@ -21,7 +21,7 @@ Item{
     property int doubleSize : 2 * panel.iconSize;
     //big interval to show shadows only after all the crappy adds and removes of tasks
     //have happened
-    property int shadowInterval: 500
+    property int shadowInterval: 300
     property int normalIconInterval: 40
 
     Image {
@@ -34,7 +34,13 @@ Item{
 
         anchors.centerIn: parent
 
-        visible: true
+        visible: panel.enableShadows
+
+        opacity: 0
+
+        Behavior on opacity {
+            NumberAnimation { duration: 300 }
+        }
 
         Image{
             id: iconHoveredBuffer
@@ -75,6 +81,7 @@ Item{
         state: wrapper.containsMouse ? KQuickControlAddons.QIconItem.ActiveState : KQuickControlAddons.QIconItem.DefaultState
         icon: decoration
 
+        visible: ((iconImageBuffer.opacity == 1) && (panel.enableShadows)) ? false : true
 
         Component{
             id:hideBackTimer
@@ -85,7 +92,8 @@ Item{
                 interval: centralItem.shadowInterval
 
                 onTriggered: {
-                    iconImageBackground.visible = false;
+                    // iconImageBackground.visible = false;
+                    iconImageBuffer.opacity = 1;
                     hideBackgroundTimer.destroy();
                     //   iconImageBuffer.visible = false;
                 }
@@ -98,12 +106,14 @@ Item{
     Loader{
         id:defaultWithShadow
         sourceComponent: component
+        active: (IsStartup && (!panel.enableShadows) ) ? false : true
     }
 
+    /*
     Loader{
         id:activeLoader
         sourceComponent: component2
-    }
+    }*/
 
     ///////Activate animation/////
 
@@ -161,9 +171,6 @@ Item{
         }
     }
     ////end of activate animation////
-
-
-
 
     SequentialAnimation{
         id:launcherAnimation
@@ -234,67 +241,14 @@ Item{
 
     function updateImages(){
         if(panel){
-            if(activeLoader.item)
-                activeLoader.item.updateImage();
-
+         //   if(activeLoader.item)
+             //   activeLoader.item.updateImage();
             if(defaultWithShadow.item){
                 defaultWithShadow.item.updateImage();
             }
         }
     }
 
-    // Another way for the shadow must be found it increases the cpu cycles x2 alsmost,
-    // even with the following caching mechanism.
-    // it would be must better if we could create an image
-    // the first time and use the DropShadow mechanism and then
-    // just use that image for the animations
-
-    /*  PlasmaCore.IconItem {
-        id: iconImage
-
-        width:64
-        height:64
-
-        anchors.centerIn: parent
-
-        active: true
-        enabled: true
-        usesPlasmaTheme: false
-
-        source: decoration
-
-    }*/
-
-    /* Image{
-        id:iconImage
-        width: 64
-        height: 64
-        source: "firefox.png"
-    }
-
-    DropShadow {
-        id:shadowImageNoActive
-
-        width: 64
-        height: 64
-
-        scale: wrapper.scale
-
-        anchors.centerIn: parent
-
-        radius: 7.0
-        samples: 10
-        color: "#90080808"
-        source: ShaderEffectSource {
-            id:effectSource
-            width: iconImage.width
-            height: iconImage.height
-            sourceItem: iconImage
-            hideSource: true
-            live: false
-        }
-
-    }*/
 
     ///////////////Buffering
 
@@ -353,18 +307,27 @@ Item{
                                 if(index !== -1){
                                     if(panel.enableShadows == true){
                                         shadowImageNoActive.grabToImage(function(result) {
+                                            iconImageBuffer.source.destroy();
                                             iconImageBuffer.source = result.url;
+                                            result.destroy();
                                         }, Qt.size(fixedIcon.width,fixedIcon.height) );
                                     }
                                     else{
-
                                         fixedIcon.grabToImage(function(result) {
+                                            iconImageBuffer.source.destroy();
                                             iconImageBuffer.source = result.url;
+                                            result.destroy();
                                         }, Qt.size(fixedIcon.width,fixedIcon.height) );
                                     }
 
-                                    hideBackTimer.createObject(iconImageBackground);
+                                    hoveredImage.grabToImage(function(result) {
+                                        iconHoveredBuffer.source.destroy();
+                                        iconHoveredBuffer.source = result.url;
+                                        result.destroy();
+                                    }, Qt.size(fixedIcon.width,fixedIcon.height) );
 
+
+                                    hideBackTimer.createObject(iconImageBackground);
                                     // ttt.destroy();
                                 }
                             }
@@ -392,63 +355,16 @@ Item{
                 color: "#cc080808"
                 source: fixedIcon
             }
-        }
-    }
 
-    Component {
-        id: component2
-        Item {
-            id: yourImageWithLoadedIconContainer2
-            anchors.fill: parent
-            visible: false
+            BrightnessContrast{
+                id:hoveredImage
+                visible: false
+                width: fixedIcon.width
+                height: fixedIcon.height
+                anchors.centerIn: fixedIcon
 
-            function updateImage(){
-                ttt11Timer.createObject(iconImage2);
-            }
-
-            Item{
-                id:fixedIcon2
-                width: 2*panel.iconSize
-                height: width
-
-                visible:false
-
-                KQuickControlAddons.QIconItem{
-                    id: iconImage2
-                    width: parent.width - 16
-                    height: parent.height - 16
-                    anchors.centerIn: parent
-
-                    state: KQuickControlAddons.QIconItem.ActiveState
-                    icon: decoration
-
-                    visible: true
-
-                    Component{
-                        id:ttt11Timer
-
-                        Timer{
-                            id:ttt11
-                            repeat:false
-                            interval: centralItem.shadowInterval
-                            onTriggered: {
-                                if(index !== -1){
-                                    fixedIcon2.grabToImage(function(result) {
-                                        iconHoveredBuffer.source = result.url;
-                                    }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
-                                }
-                                //     ttt11.destroy();
-                            }
-
-                            Component.onCompleted: ttt11.start();
-                        }
-                    }
-
-                    Component.onCompleted: {
-                        ttt11Timer.createObject(iconImage2);
-                    }
-
-                }
+                brightness: 0.4
+                source: fixedIcon
             }
         }
     }

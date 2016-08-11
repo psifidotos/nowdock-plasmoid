@@ -257,6 +257,12 @@ Item {
             border.color: "red"
             color: "lightblue"
         }*/
+       /* Rectangle{
+            anchors.fill: icList
+            border.width: 1
+            border.color: "red"
+            color: "white"
+        } */
 
         Grid {
             id:icList
