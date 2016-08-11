@@ -20,7 +20,7 @@ Item {
     Layout.fillHeight: true
 
     property real zoomFactor: 1.7
-    property int iconSize: 64
+    property int iconSize: units.iconSizes.huge
     property int iconMargin: 5
     property int realSize: iconSize + iconMargin
 
