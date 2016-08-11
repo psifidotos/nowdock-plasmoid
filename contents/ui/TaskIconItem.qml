@@ -21,7 +21,7 @@ Item{
     property int doubleSize : 2 * panel.iconSize;
     //big interval to show shadows only after all the crappy adds and removes of tasks
     //have happened
-    property int shadowInterval: 300
+    property int shadowInterval: 50
     property int normalIconInterval: 40
 
     Image {

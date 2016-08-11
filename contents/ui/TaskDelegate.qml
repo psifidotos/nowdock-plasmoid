@@ -48,25 +48,6 @@ Component {
             }
         }
 
-        ListView.onRemove: SequentialAnimation {
-            PropertyAction { target: mainItemContainer; property: "ListView.delayRemove"; value: true }
-            ParallelAnimation{
-                id: removalAnimation
-
-                property int speed: 400
-                NumberAnimation { target: wrapper; property: "opacity"; to: 0; duration: removalAnimation.speed; easing.type: Easing.OutQuad }
-
-                PropertyAnimation {
-                    target: wrapper
-                    property: (icList.orientation == Qt.Vertical) ? "tempScaleWidth" : "tempScaleHeight"
-                    to: 0
-                    duration: showWindowAnimation.speed
-                    easing.type: Easing.OutQuad
-                }
-            }
-            PropertyAction { target: mainItemContainer; property: "ListView.delayRemove"; value: false }
-        }
-
         Flow{
             width: parent.width
             height: parent.height
@@ -121,13 +102,14 @@ Component {
                 property int addedSpace: 12
 
                 property bool pressed: false
+                opacity: 0
 
                 //scales which are used mainly for activating InLauncher
                 ////Scalers///////
 
                 property real scale: 1;
-                property real tempScaleWidth: 1
-                property real tempScaleHeight: 1
+                property real tempScaleWidth: 0
+                property real tempScaleHeight: 0
                 property bool inTempScaling: ((tempScaleWidth !== 1) || (tempScaleHeight !== 1) )
 
                 property real scaleWidth: (inTempScaling == true) ? tempScaleWidth : scale
@@ -491,7 +473,7 @@ Component {
                 onTriggered: {
                     wrapper.hoverEnabled = true;
 
-                    if (parent.isWindow) {
+                    if (model.isWindow) {
                         tasksModel.requestPublishDelegateGeometry(wrapper.modelIndex(),
                                                                   backend.globalRect(mainItemContainer), mainItemContainer);
                     }
@@ -513,7 +495,7 @@ Component {
                 showWindowAnimation.showWindow();
             }
 
-            opacity = 1;
+            //  opacity = 1;
         }
 
         Component.onDestruction: {
@@ -522,40 +504,112 @@ Component {
 
 
         /////Animations
-        ParallelAnimation{
+
+        ///item's added Animation
+        SequentialAnimation{
             id:showWindowAnimation
             property int speed: 400
 
             PropertyAnimation {
                 target: wrapper
-                property: (icList.orientation == Qt.Vertical) ? "tempScaleWidth" : "tempScaleHeight"
+                property: (icList.orientation == Qt.Vertical) ? "tempScaleHeight" : "tempScaleWidth"
                 to: 1
                 duration: showWindowAnimation.speed
                 easing.type: Easing.OutQuad
             }
 
-            PropertyAnimation {
-                target: wrapper
-                property: "opacity"
-                from: 0
-                to: 1
-                duration: showWindowAnimation.speed
-                easing.type: Easing.OutQuad
+            ParallelAnimation{
+
+                PropertyAnimation {
+                    target: wrapper
+                    property: (icList.orientation == Qt.Vertical) ? "tempScaleWidth" : "tempScaleHeight"
+                    to: 1
+                    duration: showWindowAnimation.speed
+                    easing.type: Easing.OutQuad
+                }
+
+
+                PropertyAnimation {
+                    target: wrapper
+                    property: "opacity"
+                    from: 0
+                    to: 1
+                    duration: showWindowAnimation.speed
+                    easing.type: Easing.OutQuad
+                }
             }
+
+            /*    onStopped: {
+                if(IsWindow || IsLauncher){
+                    panel.updateImplicits();
+                }
+            }*/
 
             function init(){
-                if (icList.orientation == Qt.Vertical)
-                    wrapper.tempScaleWidth = 0;
-                else
-                    wrapper.tempScaleHeight = 0;
+                wrapper.tempScaleWidth = 0;
+                wrapper.tempScaleHeight = 0;
             }
 
             function showWindow(){
                 init();
-                start();
+
+                if(!icList.delayingRemoval)
+                    start();
+            }
+            //  Component.onCompleted: {wrapper.runLauncherAnimation.connect(bounceLauncher);}
+        }
+
+        ///Item's Removal Animation
+
+        property bool delayingRemoval: icList.delayingRemoval
+
+        property bool mustCompleteShowAnimation: false
+        onDelayingRemovalChanged: {
+            mustCompleteShowAnimation = true;
+            if (delayingRemoval && showWindowAnimation.running){
+                showWindowAnimation.stop();
+            }
+            else if(!delayingRemoval && mustCompleteShowAnimation){
+                showWindowAnimation.start();
             }
 
-            //  Component.onCompleted: {wrapper.runLauncherAnimation.connect(bounceLauncher);}
+            mustCompleteShowAnimation = false;
+        }
+
+        //change the size panel only when the removal animation has ended;
+        /*   onDelayRemoveChanged: {
+            if((!delayRemove) && (IsStartup !== true))
+                panel.updateImplicits();
+        } */
+
+        ListView.onRemove: SequentialAnimation {
+            PropertyAction { target: mainItemContainer; property: "ListView.delayRemove"; value: true }
+            PropertyAction { target: icList; property: "delayingRemoval"; value: true }
+            ParallelAnimation{
+                id: removalAnimation
+
+                property int speed: IsStartup ? 0 : 400
+                NumberAnimation { target: wrapper; property: "opacity"; to: 0; duration: removalAnimation.speed; easing.type: Easing.OutQuad }
+
+                PropertyAnimation {
+                    target: wrapper
+                    property: (icList.orientation == Qt.Vertical) ? "tempScaleWidth" : "tempScaleHeight"
+                    to: 0
+                    duration: showWindowAnimation.speed
+                    easing.type: Easing.OutQuad
+                }
+            }
+
+            PropertyAnimation {
+                target: wrapper
+                property: (icList.orientation == Qt.Vertical) ? "tempScaleHeight" : "tempScaleWidth"
+                to: 0
+                duration: showWindowAnimation.speed
+                easing.type: Easing.OutQuad
+            }
+
+            PropertyAction { target: mainItemContainer; property: "ListView.delayRemove"; value: false }
+            PropertyAction { target: icList; property: "delayingRemoval"; value: false }
         }
 
 

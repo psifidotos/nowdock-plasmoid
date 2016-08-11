@@ -14,8 +14,10 @@ import "../code/tools.js" as TaskTools
 Item {
     id:panel
 
-    Layout.minimumWidth: implicitWidth
-    Layout.minimumHeight: implicitHeight
+   // Layout.minimumWidth: implicitWidth
+   // Layout.minimumHeight: implicitHeight
+    Layout.fillWidth: true
+    Layout.fillHeight: true
 
     property real zoomFactor: 1.7
     property int iconSize: 64
@@ -36,10 +38,17 @@ Item {
                              (panel.position === PlasmaCore.Types.RightPositioned)) ? true : false
 
     property Item dragSource: null
-    property bool inAnimation: false
+
     property bool enableShadows: plasmoid.configuration.showShadows
 
     property QtObject contextMenuComponent: Qt.createComponent("ContextMenu.qml");
+
+    /*Rectangle{
+                anchors.fill: parent
+                border.width: 1
+                border.color: "red"
+                color: "white"
+            }*/
 
     Connections {
         target: plasmoid
@@ -64,16 +73,6 @@ Item {
 
     /////
 
-    //very important !!!!
-    //this function updates the size of the plasmoid according to the number
-    //of tasks in the model !!!
-    onInAnimationChanged: {
-        if (inAnimation === false){
-            panel.updateImplicits();
-            iconGeometryTimer.restart();
-        }
-    }
-
     TaskManager.TasksModel {
         id: tasksModel
 
@@ -91,23 +90,13 @@ Item {
         groupMode: TaskManager.TasksModel.GroupApplications
         groupInline: false
 
-
-        onCountChanged: {
-            panel.inAnimation = true;
-            panel.inAnimation = false;
-            //    panel.updateImplicits()  // is going to triger it the inAnimation ending
-            //  iconGeometryTimer.restart();
-        }
-
         onActivityChanged: {
-            panel.updateImplicits();
+            //panel.updateImplicits();
             //panelGeometryTimer.start();
         }
 
         onLauncherListChanged: {
-            //    layoutTimer.restart();
             plasmoid.configuration.launchers = launcherList;
-            //  panel.updateImplicits();
         }
 
         onGroupingAppIdBlacklistChanged: {
@@ -186,6 +175,17 @@ Item {
         opacity: tasksModel.count > 0 ? 1 : 0
 
         property int spacing: panel.iconSize / 2
+
+        anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
+        anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
+        anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
+        anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
+
+        anchors.horizontalCenter: ((panel.position === PlasmaCore.Types.BottomPositioned) ||
+                                   (panel.position === PlasmaCore.Types.TopPositioned)) ? parent.horizontalCenter : undefined
+        anchors.verticalCenter: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
+                                 (panel.position === PlasmaCore.Types.RightPositioned)) ? parent.verticalCenter : undefined
+
         //   property int currentSizeW: (icList.hoveredIndex >= 0) ? panel.implicitWidth : panel.clearWidth + spacing
         //   property int currentSizeH: (icList.hoveredIndex >= 0) ? panel.implicitHeight : panel.clearHeight + spacing
 
@@ -277,6 +277,8 @@ Item {
             property int hoveredIndex : -1
             property int previousCount : 0
 
+            property bool delayingRemoval: false
+
           //  property int count: children ? children.length : 0
             anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
             anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
@@ -296,63 +298,12 @@ Item {
 
             delegate: TaskDelegate{}
 
-            removeDisplaced: Transition {
-                NumberAnimation { properties: "x,y"; duration: durationA; easing.type: Easing.OutQuad }
-            }
-
-            addDisplaced: Transition {
-                NumberAnimation { properties: "x,y"; duration: durationA; easing.type: Easing.OutQuad }
-            }
-
             /*Rectangle{
                 anchors.fill: parent
                 border.width: 1
                 border.color: "red"
                 color: "transparent"
             }*/
-
-            //    interactive: false
-
-            //  model: tasksModel
-
-
-
-            //    add: Transition {
-            //          PropertyAction { target: panel; property: "inAnimation"; value: true }
-            //       ParallelAnimation{
-            //         NumberAnimation { property: "opacity"; to:1; duration: 300 }
-            //      }
-            //      PropertyAction { target: panel; property: "inAnimation"; value: false }
-            //  }
-
-
-            /*     displaced: Transition {
-                NumberAnimation { properties: "x,y"; duration: 350 }
-                //when the element because of displacement goest outside the listView and
-                //return the opacity must be fixed
-                NumberAnimation { property: "opacity"; to:1; duration: 200 }
-            }
-*/
-            //helps to calculate property the size of the panel on the first run...
-            //      populate: Transition {
-            //     NumberAnimation { property: "opacity"; to:1; duration: 300 }
-            //  }
-
-
-            /*    property int durationA: 0;
-
-            move: Transition {
-                NumberAnimation { properties: "x,y"; duration: durationA; easing.type: Easing.OutBounce }
-                PropertyAction { target:icList; property: "durationA"; value: 0 }
-            }*/
-            /*
-            add: Transition {
-                ParallelAnimation{
-                    NumberAnimation { property: "opacity"; from:0.2; to:1; duration: 150 }
-                }
-            }
-            */
-
         }
     }
 
@@ -444,7 +395,7 @@ Item {
        property int ncounter:0
 
     function updateImplicits(){
-        if(icList.previousCount !== icList.count){
+    /*    if(icList.previousCount !== icList.count){
             icList.previousCount = icList.count;
 
             var zoomedLength = Math.floor( 1.7 * (iconSize+iconMargin) * (panel.zoomFactor));
@@ -455,8 +406,8 @@ Item {
             var clearSmallAxis = (iconSize+iconMargin);
 
             //  debugging code
-            //     ncounter++;
-            //    console.log("Implicits______ "+ncounter+". - "+tasksModel.count);
+                 ncounter++;
+                console.log("Implicits______ "+ncounter+". - "+tasksModel.count);
 
             if (panel.vertical){
                 panel.implicitWidth = smallAxis;
@@ -472,7 +423,7 @@ Item {
             }
 
             iconGeometryTimer.restart();
-        }
+        }*/
     }
 
 
