@@ -6,10 +6,10 @@ import QtGraphicalEffects 1.0
 
 Item{
     //   property string color
-    id: glowItem
+    id: glowItem  
 
-    property color basicColor: theme.highlightColor
-    property color attentionColor: "#ffff1717"
+    property color basicColor: theme.buttonFocusColor
+    property color attentionColor: colorScopePalette.negativeTextColor // "#ffff1717"
 
     property bool showAttention: false
 

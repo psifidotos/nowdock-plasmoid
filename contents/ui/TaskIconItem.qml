@@ -27,7 +27,6 @@ Item{
     property int shadowInterval: firstDrawed ? 400 : 80
     property int normalIconInterval: 40
 
-
     ///just for catching the signals
     property int tempIconSize: panel.iconSize
     property bool tempEnableShadows: panel.enableShadows
@@ -94,18 +93,18 @@ Item{
     //Something to show until the buffers are updated
 
     //KQuickControlAddons.QIconItem{
-        PlasmaCore.IconItem{
+    PlasmaCore.IconItem{
         id: iconImageBackground
 
         //property real relatedSize: panel.iconSize  *  ( (doubleSize  - 7) / doubleSize );
 
-    //    width: (visible) ? relatedSize * wrapper.scale : panel.iconSize
+        //    width: (visible) ? relatedSize * wrapper.scale : panel.iconSize
         width: (visible) ? panel.iconSize * wrapper.scale : panel.iconSize
         height: width
         anchors.centerIn: parent
 
-//        state: wrapper.containsMouse ? KQuickControlAddons.QIconItem.ActiveState : KQuickControlAddons.QIconItem.DefaultState
- //       icon: decoration
+        //        state: wrapper.containsMouse ? KQuickControlAddons.QIconItem.ActiveState : KQuickControlAddons.QIconItem.DefaultState
+        //       icon: decoration
         active: wrapper.containsMouse
         enabled: true
         source: decoration
@@ -292,16 +291,16 @@ Item{
 
                 visible:false
 
-               //KQuickControlAddons.QIconItem{
+                //KQuickControlAddons.QIconItem{
                 PlasmaCore.IconItem{
                     id: iconImage
                     //width: parent.width - (shadowImageNoActive.radius)
-                   // height: parent.height - (shadowImageNoActive.radius)
+                    // height: parent.height - (shadowImageNoActive.radius)
                     width: (panel.zoomFactor/2)*centralItem.doubleSize
                     height: width
                     anchors.centerIn: parent
 
-                   // state: KQuickControlAddons.QIconItem.DefaultState
+                    // state: KQuickControlAddons.QIconItem.DefaultState
                     //icon: decoration
                     active: false
                     enabled: true

@@ -9,7 +9,7 @@ import org.kde.plasma.components 2.0 as PlasmaComponents
 Rectangle{
     opacity: m.IsActive ? 1 : 0
 
-    color: theme.highlightColor
+    color: theme.buttonFocusColor
 
     width: ( icList.orientation === Qt.Horizontal ) ? wrapper.regulatorWidth : 3
     height: ( icList.orientation === Qt.Vertical ) ? wrapper.regulatorHeight : 3

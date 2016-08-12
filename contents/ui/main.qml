@@ -71,6 +71,11 @@ Item {
     signal presentWindows(variant winIds)
 
     /////
+    PlasmaCore.ColorScope{
+        id: colorScopePalette
+    }
+
+    /////
 
     TaskManager.TasksModel {
         id: tasksModel
