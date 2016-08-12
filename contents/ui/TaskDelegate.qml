@@ -18,6 +18,7 @@ Component {
         readonly property var m: model
         property bool isWindow: model.IsWindow ? true : false
 
+
         anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
         anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
         anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
@@ -30,6 +31,7 @@ Component {
 
         property int animationTime: 60
 
+        signal newWindowAdded();
 
         onContainsMouseChanged:{
             if(!containsMouse){
@@ -37,6 +39,12 @@ Component {
                 hiddenSpacerRight.nScale = 0;
             }
         }
+
+        /*    onIsDemandingAttentionChanged: {
+            if (isDemandingAttention)
+                newWindowAdded();
+        } */
+
 
         /*Rectangle{
             anchors.fill: parent
@@ -57,7 +65,20 @@ Component {
             }
         }
 
-        TaskWindows{id: tasksWindows}
+        TaskWindows{
+            id: tasksWindows
+
+            property int previousCount: 0
+
+            onWindowsCountChanged: {
+                if ((windowsCount >= 2) && (windowsCount > previousCount)){
+                    if( ! wrapper.containsMouse){
+                        mainItemContainer.newWindowAdded();
+                    }
+                }
+                previousCount = windowsCount;
+            }
+        }
 
         Flow{
             width: parent.width
@@ -99,10 +120,10 @@ Component {
                 signal runLauncherAnimation();
 
                 property real showDelegateWidth: (icList.orientation === Qt.Vertical ) ? basicScalingWidth+addedSpace :
-                                                                                        basicScalingWidth
+                                                                                         basicScalingWidth
 
                 property real showDelegateheight: (icList.orientation === Qt.Vertical ) ? basicScalingHeight :
-                                                                                         basicScalingHeight + addedSpace
+                                                                                          basicScalingHeight + addedSpace
 
                 width: (IsStartup) ? 0 : showDelegateWidth
                 height: (IsStartup) ? 0 : showDelegateheight
@@ -113,6 +134,7 @@ Component {
                 property int addedSpace: 15
 
                 property bool pressed: false
+                property bool mouseEntered: false
                 opacity: 0
 
                 //scales which are used mainly for activating InLauncher
@@ -121,7 +143,7 @@ Component {
                 property real scale: 1;
                 property real tempScaleWidth: 0
                 property real tempScaleHeight: 0
-                property bool inTempScaling: ((tempScaleWidth !== 1) || (tempScaleHeight !== 1) )
+                property bool inTempScaling: (((tempScaleWidth !== 1) || (tempScaleHeight !== 1) ) && (!mouseEntered) )
 
                 property real scaleWidth: (inTempScaling == true) ? tempScaleWidth : scale
                 property real scaleHeight: (inTempScaling == true) ? tempScaleHeight : scale
@@ -238,7 +260,7 @@ Component {
                             leftScale = bigNeighbourZoom;
                         }
 
-                       // console.debug(leftScale + "  " + rightScale + " " + index);
+                        // console.debug(leftScale + "  " + rightScale + " " + index);
 
 
                         //activate messages to update the the neighbour scales
@@ -276,6 +298,11 @@ Component {
 
                 onEntered: {
                     icList.hoveredIndex = index;
+                    mouseEntered = true;
+                    icList.mouseWasEntered(index-2, false);
+                    icList.mouseWasEntered(index+2, false);
+                    icList.mouseWasEntered(index-1, true);
+                    icList.mouseWasEntered(index+1, true);
 
                     if (icList.orientation == Qt.Horizontal){
                         icList.currentSpot = mouseX;
@@ -289,6 +316,7 @@ Component {
 
                 // IMPORTANT: This must be improved ! even for small miliseconds  it reduces performance
                 onExited: {
+                    mouseEntered = false;
                     if(mainItemContainer.contextMenu && mainItemContainer.contextMenu.status == PlasmaComponents.DialogStatus.Open){
                         ///dont check to restore zooms
                     }
@@ -298,7 +326,6 @@ Component {
                 }
 
                 onPositionChanged: {
-
                     if(inAnimation == false){
                         if (icList.orientation == Qt.Horizontal){
                             var step = Math.abs(icList.currentSpot-mouse.x);
@@ -322,27 +349,29 @@ Component {
                 property int lastButtonClicked: -1;
 
                 function animationEnded(){
-                    if (lastButtonClicked == Qt.MidButton){
-                        if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.NewInstance) {
-                            tasksModel.requestNewInstance(modelIndex());
-                        } else if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.Close) {
-                            tasksModel.requestClose(modelIndex());
-                        } else if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.ToggleMinimized) {
-                            tasksModel.requestToggleMinimized(modelIndex());
-                        }
-                    }
-                    else if (lastButtonClicked == Qt.LeftButton) {
-                        if (model.IsGroupParent)
-                            panel.presentWindows(model.LegacyWinIdList);
-                        else {
-                            if (IsMinimized === true) {
-                                var i = modelIndex();
-                                tasksModel.requestToggleMinimized(i);
-                                tasksModel.requestActivate(i);
-                            } else if (IsActive === true) {
+                    if(pressed){
+                        if (lastButtonClicked == Qt.MidButton){
+                            if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.NewInstance) {
+                                tasksModel.requestNewInstance(modelIndex());
+                            } else if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.Close) {
+                                tasksModel.requestClose(modelIndex());
+                            } else if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.ToggleMinimized) {
                                 tasksModel.requestToggleMinimized(modelIndex());
-                            } else {
-                                tasksModel.requestActivate(modelIndex());
+                            }
+                        }
+                        else if (lastButtonClicked == Qt.LeftButton) {
+                            if (model.IsGroupParent)
+                                panel.presentWindows(model.LegacyWinIdList);
+                            else {
+                                if (IsMinimized === true) {
+                                    var i = modelIndex();
+                                    tasksModel.requestToggleMinimized(i);
+                                    tasksModel.requestActivate(i);
+                                } else if (IsActive === true) {
+                                    tasksModel.requestToggleMinimized(modelIndex());
+                                } else {
+                                    tasksModel.requestActivate(modelIndex());
+                                }
                             }
                         }
                     }
@@ -357,8 +386,10 @@ Component {
                         inAnimation = true;
                         lastButtonClicked = mouse.button;
 
-                        if( model.IsLauncher )
+                        if( model.IsLauncher ){
+                            mouseEntered = false;
                             runLauncherAnimation();
+                        }
                         else
                             runActivateAnimation();
                     }
@@ -411,14 +442,21 @@ Component {
                         else
                             scale = scale + step;
 
-                   //     console.log(index+ ", "+scale);
+                        //     console.log(index+ ", "+scale);
                     }
                 }
+
+                function signalMouseWasEntered(nIndex, value){
+                    if( index === nIndex)
+                        mouseEntered = value;
+                }
+
 
                 property string oldAppId: ""
 
                 Component.onCompleted: {
                     icList.updateScale.connect(signalUpdateScale);
+                    icList.mouseWasEntered.connect(signalMouseWasEntered);
                     //     console.log(AppId+ " ,"+AppName+" ,"+LauncherUrlWithoutIcon);
                     oldAppId = AppId;
                 }
@@ -525,6 +563,9 @@ Component {
             onStopped: {
                 if(IsWindow || IsStartup){
                     taskInitComponent.createObject(wrapper);
+                    if (IsDemandingAttention){
+                        mainItemContainer.newWindowAdded();
+                    }
                 }
             }
 

@@ -194,8 +194,11 @@ Item{
     }
     ////end of activate animation////
 
+    ////bouncing task, e.g. on launcher activating and when a new window is
+    ////added in a group task
     SequentialAnimation{
         id:launcherAnimation
+
         property int speed: 300
 
         SequentialAnimation{
@@ -228,7 +231,7 @@ Item{
 
 
         onStopped: {
-            wrapper.animationEnded();
+                wrapper.animationEnded();
         }
 
         function init(){
@@ -249,12 +252,114 @@ Item{
             icList.hoveredIndex = -1;
         }
 
-        function bounceLauncher(){
+        function bounceLauncher(){           
             init();
             start();
         }
 
-        Component.onCompleted: {wrapper.runLauncherAnimation.connect(bounceLauncher);}
+
+        Component.onCompleted: {
+            wrapper.runLauncherAnimation.connect(bounceLauncher);
+        }
+    }
+/////////////////// end of launcher animation
+
+
+////////////////// new window and needs attention animation
+    SequentialAnimation{
+        id:newWindowAnimation
+
+        property int speed: 300
+        property bool isDemandingAttention: IsDemandingAttention ? true : false
+        property bool entered: wrapper.mouseEntered
+
+        SequentialAnimation{
+            ParallelAnimation{
+                PropertyAnimation {
+                    target: wrapper
+                    property: (icList.orientation == Qt.Vertical) ? "tempScaleWidth" : "tempScaleHeight"
+                    to: 0.8 * panel.zoomFactor
+                    duration: newWindowAnimation.speed
+                    easing.type: Easing.OutQuad
+                }
+
+                PropertyAnimation {
+                    target: wrapper
+                    property: (icList.orientation == Qt.Horizontal) ? "tempScaleWidth" : "tempScaleHeight"
+                    to: 1
+                    duration: newWindowAnimation.speed
+                    easing.type: Easing.OutQuad
+                }
+            }
+
+            PropertyAnimation {
+                target: wrapper
+                property: (icList.orientation == Qt.Vertical) ? "tempScaleWidth" : "tempScaleHeight"
+                to: 1
+                duration: 3 * newWindowAnimation.speed
+                easing.type: Easing.OutBounce
+            }
+        }
+
+        function clear(){
+            loops = 1;
+            launcherAnimation.stop();
+            iconImageBuffer.anchors.centerIn = iconImageBuffer.parent;
+
+            wrapper.tempScaleWidth = 1;
+            wrapper.tempScaleHeight = 1;
+        }
+
+        onStopped: {
+            clear();
+        }
+
+        onIsDemandingAttentionChanged: {
+            if( (!isDemandingAttention)&&(running)){
+                clear();
+           //     wrapper.animationEnded();
+            }
+        }
+
+        onEnteredChanged: {
+        //    if(entered){
+              //  clear();
+          //  }
+        }
+
+        function init(){
+            wrapper.tempScaleWidth = wrapper.scale;
+            wrapper.tempScaleHeight = wrapper.scale;
+
+            iconImageBuffer.anchors.centerIn = undefined;
+
+            if(panel.position === PlasmaCore.Types.LeftPositioned)
+                iconImageBuffer.anchors.right = iconImageBuffer.parent.right;
+            else if(panel.position === PlasmaCore.Types.RightPositioned)
+                iconImageBuffer.anchors.left = iconImageBuffer.parent.left;
+            else if(panel.position === PlasmaCore.Types.TopPositioned)
+                iconImageBuffer.anchors.bottom = iconImageBuffer.parent.bottom;
+            else if(panel.position === PlasmaCore.Types.BottomPositioned)
+                iconImageBuffer.anchors.top = iconImageBuffer.parent.top;
+
+            if(!isDemandingAttention)
+                loops = 3;
+            else
+                loops = 100;
+
+             // icList.hoveredIndex = -1;
+        }
+
+        function bounceNewWindow(){
+            wrapper.inAnimation = false;
+
+            init();
+            start();
+        }
+
+        Component.onCompleted: {
+            mainItemContainer.newWindowAdded.connect(bounceNewWindow);
+        }
     }
 
 
