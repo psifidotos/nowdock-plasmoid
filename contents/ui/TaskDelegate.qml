@@ -31,8 +31,16 @@ Component {
 
         property int animationTime: 60
 
+        property bool delayingRemove: ListView.delayRemove
+
         signal groupWindowAdded();
         signal groupWindowRemoved();
+
+
+        onDelayingRemoveChanged: {
+            if(delayingRemove && isWindow)
+                groupWindowRemoved();
+        }
 
         onContainsMouseChanged:{
             if(!containsMouse){
@@ -73,9 +81,9 @@ Component {
 
             onWindowsCountChanged: {
                 if ((windowsCount >= 2) && (windowsCount > previousCount)){
-                   // if( ! wrapper.containsMouse){
-                        mainItemContainer.groupWindowAdded();
-               //     }
+                    // if( ! wrapper.containsMouse){
+                    mainItemContainer.groupWindowAdded();
+                    //     }
                 }
                 else if ((windowsCount >=1) &&(windowsCount < previousCount)){
                     mainItemContainer.groupWindowRemoved();
@@ -602,7 +610,7 @@ Component {
         ///    in this situations some times... Needs investigations...
         ///    e.g. chrome launcher
 
-        property int mainDelay: IsLauncher ? 200 : 300
+        property int mainDelay: IsLauncher ? 450 : 450
         property int windowDelay: IsStartup ? 5000 : mainDelay
 
         Component {
@@ -630,19 +638,21 @@ Component {
         ListView.onRemove: SequentialAnimation {
             PropertyAction { target: mainItemContainer; property: "ListView.delayRemove"; value: true }
             PropertyAction { target: icList; property: "delayingRemoval"; value: true }
+            PropertyAction { target: wrapper; property: "opacity"; value: isWindow ? 0 : 1 }
             ParallelAnimation{
                 id: removalAnimation
 
-                property int speed: (IsStartup && !mainItemContainer.visible)? 0 : 400
+                // property int speed: (IsStartup && !mainItemContainer.visible)? 0 : 400
+                property int speed: 400
 
-                NumberAnimation { target: wrapper; property: "opacity"; to: 0; duration: removalAnimation.speed; easing.type: Easing.OutQuad }
+                NumberAnimation { target: wrapper; property: "opacity"; to: 0; duration: removalAnimation.speed; easing.type: Easing.InQuad }
 
                 PropertyAnimation {
                     target: wrapper
                     property: (icList.orientation == Qt.Vertical) ? "tempScaleWidth" : "tempScaleHeight"
                     to: 0
                     duration: showWindowAnimation.speed
-                    easing.type: Easing.OutQuad
+                    easing.type: Easing.InQuad
                 }
             }
 
@@ -652,7 +662,7 @@ Component {
                 property: (icList.orientation == Qt.Vertical) ? "tempScaleHeight" : "tempScaleWidth"
                 to: 0
                 duration: showWindowAnimation.speed
-                easing.type: Easing.OutQuad
+                easing.type: Easing.InQuad
             }
 
             PropertyAction { target: mainItemContainer; property: "ListView.delayRemove"; value: false }
