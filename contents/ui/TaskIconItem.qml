@@ -407,8 +407,6 @@ Item{
                 toPoint = tempPoint - panel.iconSize;
             }
 
-            console.log(tempPoint+" - "+toPoint);
-
             removingItem.visible = true;
         }
 
