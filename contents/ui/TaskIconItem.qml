@@ -18,7 +18,9 @@ Item{
     width: wrapper.regulatorWidth
     height: wrapper.regulatorHeight
 
-    property int doubleSize : 2 * panel.iconSize;
+    property int doubleSize : 2 * panel.iconSize
+    property int shadowSize : (panel.iconSize / 7)
+
     //big interval to show shadows only after all the crappy adds and removes of tasks
     //have happened
     property bool firstDrawed: false
@@ -51,8 +53,8 @@ Item{
         //property real newTempSize: panel.iconSize * wrapper.scale
         property real newTempSize: (wrapper.opacity == 1) ?  Math.min(wrapper.basicScalingWidth, wrapper.basicScalingHeight) :
                                                             Math.max(wrapper.basicScalingWidth, wrapper.basicScalingHeight)
-        width: newTempSize
-        height: newTempSize
+        width: newTempSize + (centralItem.shadowSize/2)
+        height: newTempSize + (centralItem.shadowSize/2)
 
         anchors.centerIn: parent
 
@@ -285,7 +287,7 @@ Item{
 
             Item{
                 id:fixedIcon
-                width: 2*panel.iconSize
+                width: (panel.zoomFactor/2)*(centralItem.doubleSize+(2*shadowImageNoActive.radius) )
                 height: width
 
                 visible:false
@@ -293,8 +295,10 @@ Item{
                //KQuickControlAddons.QIconItem{
                 PlasmaCore.IconItem{
                     id: iconImage
-                    width: parent.width - (3*shadowImageNoActive.radius)
-                    height: parent.height - (3*shadowImageNoActive.radius)
+                    //width: parent.width - (shadowImageNoActive.radius)
+                   // height: parent.height - (shadowImageNoActive.radius)
+                    width: (panel.zoomFactor/2)*centralItem.doubleSize
+                    height: width
                     anchors.centerIn: parent
 
                    // state: KQuickControlAddons.QIconItem.DefaultState
@@ -376,10 +380,12 @@ Item{
                 height: fixedIcon.height
                 anchors.centerIn: fixedIcon
 
-                radius: panel.iconSize / 10
-                samples: 2 * radius
+                radius: centralItem.shadowSize
+                samples: 1.8 * radius
                 color: "#cc080808"
                 source: fixedIcon
+
+                verticalOffset: 2
             }
 
             BrightnessContrast{
