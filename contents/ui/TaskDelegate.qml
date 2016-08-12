@@ -30,6 +30,7 @@ Component {
 
         property int animationTime: 60
 
+
         onContainsMouseChanged:{
             if(!containsMouse){
                 hiddenSpacerLeft.nScale = 0;
@@ -55,6 +56,8 @@ Component {
                 taskInitComponent.createObject(mainItemContainer);
             }
         }
+
+        TaskWindows{id: tasksWindows}
 
         Flow{
             width: parent.width
