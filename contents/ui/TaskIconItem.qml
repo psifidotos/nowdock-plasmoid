@@ -202,7 +202,7 @@ Item{
                 PropertyAnimation {
                     target: wrapper
                     property: (icList.orientation == Qt.Vertical) ? "tempScaleWidth" : "tempScaleHeight"
-                    to: panel.zoomFactor + 0.3
+                    to: panel.zoomFactor + 0.1
                     duration: launcherAnimation.speed
                     easing.type: Easing.OutQuad
                 }

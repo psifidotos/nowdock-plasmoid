@@ -14,11 +14,8 @@ import "../code/tools.js" as TaskTools
 Item {
     id:panel
 
-   // Layout.minimumWidth: implicitWidth
-   // Layout.minimumHeight: implicitHeight
-    Layout.fillWidth: true
     Layout.fillHeight: true
-
+    Layout.fillWidth: true
 
     //property real zoomFactor: 1.7
     property real zoomFactor: ( 1 + (plasmoid.configuration.zoomLevel / 20) )
@@ -171,6 +168,32 @@ Item {
         }
     }
 
+    Rectangle{
+        width: panel.vertical ? 1 : 2 * panel.iconSize
+        height: panel.vertical ? 2 * panel.iconSize : 1
+
+        property int neededSpace: ( (zoomFactor+0.1)*iconSize)+12
+
+        anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
+        anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
+        anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
+        anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
+
+        anchors.bottomMargin: (panel.position === PlasmaCore.Types.BottomPositioned) ? neededSpace : undefined
+        anchors.topMargin: (panel.position === PlasmaCore.Types.TopPositioned) ? neededSpace : undefined
+        anchors.leftMargin: (panel.position === PlasmaCore.Types.LeftPositioned) ? neededSpace : undefined
+        anchors.rightMargin: (panel.position === PlasmaCore.Types.RightPositioned) ? neededSpace : undefined
+
+        anchors.horizontalCenter: ((panel.position === PlasmaCore.Types.BottomPositioned) ||
+                                   (panel.position === PlasmaCore.Types.TopPositioned)) ? parent.horizontalCenter : undefined
+        anchors.verticalCenter: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
+                                 (panel.position === PlasmaCore.Types.RightPositioned)) ? parent.verticalCenter : undefined
+
+        color: "red"
+
+        visible: plasmoid.configuration.zoomHelper
+    }
+
     Item{
         id:barLine
         //   property bool blockLoop: false
@@ -263,7 +286,7 @@ Item {
             color: "lightblue"
         }*/
 
-       /*  Rectangle{
+        /*  Rectangle{
             width:icList.width
             anchors.bottom: parent.bottom
             anchors.horizontalCenter: parent.horizontalCenter
@@ -286,7 +309,7 @@ Item {
 
             property bool delayingRemoval: false
 
-          //  property int count: children ? children.length : 0
+            //  property int count: children ? children.length : 0
             anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
             anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
             anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
@@ -399,10 +422,10 @@ Item {
         }
     }
 
-       property int ncounter:0
+    property int ncounter:0
 
     function updateImplicits(){
-    /*    if(icList.previousCount !== icList.count){
+        /*    if(icList.previousCount !== icList.count){
             icList.previousCount = icList.count;
 
             var zoomedLength = Math.floor( 1.7 * (iconSize+iconMargin) * (panel.zoomFactor));

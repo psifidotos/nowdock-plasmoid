@@ -43,6 +43,7 @@ Item {
     property alias cfg_showGlow: showGlow.checked
     property alias cfg_zoomLevel: zoomLevel.value
     property alias cfg_iconSize: iconSize.value
+    property alias cfg_zoomHelper: zoomHelper.checked
 
     ColumnLayout {
         spacing: 15
@@ -129,6 +130,13 @@ Item {
                     text: i18n("Notice: 0px. is the default Huge icon size in Plasma")
                     font.italic: true
                     Layout.columnSpan: 2
+                }
+
+                CheckBox {
+                    id: zoomHelper
+                    text: i18n("Show a red line on the limit which is needed for animations")
+                    enabled: true
+                    Layout.columnSpan: 3
                 }
             }
 
