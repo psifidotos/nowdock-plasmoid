@@ -376,7 +376,7 @@ Item{
                 height: fixedIcon.height
                 anchors.centerIn: fixedIcon
 
-                radius: panel.iconSize / 16
+                radius: panel.iconSize / 10
                 samples: 2 * radius
                 color: "#cc080808"
                 source: fixedIcon
