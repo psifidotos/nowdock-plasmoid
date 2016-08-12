@@ -78,7 +78,6 @@ Item{
                 NumberAnimation { duration: 300 }
             }
         }
-
     }
 
     BrightnessContrast {
@@ -231,7 +230,7 @@ Item{
 
 
         onStopped: {
-                wrapper.animationEnded();
+            wrapper.animationEnded();
         }
 
         function init(){
@@ -252,7 +251,7 @@ Item{
             icList.hoveredIndex = -1;
         }
 
-        function bounceLauncher(){           
+        function bounceLauncher(){
             init();
             start();
         }
@@ -262,10 +261,10 @@ Item{
             wrapper.runLauncherAnimation.connect(bounceLauncher);
         }
     }
-/////////////////// end of launcher animation
+    /////////////////// end of launcher animation
 
 
-////////////////// new window and needs attention animation
+    ////////////////// new window and needs attention animation
     SequentialAnimation{
         id:newWindowAnimation
 
@@ -303,7 +302,7 @@ Item{
 
         function clear(){
             loops = 1;
-            launcherAnimation.stop();
+            newWindowAnimation.stop();
             iconImageBuffer.anchors.centerIn = iconImageBuffer.parent;
 
             wrapper.tempScaleWidth = 1;
@@ -317,14 +316,14 @@ Item{
         onIsDemandingAttentionChanged: {
             if( (!isDemandingAttention)&&(running)){
                 clear();
-           //     wrapper.animationEnded();
+                wrapper.animationEnded();
             }
         }
 
         onEnteredChanged: {
-        //    if(entered){
-              //  clear();
-          //  }
+            //    if(entered){
+            //  clear();
+            //  }
         }
 
         function init(){
@@ -343,11 +342,11 @@ Item{
                 iconImageBuffer.anchors.top = iconImageBuffer.parent.top;
 
             if(!isDemandingAttention)
-                loops = 3;
+                loops = 2;
             else
                 loops = 100;
 
-             // icList.hoveredIndex = -1;
+            // icList.hoveredIndex = -1;
         }
 
         function bounceNewWindow(){
@@ -358,11 +357,77 @@ Item{
         }
 
         Component.onCompleted: {
-            mainItemContainer.newWindowAdded.connect(bounceNewWindow);
+            mainItemContainer.groupWindowAdded.connect(bounceNewWindow);
         }
     }
 
+    /////Removing a Window from a group////
 
+    ParallelAnimation{
+        id:removingAnimation
+
+        property int speed: 600
+        property Item removingItem
+        property int toPoint: 0
+
+        PropertyAnimation {
+            target: removingAnimation.removingItem
+            property: "opacity"
+            to: 0
+            duration: removingAnimation.speed
+            easing.type: Easing.InQuad
+        }
+
+        PropertyAnimation {
+            target: removingAnimation.removingItem
+            property: (icList.orientation == Qt.Horizontal) ? "y" : "x"
+            to: removingAnimation.toPoint
+            duration: removingAnimation.speed
+            easing.type: Easing.InQuad
+        }
+
+        function init(){
+            var relavantPoint = icList.mapFromItem(iconImageBuffer,0,0);
+            removingItem = removeTaskComponent.createObject(icList);
+            removingItem.x = relavantPoint.x;
+            removingItem.y = relavantPoint.y;
+
+            var tempPoint = 0;
+
+            if(icList.orientation == Qt.Horizontal)
+                tempPoint = relavantPoint.y;
+            else
+                tempPoint = relavantPoint.x;
+
+            if( (panel.position === PlasmaCore.Types.BottomPositioned) ||
+                    (panel.position === PlasmaCore.Types.RightPositioned) ){
+                toPoint = tempPoint + panel.iconSize;
+            }
+            else{
+                toPoint = tempPoint - panel.iconSize;
+            }
+
+            console.log(tempPoint+" - "+toPoint);
+
+            removingItem.visible = true;
+        }
+
+        function removeTask(){
+            if(panel.enableShadows){
+                init();
+                start();
+            }
+        }
+
+        onStopped: {
+            removingItem.destroy();
+        }
+
+        Component.onCompleted: {
+            mainItemContainer.groupWindowRemoved.connect(removeTask);
+        }
+
+    }
 
     ////
 
@@ -501,6 +566,34 @@ Item{
 
                 brightness: 0.4
                 source: fixedIcon
+            }
+        }
+    }
+
+
+    ///////////// Component for animating removing window from group
+
+    Component {
+        id: removeTaskComponent
+        Item{
+            width: iconImageBuffer.width
+            height: iconImageBuffer.height
+
+            visible: false
+
+            Image {
+                id: tempRemoveIcon
+                source: iconImageBuffer.source
+                anchors.fill: parent
+            }
+
+            Colorize{
+                source: tempRemoveIcon
+                anchors.fill: tempRemoveIcon
+
+                hue: 0
+                saturation: 0
+                lightness: 0
             }
         }
     }

@@ -31,7 +31,8 @@ Component {
 
         property int animationTime: 60
 
-        signal newWindowAdded();
+        signal groupWindowAdded();
+        signal groupWindowRemoved();
 
         onContainsMouseChanged:{
             if(!containsMouse){
@@ -72,10 +73,14 @@ Component {
 
             onWindowsCountChanged: {
                 if ((windowsCount >= 2) && (windowsCount > previousCount)){
-                    if( ! wrapper.containsMouse){
-                        mainItemContainer.newWindowAdded();
-                    }
+                   // if( ! wrapper.containsMouse){
+                        mainItemContainer.groupWindowAdded();
+               //     }
                 }
+                else if ((windowsCount >=1) &&(windowsCount < previousCount)){
+                    mainItemContainer.groupWindowRemoved();
+                }
+
                 previousCount = windowsCount;
             }
         }
@@ -564,7 +569,7 @@ Component {
                 if(IsWindow || IsStartup){
                     taskInitComponent.createObject(wrapper);
                     if (IsDemandingAttention){
-                        mainItemContainer.newWindowAdded();
+                        mainItemContainer.groupWindowAdded();
                     }
                 }
             }
@@ -641,6 +646,7 @@ Component {
                 }
             }
 
+            //smooth move into place the surrounding tasks
             PropertyAnimation {
                 target: wrapper
                 property: (icList.orientation == Qt.Vertical) ? "tempScaleHeight" : "tempScaleWidth"
