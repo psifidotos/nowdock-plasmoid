@@ -107,7 +107,7 @@ Component {
                 acceptedButtons: Qt.LeftButton | Qt.MidButton | Qt.RightButton
 
                 hoverEnabled: (inAnimation !== true)&& (!IsStartup)
-                property int addedSpace: 12
+                property int addedSpace: 15
 
                 property bool pressed: false
                 opacity: 0
