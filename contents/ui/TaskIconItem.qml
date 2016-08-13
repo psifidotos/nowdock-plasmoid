@@ -96,7 +96,6 @@ Item{
         id: iconImageBackground
 
         //property real relatedSize: panel.iconSize  *  ( (doubleSize  - 7) / doubleSize );
-
         //    width: (visible) ? relatedSize * wrapper.scale : panel.iconSize
         width: (visible) ? panel.iconSize * wrapper.scale : panel.iconSize
         height: width
@@ -107,6 +106,7 @@ Item{
         active: wrapper.containsMouse
         enabled: true
         source: decoration
+        usesPlasmaTheme: false
 
         visible: ((iconImageBuffer.opacity == 1) && (panel.enableShadows)) ? false : true
 
@@ -473,6 +473,7 @@ Item{
                     active: false
                     enabled: true
                     source: decoration
+                    usesPlasmaTheme: false
 
                     visible: true
 
