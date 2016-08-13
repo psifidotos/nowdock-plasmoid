@@ -42,6 +42,11 @@ Item {
 
     property QtObject contextMenuComponent: Qt.createComponent("ContextMenu.qml");
 
+    signal requestLayout
+    signal windowsHovered(variant winIds, bool hovered)
+    signal presentWindows(variant winIds)
+
+
     /*Rectangle{
                 anchors.fill: parent
                 border.width: 1
@@ -65,10 +70,12 @@ Item {
         onGroupingLauncherUrlBlacklistChanged: tasksModel.groupingLauncherUrlBlacklist = plasmoid.configuration.groupingLauncherUrlBlacklist;
     }
 
-
-    signal requestLayout
-    signal windowsHovered(variant winIds, bool hovered)
-    signal presentWindows(variant winIds)
+    Binding {
+        target: plasmoid
+        property: "status"
+        value: (tasksModel.anyTaskDemandsAttention
+            ? PlasmaCore.Types.NeedsAttentionStatus : PlasmaCore.Types.PassiveStatus)
+    }
 
     /////
     PlasmaCore.ColorScope{
