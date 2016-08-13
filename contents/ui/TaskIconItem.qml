@@ -25,26 +25,27 @@ Item{
     //have happened
     property bool firstDrawed: false
     property int shadowInterval: firstDrawed ? 400 : 80
-    property int normalIconInterval: 40
+    //property int normalIconInterval: 40
 
     ///just for catching the signals
-    property int tempIconSize: panel.iconSize
-    property bool tempEnableShadows: panel.enableShadows
+//    property int tempIconSize: panel.iconSize
+  //  property bool tempEnableShadows: panel.enableShadows
 
-    onTempIconSizeChanged: {
-        if (panel.enableShadows)
-            updateImages();
+    Connections{
+        target: panel
+        onIconSizeChanged: updateImages()
+        onEnableShadowsChanged: updateImages()
+    }
+
+  /*  onTempIconSizeChanged: {
+        updateImages();
     }
 
     onTempEnableShadowsChanged: {
         if(tempEnableShadows){
             updateImages();
         }
-        else{
-            iconImageBuffer.source.destroy();
-            iconHoveredBuffer.source.destroy();
-        }
-    }
+    }*/
 
     Image {
         id: iconImageBuffer
@@ -57,13 +58,7 @@ Item{
 
         anchors.centerIn: parent
 
-        visible: panel.enableShadows
-
         opacity: 0
-
-        Behavior on opacity {
-            NumberAnimation { duration: 300 }
-        }
 
         Image{
             id: iconHoveredBuffer
@@ -92,6 +87,7 @@ Item{
     //Something to show until the buffers are updated
 
     //KQuickControlAddons.QIconItem{
+    /*
     PlasmaCore.IconItem{
         id: iconImageBackground
 
@@ -128,12 +124,12 @@ Item{
                 Component.onCompleted: hideBackgroundTimer.start();
             }
         }
-    }
+    }*/
 
     Loader{
         id:defaultWithShadow
         sourceComponent: component
-        active: (IsStartup && (!panel.enableShadows) ) ? false : true
+        active: (IsStartup) ? false : true
     }
 
     ///////Activate animation/////
@@ -524,7 +520,9 @@ Item{
                                     }, Qt.size(fixedIcon.width,fixedIcon.height) );
 
 
-                                    hideBackTimer.createObject(iconImageBackground);
+                                    // hideBackTimer.createObject(iconImageBackground);
+                                    mainItemContainer.buffersAreReady = true;
+                                    iconImageBuffer.opacity = 1;
 
                                     ttt.destroy(100);
                                 }

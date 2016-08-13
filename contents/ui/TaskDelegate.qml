@@ -32,6 +32,7 @@ Component {
         property int animationTime: 60
 
         property bool delayingRemove: ListView.delayRemove
+        property bool buffersAreReady: false
 
         signal groupWindowAdded();
         signal groupWindowRemoved();
@@ -526,10 +527,7 @@ Component {
         }
 
         Component.onCompleted: {
-            if (model.IsWindow || model.IsLauncher)
-                showWindowAnimation.showWindow();
-            else
-                delayShowWindow.createObject(mainItemContainer);
+            showWindowAnimation.showWindow();
         }
 
         Component.onDestruction: {
@@ -592,9 +590,13 @@ Component {
                     delayShowWindow.createObject(mainItemContainer);
                 }
                 else{
-                    init();
-                    start();
+                    execute();
                 }
+            }
+
+            function execute(){
+                init();
+                start();
             }
         }
 
@@ -610,7 +612,8 @@ Component {
         ///    in this situations some times... Needs investigations...
         ///    e.g. chrome launcher
 
-        property int mainDelay: IsLauncher ? 450 : 450
+        property int mainDelay: IsLauncher ? 800 : 400
+     //   property int mainDelay: icList.delayingRemoval ? 2*showWindowAnimation.speed : 450
         property int windowDelay: IsStartup ? 5000 : mainDelay
 
         Component {
@@ -624,8 +627,7 @@ Component {
 
                 onTriggered: {
                     //console.log("I am in here: "+mainItemContainer.windowDelay);
-                    showWindowAnimation.init();
-                    showWindowAnimation.start();
+                    showWindowAnimation.execute();
                     timerWindow.destroy();
                 }
 
