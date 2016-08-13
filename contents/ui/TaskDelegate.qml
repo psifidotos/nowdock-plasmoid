@@ -54,6 +54,7 @@ Component {
             }
         }
 
+
         /*    onIsDemandingAttentionChanged: {
             if (isDemandingAttention)
                 newWindowAdded();
@@ -153,6 +154,7 @@ Component {
 
                 property bool pressed: false
                 property bool mouseEntered: false
+                property bool isDragged: false
                 property int pressX: -1
                 property int pressY: -1
 
@@ -171,7 +173,7 @@ Component {
                 property real scaleWidth: (inTempScaling == true) ? tempScaleWidth : scale
                 property real scaleHeight: (inTempScaling == true) ? tempScaleHeight : scale
 
-                          ///Dont use Math.floor it adds one pixel in animations and creates glitches
+                ///Dont use Math.floor it adds one pixel in animations and creates glitches
                 property real cleanScaling: panel.realSize * scale
 
                 property real basicScalingWidth : (inTempScaling == true) ? (panel.realSize * scaleWidth) : cleanScaling
@@ -320,20 +322,22 @@ Component {
                 }
 
                 onEntered: {
-                    icList.hoveredIndex = index;
-                    mouseEntered = true;
-                    icList.mouseWasEntered(index-2, false);
-                    icList.mouseWasEntered(index+2, false);
-                    icList.mouseWasEntered(index-1, true);
-                    icList.mouseWasEntered(index+1, true);
+                    if(!inAnimation){
+                        icList.hoveredIndex = index;
+                        mouseEntered = true;
+                        icList.mouseWasEntered(index-2, false);
+                        icList.mouseWasEntered(index+2, false);
+                        icList.mouseWasEntered(index-1, true);
+                        icList.mouseWasEntered(index+1, true);
 
-                    if (icList.orientation == Qt.Horizontal){
-                        icList.currentSpot = mouseX;
-                        calculateScales(mouseX);
-                    }
-                    else{
-                        icList.currentSpot = mouseY;
-                        calculateScales(mouseY);
+                        if (icList.orientation == Qt.Horizontal){
+                            icList.currentSpot = mouseX;
+                            calculateScales(mouseX);
+                        }
+                        else{
+                            icList.currentSpot = mouseY;
+                            calculateScales(mouseY);
+                        }
                     }
                 }
 
@@ -344,7 +348,15 @@ Component {
                         ///dont check to restore zooms
                     }
                     else{
-                        checkListHovered.start();
+                        if(!inAnimation){
+                            checkListHovered.start();
+                        }
+                    }
+                }
+
+                onIsDraggedChanged: {
+                    if(isDragged){
+                        scale = 1.35;
                     }
                 }
 
@@ -355,6 +367,7 @@ Component {
                             if (step >= animationStep){
                                 icList.hoveredIndex = index;
                                 icList.currentSpot = mouse.x;
+
                                 calculateScales(mouse.x);
                             }
                         }
@@ -363,8 +376,26 @@ Component {
                             if (step >= animationStep){
                                 icList.hoveredIndex = index;
                                 icList.currentSpot = mouse.y;
+
                                 calculateScales(mouse.y);
                             }
+                        }
+
+                        // mouse.button is always 0 here, hence checking with mouse.buttons
+                        if (pressX != -1 && mouse.buttons == Qt.LeftButton && dragHelper.isDrag(pressX, pressY, mouse.x, mouse.y)) {
+
+//                            icList.hoveredIndex = -1;
+                            icList.updateScale(index-1, 1, 0);
+                            icList.updateScale(index+1, 1, 0);
+                    //        icList.updateScale(index, 1, 0);
+
+                            isDragged = true;
+
+                            panel.dragSource = mainItemContainer;
+                            dragHelper.startDrag(mainItemContainer, model.MimeType, model.MimeData,
+                                                 model.LauncherUrlWithoutIcon, model.decoration);
+                            pressX = -1;
+                            pressY = -1;
                         }
                     }
                 }
@@ -386,7 +417,6 @@ Component {
                         pressed = true;
                         pressX = mouse.x;
                         pressY = mouse.y;
-                        inAnimation = true;
                     }
                     else if (mouse.button == Qt.RightButton){
                         mainItemContainer.contextMenu = panel.contextMenuComponent.createObject(mainItemContainer);
@@ -409,12 +439,14 @@ Component {
                             }
                             else{
                                 mouseEntered = false;
+                                inAnimation = true;
                                 runLauncherAnimation();
                             }
                         }
                         else if (mouse.button == Qt.LeftButton){
                             if( model.IsLauncher ){
                                 mouseEntered = false;
+                                inAnimation = true;
                                 runLauncherAnimation();
                             }
                             else{
@@ -442,9 +474,10 @@ Component {
                 }
 
                 onContainsMouseChanged:{
-                    //      if(!containsMouse){
-                    //        pressed=false;
-                    //     }
+                    if(!containsMouse){
+                        if(!inAnimation)
+                            pressed=false;
+                    }
                 }
 
 

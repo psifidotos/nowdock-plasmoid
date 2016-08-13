@@ -46,6 +46,7 @@ Item {
     signal windowsHovered(variant winIds, bool hovered)
     signal presentWindows(variant winIds)
 
+    signal draggingFinished();
 
     /*Rectangle{
                 anchors.fill: parent
@@ -74,7 +75,7 @@ Item {
         target: plasmoid
         property: "status"
         value: (tasksModel.anyTaskDemandsAttention
-            ? PlasmaCore.Types.NeedsAttentionStatus : PlasmaCore.Types.PassiveStatus)
+                ? PlasmaCore.Types.NeedsAttentionStatus : PlasmaCore.Types.PassiveStatus)
     }
 
     /////
@@ -86,6 +87,8 @@ Item {
 
     onDragSourceChanged: {
         if (dragSource == null) {
+            panel.draggingFinished();
+
             tasksModel.syncLaunchers();
         }
     }
@@ -105,6 +108,7 @@ Item {
         separateLaunchers: false
 
         groupMode: TaskManager.TasksModel.GroupApplications
+        sortMode: TaskManager.TasksModel.SortManual
         groupInline: false
 
         onActivityChanged: {
@@ -190,14 +194,6 @@ Item {
             }
 
         }
-    }
-
-    MouseHandler {
-        id: mouseHandler
-
-        anchors.fill: parent
-
-        target: icList
     }
 
     Rectangle{
@@ -327,6 +323,24 @@ Item {
             border.color: "red"
             color: "white"
         } */
+        MouseHandler {
+            id: mouseHandler
+            property int maxSize: (panel.zoomFactor * panel.iconSize) + 16
+            width: panel.vertical ? maxSize : icList.width
+            height: panel.vertical ? icList.height : maxSize
+
+            anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? icList.bottom : undefined
+            anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? icList.top : undefined
+            anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? icList.left : undefined
+            anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? icList.right : undefined
+
+            anchors.horizontalCenter: ((panel.position === PlasmaCore.Types.BottomPositioned) ||
+                                       (panel.position === PlasmaCore.Types.TopPositioned)) ? icList.horizontalCenter : undefined
+            anchors.verticalCenter: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
+                                     (panel.position === PlasmaCore.Types.RightPositioned)) ? icList.verticalCenter : undefined
+
+            target: icList
+        }
 
         ListView {
             id:icList
@@ -367,6 +381,10 @@ Item {
                 border.color: "red"
                 color: "transparent"
             }*/
+            moveDisplaced: Transition {
+                NumberAnimation { properties: "x,y"; duration: 200 }
+            }
+
         }
     }
 
@@ -474,6 +492,9 @@ Item {
         default:
             newPosition = PlasmaCore.Types.BottomPositioned;
         }
+
+        newPosition = PlasmaCore.Types.LeftPositioned;
+        tempVertical = true;
 
         movePanel(barLine,newPosition);
         movePanel(icList,newPosition);

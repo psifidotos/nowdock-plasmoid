@@ -89,15 +89,15 @@ Item {
                 ignoredItem = null;
             }
 
-            if (tasksModel.sortMode == TaskManager.TasksModel.SortManual && tasks.dragSource) {
-                var insertAt = TaskTools.insertIndexAt(above, event.x, event.y);
+            if (tasksModel.sortMode == TaskManager.TasksModel.SortManual && panel.dragSource) {
+                var insertAt = TaskTools.insertIndexAt(above, event.x, event.y);              
 
-                if (!groupDialog.visible && tasks.dragSource != above && tasks.dragSource.itemIndex != insertAt) {
-                    tasksModel.move(tasks.dragSource.itemIndex, insertAt);
+                if (panel.dragSource != above && panel.dragSource.itemIndex != insertAt) {
+                    tasksModel.move(panel.dragSource.itemIndex, insertAt);
                     ignoredItem = above;
                     ignoreItemTimer.restart();
                 }
-            } else if (!tasks.dragSource && above && hoveredItem != above) {
+            } else if (!panel.dragSource && above && hoveredItem != above) {
                 hoveredItem = above;
                 activationTimer.restart();
             } else if (!above) {

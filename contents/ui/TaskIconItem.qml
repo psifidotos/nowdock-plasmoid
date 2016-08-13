@@ -24,7 +24,7 @@ Item{
     //big interval to show shadows only after all the crappy adds and removes of tasks
     //have happened
     property bool firstDrawed: false
-    property int shadowInterval: firstDrawed ? 400 : 80
+    property int shadowInterval: firstDrawed ? 400 : 150
     //property int normalIconInterval: 40
 
     ///just for catching the signals
@@ -174,13 +174,10 @@ Item{
             }
         }
 
-        onStopped: {
-            wrapper.inAnimation = false;
-        }
 
         onPressedChanged: {
             if( (pressed)&&
-                ((wrapper.lastButtonClicked == Qt.LeftButton)||(wrapper.lastButtonClicked == Qt.MidButton)) ){
+                    ((wrapper.lastButtonClicked == Qt.LeftButton)||(wrapper.lastButtonClicked == Qt.MidButton)) ){
                 start();
             }
         }
@@ -224,11 +221,21 @@ Item{
                 duration: 3 * launcherAnimation.speed
                 easing.type: Easing.OutBounce
             }
+
+            //for some reason the wrapper.scale goes to zoomFactor just a little before the end of the animation
+            //this animation makes it 1 before the end of the animation
+            PropertyAnimation {
+                target: wrapper
+                property: "scale"
+                to: 1
+                duration: 1
+            }
         }
 
 
         onStopped: {
-            wrapper.inAnimation = false;
+            wrapper.scale = 1;
+
             wrapper.animationEnded();
         }
 
@@ -315,14 +322,8 @@ Item{
         onIsDemandingAttentionChanged: {
             if( (!isDemandingAttention)&&(running)){
                 clear();
-                wrapper.animationEnded();
+                //  wrapper.animationEnded();
             }
-        }
-
-        onEnteredChanged: {
-            //    if(entered){
-            //  clear();
-            //  }
         }
 
         function init(){
@@ -343,14 +344,12 @@ Item{
             if(!isDemandingAttention)
                 loops = 2;
             else
-                loops = 100;
+                loops = 45;
 
             // icList.hoveredIndex = -1;
         }
 
         function bounceNewWindow(){
-            wrapper.inAnimation = false;
-
             init();
             start();
         }
@@ -425,7 +424,79 @@ Item{
 
     }
 
-    ////
+    ////////////////////////////
+
+    ////////////////////////////Release Dragged Animation
+
+    SequentialAnimation{
+        id: releaseDraggedAnimation
+
+        property int speed: 300
+
+        property bool inHalf: false
+
+        SequentialAnimation{
+
+            PropertyAnimation {
+                target: wrapper
+                property: "scale"
+                to: 0.6
+                duration: releaseDraggedAnimation.speed
+                easing.type: Easing.OutQuad
+            }
+
+            PropertyAnimation {
+                target: releaseDraggedAnimation
+                property: "inHalf"
+                to: true
+                duration: 1
+            }
+
+            PropertyAnimation {
+                target: wrapper
+                property: "scale"
+                to: panel.zoomFactor
+                duration: releaseDraggedAnimation.speed
+                easing.type: Easing.OutQuad
+            }
+        }
+
+        onInHalfChanged: {
+            if(inHalf){
+                var halfZoom = 1 + ((panel.zoomFactor - 1) / 2);
+                icList.updateScale(index-1, halfZoom, 0);
+                icList.updateScale(index+1, halfZoom, 0);
+            }
+        }
+
+        onStopped: {
+            inHalf = false;
+
+            wrapper.inAnimation = false;
+            wrapper.isDragged = false;
+        }
+
+        function init(){
+            wrapper.inAnimation = true;
+        }
+
+        function execute(){
+            if(wrapper.isDragged){
+                init();
+                start();
+            }
+        }
+
+
+        Component.onCompleted: {
+            panel.draggingFinished.connect(execute);
+        }
+    }
+    /////////////////// end of release dragged animation
+
+
+
+    //////////////////////////
 
     function updateImages(){
         if(panel){

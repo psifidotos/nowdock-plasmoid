@@ -91,15 +91,18 @@ function insertIndexAt(above, x, y) {
     if (above) {
         return above.itemIndex;
     } else {
-        var distance = tasks.vertical ? x : y;
-        var step = tasks.vertical ? LayoutManager.taskWidth() : LayoutManager.taskHeight();
+        var distance = panel.vertical ? y : x;
+        //var step = panel.vertical ? LayoutManager.taskWidth() : LayoutManager.taskHeight();
+        var step = panel.realSize;
         var stripe = Math.ceil(distance / step);
 
-        if (stripe === LayoutManager.calculateStripes()) {
+        /* if (stripe === LayoutManager.calculateStripes()) {
             return tasksModel.count - 1;
         } else {
             return stripe * LayoutManager.tasksPerStripe();
-        }
+        }*/
+
+        return stripe-1;
     }
 }
 
