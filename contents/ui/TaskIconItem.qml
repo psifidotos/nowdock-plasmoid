@@ -66,8 +66,8 @@ Item{
 
             opacity: wrapper.containsMouse ? 1 : 0
 
-            visible: ((activateTaskAnimation.running == false) &&
-                      (launcherAnimation.running == false) )
+            visible: ((!clickedAnimation.running) &&
+                      (!launcherAnimation.running) )
 
             Behavior on opacity {
                 NumberAnimation { duration: 300 }
@@ -80,7 +80,7 @@ Item{
         anchors.fill: iconImageBuffer
         source: iconImageBuffer
 
-        visible: activateTaskAnimation.running
+        visible: clickedAnimation.running
     }
 
 
@@ -134,59 +134,61 @@ Item{
 
     ///////Activate animation/////
 
+
     SequentialAnimation{
-        id: activateTaskAnimation
+        id: clickedAnimation
+        property bool pressed: wrapper.pressed
         property int speed: 120
 
-        SequentialAnimation{
-
-            ParallelAnimation{
-                PropertyAnimation {
-                    target: brightnessTaskEffect
-                    property: "brightness"
-                    to: -0.5
-                    duration: activateTaskAnimation.speed
-                    easing.type: Easing.OutQuad
-                }
-                PropertyAnimation {
-                    target: wrapper
-                    property: "scale"
-                    to: wrapper.scale - 0.3
-                    duration: activateTaskAnimation.speed
-                    easing.type: Easing.OutQuad
-                }
+        ParallelAnimation{
+            PropertyAnimation {
+                target: brightnessTaskEffect
+                property: "brightness"
+                to: -0.5
+                duration: clickedAnimation.speed
+                easing.type: Easing.OutQuad
             }
-
-            ParallelAnimation{
-                PropertyAnimation {
-                    target: brightnessTaskEffect
-                    property: "brightness"
-                    to: 0
-                    duration: activateTaskAnimation.speed
-                    easing.type: Easing.OutQuad
-                }
-                PropertyAnimation {
-                    target: wrapper
-                    property: "scale"
-                    to: panel.zoomFactor
-                    duration: activateTaskAnimation.speed
-                    easing.type: Easing.OutQuad
-                }
+            PropertyAnimation {
+                target: wrapper
+                property: "scale"
+                to: wrapper.scale - 0.3
+                duration: clickedAnimation.speed
+                easing.type: Easing.OutQuad
             }
-
         }
+
+        ParallelAnimation{
+            PropertyAnimation {
+                target: brightnessTaskEffect
+                property: "brightness"
+                to: 0
+                duration: clickedAnimation.speed
+                easing.type: Easing.OutQuad
+            }
+            PropertyAnimation {
+                target: wrapper
+                property: "scale"
+                to: panel.zoomFactor
+                duration: clickedAnimation.speed
+                easing.type: Easing.OutQuad
+            }
+        }
+
         onStopped: {
-            wrapper.animationEnded();
+            wrapper.inAnimation = false;
         }
 
-        function startAnimation(){
-            start();
-        }
-
-        Component.onCompleted: {
-            wrapper.runActivateAnimation.connect(startAnimation);
+        onPressedChanged: {
+            if( (pressed)&&
+                ((wrapper.lastButtonClicked == Qt.LeftButton)||(wrapper.lastButtonClicked == Qt.MidButton)) ){
+                start();
+            }
         }
     }
+
+    /*Component.onCompleted: {
+        wrapper.runActivateAnimation.connect(startAnimation);
+    }*/
     ////end of activate animation////
 
     ////bouncing task, e.g. on launcher activating and when a new window is
@@ -226,6 +228,7 @@ Item{
 
 
         onStopped: {
+            wrapper.inAnimation = false;
             wrapper.animationEnded();
         }
 

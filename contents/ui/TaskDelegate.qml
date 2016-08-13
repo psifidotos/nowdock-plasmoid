@@ -18,7 +18,6 @@ Component {
         readonly property var m: model
         property bool isWindow: model.IsWindow ? true : false
 
-
         anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
         anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
         anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
@@ -30,9 +29,14 @@ Component {
         property QtObject contextMenu: null
 
         property int animationTime: 60
-
         property bool delayingRemove: ListView.delayRemove
         property bool buffersAreReady: false
+        property int itemIndex: index
+
+        property bool pressed: wrapper.pressed
+        property int pressX: wrapper.pressX
+        property int pressY: wrapper.pressY
+
 
         signal groupWindowAdded();
         signal groupWindowRemoved();
@@ -130,8 +134,14 @@ Component {
             MouseArea{
                 id: wrapper
 
-                signal runActivateAnimation();
-                signal runLauncherAnimation();
+                opacity: 0
+                width: (IsStartup) ? 0 : showDelegateWidth
+                height: (IsStartup) ? 0 : showDelegateheight
+
+                acceptedButtons: Qt.LeftButton | Qt.MidButton | Qt.RightButton
+
+                hoverEnabled: (inAnimation !== true)&& (!IsStartup)
+
 
                 property real showDelegateWidth: (icList.orientation === Qt.Vertical ) ? basicScalingWidth+addedSpace :
                                                                                          basicScalingWidth
@@ -139,17 +149,16 @@ Component {
                 property real showDelegateheight: (icList.orientation === Qt.Vertical ) ? basicScalingHeight :
                                                                                           basicScalingHeight + addedSpace
 
-                width: (IsStartup) ? 0 : showDelegateWidth
-                height: (IsStartup) ? 0 : showDelegateheight
-
-                acceptedButtons: Qt.LeftButton | Qt.MidButton | Qt.RightButton
-
-                hoverEnabled: (inAnimation !== true)&& (!IsStartup)
                 property int addedSpace: 15
 
                 property bool pressed: false
                 property bool mouseEntered: false
-                opacity: 0
+                property int pressX: -1
+                property int pressY: -1
+
+                property bool inAnimation: false
+
+                property int lastButtonClicked: -1;
 
                 //scales which are used mainly for activating InLauncher
                 ////Scalers///////
@@ -162,7 +171,7 @@ Component {
                 property real scaleWidth: (inTempScaling == true) ? tempScaleWidth : scale
                 property real scaleHeight: (inTempScaling == true) ? tempScaleHeight : scale
 
-                ///Dont use Math.floor it adds one pixel in animations and creates glitches
+                          ///Dont use Math.floor it adds one pixel in animations and creates glitches
                 property real cleanScaling: panel.realSize * scale
 
                 property real basicScalingWidth : (inTempScaling == true) ? (panel.realSize * scaleWidth) : cleanScaling
@@ -177,7 +186,7 @@ Component {
                 property real center: Math.floor(width / 2)
                 property real animationStep: panel.iconSize / 8  ;
 
-                property bool inAnimation: false
+                signal runLauncherAnimation();
 
                 /* Rectangle{
                     anchors.fill: parent
@@ -360,33 +369,10 @@ Component {
                     }
                 }
 
-                property int lastButtonClicked: -1;
-
                 function animationEnded(){
                     if(pressed){
-                        if (lastButtonClicked == Qt.MidButton){
-                            if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.NewInstance) {
-                                tasksModel.requestNewInstance(modelIndex());
-                            } else if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.Close) {
-                                tasksModel.requestClose(modelIndex());
-                            } else if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.ToggleMinimized) {
-                                tasksModel.requestToggleMinimized(modelIndex());
-                            }
-                        }
-                        else if (lastButtonClicked == Qt.LeftButton) {
-                            if (model.IsGroupParent)
-                                panel.presentWindows(model.LegacyWinIdList);
-                            else {
-                                if (IsMinimized === true) {
-                                    var i = modelIndex();
-                                    tasksModel.requestToggleMinimized(i);
-                                    tasksModel.requestActivate(i);
-                                } else if (IsActive === true) {
-                                    tasksModel.requestToggleMinimized(modelIndex());
-                                } else {
-                                    tasksModel.requestActivate(modelIndex());
-                                }
-                            }
+                        if ((lastButtonClicked == Qt.LeftButton)||(lastButtonClicked == Qt.MidButton)){
+                            tasksModel.requestActivate(modelIndex());
                         }
                     }
 
@@ -396,16 +382,11 @@ Component {
 
                 onPressed: {
                     if ((mouse.button == Qt.LeftButton)||(mouse.button == Qt.MidButton)) {
-                        pressed = true;
-                        inAnimation = true;
                         lastButtonClicked = mouse.button;
-
-                        if( model.IsLauncher ){
-                            mouseEntered = false;
-                            runLauncherAnimation();
-                        }
-                        else
-                            runActivateAnimation();
+                        pressed = true;
+                        pressX = mouse.x;
+                        pressY = mouse.y;
+                        inAnimation = true;
                     }
                     else if (mouse.button == Qt.RightButton){
                         mainItemContainer.contextMenu = panel.contextMenuComponent.createObject(mainItemContainer);
@@ -414,36 +395,58 @@ Component {
                     }
                 }
 
-                /*      onReleased: {
+                onReleased: {
                     if(pressed){
                         if (mouse.button == Qt.MidButton){
-                            if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.NewInstance) {
-                                tasksModel.requestNewInstance(modelIndex());
-                            } else if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.Close) {
-                                tasksModel.requestClose(modelIndex());
-                            } else if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.ToggleMinimized) {
-                                tasksModel.requestToggleMinimized(modelIndex());
-                            }
-
-                            pressed = false;
-                        } else if (mouse.button == Qt.LeftButton) {
-                                 if (model.IsGroupParent)
-                                panel.presentWindows(model.LegacyWinIdList);
-                            else {
-                                if (IsMinimized === true) {
-                                    var i = modelIndex();
-                                    tasksModel.requestToggleMinimized(i);
-                                    tasksModel.requestActivate(i);
-                                } else if (IsActive === true) {
+                            if( !model.IsLauncher){
+                                if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.NewInstance) {
+                                    tasksModel.requestNewInstance(modelIndex());
+                                } else if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.Close) {
+                                    tasksModel.requestClose(modelIndex());
+                                } else if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.ToggleMinimized) {
                                     tasksModel.requestToggleMinimized(modelIndex());
-                                } else {
-                                    tasksModel.requestActivate(modelIndex());
                                 }
+                            }
+                            else{
+                                mouseEntered = false;
+                                runLauncherAnimation();
+                            }
+                        }
+                        else if (mouse.button == Qt.LeftButton){
+                            if( model.IsLauncher ){
+                                mouseEntered = false;
+                                runLauncherAnimation();
+                            }
+                            else{
+                                if (model.IsGroupParent)
+                                    panel.presentWindows(model.LegacyWinIdList);
+                                else {
+                                    if (IsMinimized === true) {
+                                        var i = modelIndex();
+                                        tasksModel.requestToggleMinimized(i);
+                                        tasksModel.requestActivate(i);
+                                    } else if (IsActive === true) {
+                                        tasksModel.requestToggleMinimized(modelIndex());
+                                    } else {
+                                        tasksModel.requestActivate(modelIndex());
+                                    }
+                                }
+
                             }
                         }
                     }
 
-                } */
+                    //have to wait first for the launcher animation to end
+                    if(!IsLauncher)
+                        pressed = false;
+                }
+
+                onContainsMouseChanged:{
+                    //      if(!containsMouse){
+                    //        pressed=false;
+                    //     }
+                }
+
 
                 function modelIndex(){
                     return tasksModel.makeModelIndex(index);
@@ -608,8 +611,8 @@ Component {
         ///to desappear and then show the launcher...
 
 
-     //   property int mainDelay: IsLauncher ? 800 : 400
-     //   property int mainDelay: icList.delayingRemoval ? 2*showWindowAnimation.speed : 450
+        //   property int mainDelay: IsLauncher ? 800 : 400
+        //   property int mainDelay: icList.delayingRemoval ? 2*showWindowAnimation.speed : 450
 
         //BE CAREFUL: this interval (e.g. 700ms) must be lower from the removal animation
         //duration e.g.(800ms) because there are situattions that because of this some

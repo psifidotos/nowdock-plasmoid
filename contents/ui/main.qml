@@ -1,4 +1,4 @@
-import QtQuick 2.7
+import QtQuick 2.0
 import QtQuick.Layouts 1.1
 import QtGraphicalEffects 1.0
 
@@ -36,11 +36,11 @@ Item {
     property bool vertical: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
                              (panel.position === PlasmaCore.Types.RightPositioned)) ? true : false
 
-    property Item dragSource: null
 
     property bool enableShadows: plasmoid.configuration.showShadows
 
     property QtObject contextMenuComponent: Qt.createComponent("ContextMenu.qml");
+    property Item dragSource: null
 
     signal requestLayout
     signal windowsHovered(variant winIds, bool hovered)
@@ -83,6 +83,12 @@ Item {
     }
 
     /////
+
+    onDragSourceChanged: {
+        if (dragSource == null) {
+            tasksModel.syncLaunchers();
+        }
+    }
 
     TaskManager.TasksModel {
         id: tasksModel
@@ -139,6 +145,12 @@ Item {
         }
     }
 
+    TaskManagerApplet.DragHelper {
+        id: dragHelper
+
+        dragIconSize: units.iconSizes.medium
+    }
+
     TaskManager.VirtualDesktopInfo {
         id: virtualDesktopInfo
     }
@@ -178,6 +190,14 @@ Item {
             }
 
         }
+    }
+
+    MouseHandler {
+        id: mouseHandler
+
+        anchors.fill: parent
+
+        target: icList
     }
 
     Rectangle{
@@ -364,41 +384,6 @@ Item {
         }
     }
 
-    //It is used when changing activities..
-    //Because of many suddent moves, deletes and adds
-    //sometimes the ListView appearance breaks
-    //this timer makes a full repaint for the ListView
-    /*   Timer {
-        id: panelGeometryTimer
-
-        interval: 2000
-        repeat: false
-
-        onTriggered: {
-            //icList.model = 0;
-            //    tasksListRepeater.model = 0;
-            //    tasksListRepeater.model = tasksModel;
-            //  icList.model = tasksModel;
-
-            /// Debugging loop
-            /*    var taskItems = icList.contentItem.children;
-            for (var i = 0; i < taskItems.length - 1; ++i) {
-                var task = taskItems[i];
-                console.debug(i+": "+task.objectName+" "+task.width+" "+task.height);
-            }*/
-    //     }
-    //   }
-
-
-    Component.onCompleted:  {
-        updatePosition();
-
-        //   updateImplicits(); // the models items have not been added yet
-
-        panel.presentWindows.connect(backend.presentWindows);
-        //    iconGeometryTimer.start();
-    }
-
     function movePanel(obj, newPosition){
         var bLine = obj;
         if (newPosition === PlasmaCore.Types.BottomPositioned){
@@ -507,6 +492,19 @@ Item {
 
     function addLauncher(url) {
         tasksModel.requestAddLauncher(url);
+    }
+
+    function resetDragSource() {
+        dragSource = null;
+    }
+
+    Component.onCompleted:  {
+        updatePosition();
+        //   updateImplicits(); // the models items have not been added yet
+        panel.presentWindows.connect(backend.presentWindows);
+        mouseHandler.urlDropped.connect(backend.urlDropped);
+        dragHelper.dropped.connect(resetDragSource);
+        //    iconGeometryTimer.start();
     }
 
 }
