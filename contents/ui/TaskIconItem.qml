@@ -474,6 +474,7 @@ Item{
 
             wrapper.inAnimation = false;
             wrapper.isDragged = false;
+            checkListHovered.start();
         }
 
         function init(){
@@ -481,9 +482,11 @@ Item{
         }
 
         function execute(){
-            if(wrapper.isDragged){
-                init();
-                start();
+            if(wrapper){
+                if(wrapper.isDragged){
+                    init();
+                    start();
+                }
             }
         }
 
