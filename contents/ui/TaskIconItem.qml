@@ -28,8 +28,8 @@ Item{
     //property int normalIconInterval: 40
 
     ///just for catching the signals
-//    property int tempIconSize: panel.iconSize
-  //  property bool tempEnableShadows: panel.enableShadows
+    //    property int tempIconSize: panel.iconSize
+    //  property bool tempEnableShadows: panel.enableShadows
 
     Connections{
         target: panel
@@ -37,7 +37,7 @@ Item{
         onEnableShadowsChanged: updateImages()
     }
 
-  /*  onTempIconSizeChanged: {
+    /*  onTempIconSizeChanged: {
         updateImages();
     }
 
@@ -404,13 +404,12 @@ Item{
             }
 
             removingItem.visible = true;
+
         }
 
         function removeTask(){
-            if(panel.enableShadows){
-                init();
-                start();
-            }
+            init();
+            start();
         }
 
         onStopped: {

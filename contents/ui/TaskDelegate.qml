@@ -515,10 +515,8 @@ Component {
 
                 onTriggered: {
                     wrapper.hoverEnabled = true;
-
                     tasksModel.requestPublishDelegateGeometry(wrapper.modelIndex(),
                                                               backend.globalRect(mainItemContainer), mainItemContainer);
-
                     timer.destroy();
                 }
 
@@ -608,12 +606,17 @@ Component {
         ///are shown after 5secs of existence, and launchers after 200ms
         ///for launchers this is set in order to give to a window the time
         ///to desappear and then show the launcher...
-        ///    BE CAREFUL: there are situations that the launchers are lost
-        ///    in this situations some times... Needs investigations...
-        ///    e.g. chrome launcher
 
-        property int mainDelay: IsLauncher ? 800 : 400
+
+     //   property int mainDelay: IsLauncher ? 800 : 400
      //   property int mainDelay: icList.delayingRemoval ? 2*showWindowAnimation.speed : 450
+
+        //BE CAREFUL: this interval (e.g. 700ms) must be lower from the removal animation
+        //duration e.g.(800ms) because there are situattions that because of this some
+        //launchers delay A LOT to reappear, e.g google-chrome
+        //I will blacklist google-chrome as I have not found any other case for this bug
+        //to appear, but even this way there are cases that still appears...
+        property int mainDelay: (AppId == "google-chrome") ? 0 : 2*showWindowAnimation.speed
         property int windowDelay: IsStartup ? 5000 : mainDelay
 
         Component {
@@ -641,13 +644,14 @@ Component {
             PropertyAction { target: mainItemContainer; property: "ListView.delayRemove"; value: true }
             PropertyAction { target: icList; property: "delayingRemoval"; value: true }
             PropertyAction { target: wrapper; property: "opacity"; value: isWindow ? 0 : 1 }
+            //animation mainly for launchers removal and startups
             ParallelAnimation{
                 id: removalAnimation
 
                 // property int speed: (IsStartup && !mainItemContainer.visible)? 0 : 400
-                property int speed: 400
+                //property int speed: 400
 
-                NumberAnimation { target: wrapper; property: "opacity"; to: 0; duration: removalAnimation.speed; easing.type: Easing.InQuad }
+                NumberAnimation { target: wrapper; property: "opacity"; to: 0; duration: showWindowAnimation.speed; easing.type: Easing.InQuad }
 
                 PropertyAnimation {
                     target: wrapper
