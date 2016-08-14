@@ -494,7 +494,6 @@ Item{
             inHalf = false;
 
             mainItemContainer.inAnimation = false;
-            //mainItemContainer.isDragged = false;
             checkListHovered.start();
         }
 

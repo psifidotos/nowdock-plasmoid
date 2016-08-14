@@ -42,6 +42,8 @@ Component {
         readonly property var m: model
         property bool isWindow: model.IsWindow ? true : false
         property QtObject contextMenu: null
+        property QtObject draggingResistaner: null
+
 
 
         signal groupWindowAdded();
@@ -220,8 +222,8 @@ Component {
                     // A new algorithm tryig to make the zoom calculation only once
                     // and at the same time fixing glitches
                     if ((distanceFromHovered == 0)&&
-                        (currentMousePosition  > 0)&&
-                        (panel.dragSource == null) ){
+                            (currentMousePosition  > 0)&&
+                            (panel.dragSource == null) ){
 
                         var rDistance = Math.abs(currentMousePosition  - center);
 
@@ -362,7 +364,15 @@ Component {
 
         onIsDraggedChanged: {
             if(isDragged){
+                icList.updateScale(index-1, 1, 0);
+                icList.updateScale(index+1, 1, 0);
                 wrapper.scale = 1.35;
+
+                panel.dragSource = mainItemContainer;
+                dragHelper.startDrag(mainItemContainer, model.MimeType, model.MimeData,
+                                     model.LauncherUrlWithoutIcon, model.decoration);
+                pressX = -1;
+                pressY = -1;
             }
         }
 
@@ -412,6 +422,12 @@ Component {
                     checkListHovered.start();
                 }
             }
+
+           /* if(draggingResistaner != null){
+                draggingResistaner.destroy();
+                draggingResistaner = null;
+                isDragged = false;
+            }*/
         }
 
         onPositionChanged: {
@@ -438,10 +454,11 @@ Component {
                 }
 
                 // mouse.button is always 0 here, hence checking with mouse.buttons
-                if (pressX != -1 && mouse.buttons == Qt.LeftButton && dragHelper.isDrag(pressX, pressY, mouse.x, mouse.y)) {
+                if (pressX != -1 && mouse.buttons == Qt.LeftButton
+                        && isDragged
+                        && dragHelper.isDrag(pressX, pressY, mouse.x, mouse.y) ) {
                     icList.updateScale(index-1, 1, 0);
                     icList.updateScale(index+1, 1, 0);
-                    isDragged = true;
                     wrapper.scale = 1.35;
 
                     panel.dragSource = mainItemContainer;
@@ -449,6 +466,13 @@ Component {
                                          model.LauncherUrlWithoutIcon, model.decoration);
                     pressX = -1;
                     pressY = -1;
+                }
+                else{
+                    /*    if(draggingResistaner != null){
+                        draggingResistaner.destroy();
+                        draggingResistaner = null;
+                    }
+                    isDragged = false;*/
                 }
             }
         }
@@ -469,6 +493,9 @@ Component {
                 pressed = true;
                 pressX = mouse.x;
                 pressY = mouse.y;
+
+                if(draggingResistaner == null)
+                    draggingResistaner = resistanerTimerComponent.createObject(mainItemContainer);
             }
             else if (mouse.button == Qt.RightButton){
                 mainItemContainer.contextMenu = panel.contextMenuComponent.createObject(mainItemContainer);
@@ -478,6 +505,11 @@ Component {
         }
 
         onReleased: {
+            if (draggingResistaner != null){
+                draggingResistaner.destroy();
+                draggingResistaner = null;
+            }
+
             if(pressed){
                 if (mouse.button == Qt.MidButton){
                     if( !model.IsLauncher){
@@ -636,6 +668,25 @@ Component {
                 start();
             }
         }
+
+        //A Timer to help in resist a bit to dragging, the user must try
+        //to press a little first before dragging Started
+        Component {
+            id: resistanerTimerComponent
+            Timer {
+                id: resistanerTimer
+                interval: 300
+                repeat: false
+
+                onTriggered: {
+                    mainItemContainer.isDragged = true;
+                    resistanerTimer.destroy();
+                }
+
+                Component.onCompleted: resistanerTimer.start()
+            }
+        }
+
 
         ///trying to compete with the crazy situation in the tasksModel
         ///with launchers and startups... There are windows that stay

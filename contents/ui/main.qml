@@ -177,7 +177,7 @@ Item {
             var tasks = icList.contentItem.children;
             var lostMouse = true;
 
-   //         console.debug("---------");
+    //        console.debug("---------");
             for(var i=0; i<tasks.length; ++i){
                 var task = tasks[i];
       //          console.debug(task.containsMouse);
