@@ -28,7 +28,7 @@ Component {
 
         property QtObject contextMenu: null
 
-        property int animationTime: 60
+        property int animationTime: 70
         property bool delayingRemove: ListView.delayRemove
         property bool buffersAreReady: false
         property int itemIndex: index
