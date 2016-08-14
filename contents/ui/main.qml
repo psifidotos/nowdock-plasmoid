@@ -26,7 +26,6 @@ Item {
     property bool glow: plasmoid.configuration.showGlow
     property int clearWidth
     property int clearHeight
-    property int delegateTransformOrigin
 
     property int position : PlasmaCore.Types.BottomPositioned
 
@@ -178,13 +177,15 @@ Item {
             var tasks = icList.contentItem.children;
             var lostMouse = true;
 
-            //      console.debug("---------");
+   //         console.debug("---------");
             for(var i=0; i<tasks.length; ++i){
                 var task = tasks[i];
-                //        console.debug(task.containsMouse);
-                if (task.containsMouse){
-                    lostMouse = false;
-                    break;
+      //          console.debug(task.containsMouse);
+                if(task){
+                    if (task.containsMouse){
+                        lostMouse = false;
+                        break;
+                    }
                 }
             }
 

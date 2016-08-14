@@ -83,6 +83,7 @@ Item {
             // move back.
             if (panel.dragSource != null
                  && panel.dragSource.m.IsLauncher === true && above != null
+                 && above.m != null
                  && above.m.IsLauncher !== true && above == ignoredItem) {
                 return;
             } else {

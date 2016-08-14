@@ -64,7 +64,7 @@ Item{
             id: iconHoveredBuffer
             anchors.fill: parent
 
-            opacity: wrapper.containsMouse ? 1 : 0
+            opacity: mainItemContainer.containsMouse ? 1 : 0
 
             visible: ((!clickedAnimation.running) &&
                       (!launcherAnimation.running) )
@@ -137,7 +137,7 @@ Item{
 
     SequentialAnimation{
         id: clickedAnimation
-        property bool pressed: wrapper.pressed
+        property bool pressed: mainItemContainer.pressed
         property int speed: 120
 
         ParallelAnimation{
@@ -177,7 +177,7 @@ Item{
 
         onPressedChanged: {
             if( (pressed)&&
-                    ((wrapper.lastButtonClicked == Qt.LeftButton)||(wrapper.lastButtonClicked == Qt.MidButton)) ){
+                    ((mainItemContainer.lastButtonClicked == Qt.LeftButton)||(mainItemContainer.lastButtonClicked == Qt.MidButton)) ){
                 start();
             }
         }
@@ -236,7 +236,7 @@ Item{
         onStopped: {
             wrapper.scale = 1;
 
-            wrapper.animationEnded();
+            mainItemContainer.animationEnded();
         }
 
         function init(){
@@ -276,7 +276,7 @@ Item{
 
         property int speed: 300
         property bool isDemandingAttention: IsDemandingAttention ? true : false
-        property bool entered: wrapper.mouseEntered
+        property bool entered: mainItemContainer.mouseEntered
 
         SequentialAnimation{
             ParallelAnimation{
@@ -406,7 +406,6 @@ Item{
             }
 
             removingItem.visible = true;
-
         }
 
         function removeTask(){
@@ -472,18 +471,18 @@ Item{
         onStopped: {
             inHalf = false;
 
-            wrapper.inAnimation = false;
-            wrapper.isDragged = false;
+            mainItemContainer.inAnimation = false;
+            mainItemContainer.isDragged = false;
             checkListHovered.start();
         }
 
         function init(){
-            wrapper.inAnimation = true;
+            mainItemContainer.inAnimation = true;
         }
 
         function execute(){
-            if(wrapper){
-                if(wrapper.isDragged){
+            if(mainItemContainer){
+                if(mainItemContainer.isDragged){
                     init();
                     start();
                 }

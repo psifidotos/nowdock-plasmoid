@@ -9,14 +9,10 @@ import org.kde.plasma.private.taskmanager 0.1 as TaskManagerApplet
 
 Component {
     id: iconDelegate
-    Item{
+    MouseArea{
         id: mainItemContainer
 
         visible: (IsStartup) ? false : true
-
-        property bool containsMouse : wrapper.containsMouse
-        readonly property var m: model
-        property bool isWindow: model.IsWindow ? true : false
 
         anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
         anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
@@ -26,39 +22,30 @@ Component {
         width: (icList.orientation === Qt.Horizontal) ? hiddenSpacerLeft.width+wrapper.width+hiddenSpacerRight.width : wrapper.width
         height: (icList.orientation === Qt.Horizontal) ? wrapper.height : hiddenSpacerLeft.height + wrapper.height + hiddenSpacerRight.height
 
-        property QtObject contextMenu: null
+        acceptedButtons: Qt.LeftButton | Qt.MidButton | Qt.RightButton
+        hoverEnabled: (inAnimation !== true)&& (!IsStartup)
 
         property int animationTime: 70
         property bool delayingRemove: ListView.delayRemove
         property bool buffersAreReady: false
         property int itemIndex: index
+        property int hoveredIndex: icList.hoveredIndex
+        property bool pressed: false
+        property int pressX: -1
+        property int pressY: -1
+        property bool mouseEntered: false
+        property bool isDragged: false
+        property bool inAnimation: false
+        property int lastButtonClicked: -1;
+        property real animationStep: panel.iconSize / 8
 
-        property bool pressed: wrapper.pressed
-        property int pressX: wrapper.pressX
-        property int pressY: wrapper.pressY
+        readonly property var m: model
+        property bool isWindow: model.IsWindow ? true : false
+        property QtObject contextMenu: null
 
 
         signal groupWindowAdded();
         signal groupWindowRemoved();
-
-
-        onDelayingRemoveChanged: {
-            if(delayingRemove && isWindow)
-                groupWindowRemoved();
-        }
-
-        onContainsMouseChanged:{
-            if(!containsMouse){
-                hiddenSpacerLeft.nScale = 0;
-                hiddenSpacerRight.nScale = 0;
-            }
-        }
-
-
-        /*    onIsDemandingAttentionChanged: {
-            if (isDemandingAttention)
-                newWindowAdded();
-        } */
 
 
         /*Rectangle{
@@ -74,12 +61,6 @@ Component {
             NumberAnimation { duration: 400 }
         }
 
-        onIsWindowChanged: {
-            if (isWindow) {
-                taskInitComponent.createObject(mainItemContainer);
-            }
-        }
-
         TaskWindows{
             id: tasksWindows
 
@@ -92,12 +73,15 @@ Component {
                     //     }
                 }
                 else if ((windowsCount >=1) &&(windowsCount < previousCount)){
-                    mainItemContainer.groupWindowRemoved();
+                    //sometimes this is triggered in dragging with no reason
+                    if(panel.dragSource == null)
+                        mainItemContainer.groupWindowRemoved();
                 }
 
                 previousCount = windowsCount;
             }
         }
+
 
         Flow{
             width: parent.width
@@ -115,7 +99,6 @@ Component {
                 width: (icList.orientation === Qt.Horizontal) ? nHiddenSize : wrapper.width
                 height: (icList.orientation === Qt.Vertical) ? nHiddenSize : wrapper.height
 
-
                 property real nScale: 0
 
                 Behavior on nScale {
@@ -132,17 +115,12 @@ Component {
                 }*/
             }
 
-            MouseArea{
+            Item{
                 id: wrapper
 
                 opacity: 0
                 width: (IsStartup) ? 0 : showDelegateWidth
                 height: (IsStartup) ? 0 : showDelegateheight
-
-                acceptedButtons: Qt.LeftButton | Qt.MidButton | Qt.RightButton
-
-                hoverEnabled: (inAnimation !== true)&& (!IsStartup)
-
 
                 property real showDelegateWidth: (icList.orientation === Qt.Vertical ) ? basicScalingWidth+addedSpace :
                                                                                          basicScalingWidth
@@ -152,15 +130,6 @@ Component {
 
                 property int addedSpace: 15
 
-                property bool pressed: false
-                property bool mouseEntered: false
-                property bool isDragged: false
-                property int pressX: -1
-                property int pressY: -1
-
-                property bool inAnimation: false
-
-                property int lastButtonClicked: -1;
 
                 //scales which are used mainly for activating InLauncher
                 ////Scalers///////
@@ -168,7 +137,7 @@ Component {
                 property real scale: 1;
                 property real tempScaleWidth: 0
                 property real tempScaleHeight: 0
-                property bool inTempScaling: (((tempScaleWidth !== 1) || (tempScaleHeight !== 1) ) && (!mouseEntered) )
+                property bool inTempScaling: (((tempScaleWidth !== 1) || (tempScaleHeight !== 1) ) && (!mainItemContainer.mouseEntered) )
 
                 property real scaleWidth: (inTempScaling == true) ? tempScaleWidth : scale
                 property real scaleHeight: (inTempScaling == true) ? tempScaleHeight : scale
@@ -183,10 +152,9 @@ Component {
                 property real regulatorHeight: basicScalingHeight - 2;
                 /// end of Scalers///////
 
-                property int curIndex: icList.hoveredIndex
+                //property int curIndex: icList.hoveredIndex
                 //  property int index: mainItemContainer.Positioner.index
                 property real center: Math.floor(width / 2)
-                property real animationStep: panel.iconSize / 8  ;
 
                 signal runLauncherAnimation();
 
@@ -309,208 +277,20 @@ Component {
                 } //scale
 
 
-                //restore scales when there is no zoom factor for that item or
-                //the mouse is out of the ListView
-                onCurIndexChanged: {
-                    var distanceFromHovered = Math.abs(index - icList.hoveredIndex);
-
-                    if( (distanceFromHovered > 1) || (curIndex < 0)){
-                        scale = 1;
-                        hiddenSpacerLeft.nScale = 0;
-                        hiddenSpacerRight.nScale = 0;
-                    }
-                }
-
-                onEntered: {
-                    if(!inAnimation){
-                        icList.hoveredIndex = index;
-                        mouseEntered = true;
-                        icList.mouseWasEntered(index-2, false);
-                        icList.mouseWasEntered(index+2, false);
-                        icList.mouseWasEntered(index-1, true);
-                        icList.mouseWasEntered(index+1, true);
-
-                        if (icList.orientation == Qt.Horizontal){
-                            icList.currentSpot = mouseX;
-                            calculateScales(mouseX);
-                        }
-                        else{
-                            icList.currentSpot = mouseY;
-                            calculateScales(mouseY);
-                        }
-                    }
-                }
-
-                // IMPORTANT: This must be improved ! even for small miliseconds  it reduces performance
-                onExited: {
-                    mouseEntered = false;
-                    if(mainItemContainer.contextMenu && mainItemContainer.contextMenu.status == PlasmaComponents.DialogStatus.Open){
-                        ///dont check to restore zooms
-                    }
-                    else{
-                        if(!inAnimation){
-                            checkListHovered.start();
-                        }
-                    }
-                }
-
-                onIsDraggedChanged: {
-                    if(isDragged){
-                        scale = 1.35;
-                    }
-                }
-
-                onPositionChanged: {
-                    if(inAnimation == false){
-                        if (icList.orientation == Qt.Horizontal){
-                            var step = Math.abs(icList.currentSpot-mouse.x);
-                            if (step >= animationStep){
-                                icList.hoveredIndex = index;
-                                icList.currentSpot = mouse.x;
-
-                                calculateScales(mouse.x);
-                            }
-                        }
-                        else{
-                            var step = Math.abs(icList.currentSpot-mouse.y);
-                            if (step >= animationStep){
-                                icList.hoveredIndex = index;
-                                icList.currentSpot = mouse.y;
-
-                                calculateScales(mouse.y);
-                            }
-                        }
-
-                        // mouse.button is always 0 here, hence checking with mouse.buttons
-                        if (pressX != -1 && mouse.buttons == Qt.LeftButton && dragHelper.isDrag(pressX, pressY, mouse.x, mouse.y)) {
-
-//                            icList.hoveredIndex = -1;
-                            icList.updateScale(index-1, 1, 0);
-                            icList.updateScale(index+1, 1, 0);
-                    //        icList.updateScale(index, 1, 0);
-
-                            isDragged = true;
-
-                            panel.dragSource = mainItemContainer;
-                            dragHelper.startDrag(mainItemContainer, model.MimeType, model.MimeData,
-                                                 model.LauncherUrlWithoutIcon, model.decoration);
-                            pressX = -1;
-                            pressY = -1;
-                        }
-                    }
-                }
-
-                function animationEnded(){
-                    if(pressed){
-                        if ((lastButtonClicked == Qt.LeftButton)||(lastButtonClicked == Qt.MidButton)){
-                            tasksModel.requestActivate(modelIndex());
-                        }
-                    }
-
-                    pressed = false;
-                    inAnimation = false;
-                }
-
-                onPressed: {
-                    if ((mouse.button == Qt.LeftButton)||(mouse.button == Qt.MidButton)) {
-                        lastButtonClicked = mouse.button;
-                        pressed = true;
-                        pressX = mouse.x;
-                        pressY = mouse.y;
-                    }
-                    else if (mouse.button == Qt.RightButton){
-                        mainItemContainer.contextMenu = panel.contextMenuComponent.createObject(mainItemContainer);
-                        mainItemContainer.contextMenu.visualParent = mainItemContainer;
-                        mainItemContainer.contextMenu.show();
-                    }
-                }
-
-                onReleased: {
-                    if(pressed){
-                        if (mouse.button == Qt.MidButton){
-                            if( !model.IsLauncher){
-                                if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.NewInstance) {
-                                    tasksModel.requestNewInstance(modelIndex());
-                                } else if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.Close) {
-                                    tasksModel.requestClose(modelIndex());
-                                } else if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.ToggleMinimized) {
-                                    tasksModel.requestToggleMinimized(modelIndex());
-                                }
-                            }
-                            else{
-                                mouseEntered = false;
-                                inAnimation = true;
-                                runLauncherAnimation();
-                            }
-                        }
-                        else if (mouse.button == Qt.LeftButton){
-                            if( model.IsLauncher ){
-                                mouseEntered = false;
-                                inAnimation = true;
-                                runLauncherAnimation();
-                            }
-                            else{
-                                if (model.IsGroupParent)
-                                    panel.presentWindows(model.LegacyWinIdList);
-                                else {
-                                    if (IsMinimized === true) {
-                                        var i = modelIndex();
-                                        tasksModel.requestToggleMinimized(i);
-                                        tasksModel.requestActivate(i);
-                                    } else if (IsActive === true) {
-                                        tasksModel.requestToggleMinimized(modelIndex());
-                                    } else {
-                                        tasksModel.requestActivate(modelIndex());
-                                    }
-                                }
-
-                            }
-                        }
-                    }
-
-                    //have to wait first for the launcher animation to end
-                    if(!IsLauncher)
-                        pressed = false;
-                }
-
-                onContainsMouseChanged:{
-                    if(!containsMouse){
-                        if(!inAnimation)
-                            pressed=false;
-                    }
-                }
-
-
-                function modelIndex(){
-                    return tasksModel.makeModelIndex(index);
-                }
-
                 function signalUpdateScale(nIndex, nScale, step){
                     if( index === nIndex){
                         if(nScale >= 0)
                             scale = nScale + step;
                         else
                             scale = scale + step;
-
                         //     console.log(index+ ", "+scale);
                     }
                 }
 
-                function signalMouseWasEntered(nIndex, value){
-                    if( index === nIndex)
-                        mouseEntered = value;
-                }
-
-
-                property string oldAppId: ""
-
                 Component.onCompleted: {
                     icList.updateScale.connect(signalUpdateScale);
-                    icList.mouseWasEntered.connect(signalMouseWasEntered);
-                    //     console.log(AppId+ " ,"+AppName+" ,"+LauncherUrlWithoutIcon);
-                    oldAppId = AppId;
                 }
-            }// MouseArea
+            }// Main task area // id:wrapper
 
             // a hidden spacer on the right for the last item to add stability
             Item{
@@ -550,8 +330,8 @@ Component {
                 repeat: false
 
                 onTriggered: {
-                    wrapper.hoverEnabled = true;
-                    tasksModel.requestPublishDelegateGeometry(wrapper.modelIndex(),
+              //      mainItemContainer.hoverEnabled = true;
+                    tasksModel.requestPublishDelegateGeometry(mainItemContainer.modelIndex(),
                                                               backend.globalRect(mainItemContainer), mainItemContainer);
                     timer.destroy();
                 }
@@ -560,7 +340,222 @@ Component {
             }
         }
 
+        ////// Values Changes /////
+        //restore scales when there is no zoom factor for that item or
+        //the mouse is out of the ListView
+        onItemIndexChanged: {
+        }
+
+        onHoveredIndexChanged: {
+            var distanceFromHovered = Math.abs(index - icList.hoveredIndex);
+
+            if( (distanceFromHovered > 1) || (hoveredIndex < 0)){
+                wrapper.scale = 1;
+                hiddenSpacerLeft.nScale = 0;
+                hiddenSpacerRight.nScale = 0;
+            }
+        }
+
+
+        onIsDraggedChanged: {
+            if(isDragged){
+                wrapper.scale = 1.35;
+            }
+        }
+
+        onDelayingRemoveChanged: {
+            if(delayingRemove && isWindow)
+                groupWindowRemoved();
+        }
+
+        onIsWindowChanged: {
+            if (isWindow) {
+                taskInitComponent.createObject(mainItemContainer);
+            }
+        }
+
+        ////// End of Values Changes /////
+
+
+        ///////////////// Mouse Area Events ///////////////////
+        onEntered: {
+            if(!inAnimation){
+                icList.hoveredIndex = index;
+                mouseEntered = true;
+                icList.mouseWasEntered(index-2, false);
+                icList.mouseWasEntered(index+2, false);
+                icList.mouseWasEntered(index-1, true);
+                icList.mouseWasEntered(index+1, true);
+
+                if (icList.orientation == Qt.Horizontal){
+                    icList.currentSpot = mouseX;
+                    wrapper.calculateScales(mouseX);
+                }
+                else{
+                    icList.currentSpot = mouseY;
+                    wrapper.calculateScales(mouseY);
+                }
+            }
+        }
+
+        // IMPORTANT: This must be improved ! even for small miliseconds  it reduces performance
+        onExited: {
+            mouseEntered = false;
+            if(mainItemContainer.contextMenu && mainItemContainer.contextMenu.status == PlasmaComponents.DialogStatus.Open){
+                ///dont check to restore zooms
+            }
+            else{
+                if(!inAnimation){
+                    checkListHovered.start();
+                }
+            }
+        }
+
+        onPositionChanged: {
+            if(inAnimation == false){
+                if (icList.orientation == Qt.Horizontal){
+                    var step = Math.abs(icList.currentSpot-mouse.x);
+                    if (step >= animationStep){
+                        icList.hoveredIndex = index;
+                        icList.currentSpot = mouse.x;
+
+                        wrapper.calculateScales(mouse.x);
+                    }
+                }
+                else{
+                    var step = Math.abs(icList.currentSpot-mouse.y);
+                    if (step >= animationStep){
+                        icList.hoveredIndex = index;
+                        icList.currentSpot = mouse.y;
+
+                        wrapper.calculateScales(mouse.y);
+                    }
+                }
+
+                // mouse.button is always 0 here, hence checking with mouse.buttons
+                if (pressX != -1 && mouse.buttons == Qt.LeftButton && dragHelper.isDrag(pressX, pressY, mouse.x, mouse.y)) {
+
+//                            icList.hoveredIndex = -1;
+                    icList.updateScale(index-1, 1, 0);
+                    icList.updateScale(index+1, 1, 0);
+            //        icList.updateScale(index, 1, 0);
+
+                    isDragged = true;
+
+                    panel.dragSource = mainItemContainer;
+                    dragHelper.startDrag(mainItemContainer, model.MimeType, model.MimeData,
+                                         model.LauncherUrlWithoutIcon, model.decoration);
+                    pressX = -1;
+                    pressY = -1;
+                }
+            }
+        }
+
+        onContainsMouseChanged:{
+            if(!containsMouse){
+                hiddenSpacerLeft.nScale = 0;
+                hiddenSpacerRight.nScale = 0;
+
+                if(!inAnimation)
+                    pressed=false;
+            }
+        }
+
+        onPressed: {
+            if ((mouse.button == Qt.LeftButton)||(mouse.button == Qt.MidButton)) {
+                lastButtonClicked = mouse.button;
+                pressed = true;
+                pressX = mouse.x;
+                pressY = mouse.y;
+            }
+            else if (mouse.button == Qt.RightButton){
+                mainItemContainer.contextMenu = panel.contextMenuComponent.createObject(mainItemContainer);
+                mainItemContainer.contextMenu.visualParent = mainItemContainer;
+                mainItemContainer.contextMenu.show();
+            }
+        }
+
+        onReleased: {
+            if(pressed){
+                if (mouse.button == Qt.MidButton){
+                    if( !model.IsLauncher){
+                        if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.NewInstance) {
+                            tasksModel.requestNewInstance(modelIndex());
+                        } else if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.Close) {
+                            tasksModel.requestClose(modelIndex());
+                        } else if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.ToggleMinimized) {
+                            tasksModel.requestToggleMinimized(modelIndex());
+                        }
+                    }
+                    else{
+                        mouseEntered = false;
+                        inAnimation = true;
+                        wrapper.runLauncherAnimation();
+                    }
+                }
+                else if (mouse.button == Qt.LeftButton){
+                    if( model.IsLauncher ){
+                        mouseEntered = false;
+                        inAnimation = true;
+                        wrapper.runLauncherAnimation();
+                    }
+                    else{
+                        if (model.IsGroupParent)
+                            panel.presentWindows(model.LegacyWinIdList);
+                        else {
+                            if (IsMinimized === true) {
+                                var i = modelIndex();
+                                tasksModel.requestToggleMinimized(i);
+                                tasksModel.requestActivate(i);
+                            } else if (IsActive === true) {
+                                tasksModel.requestToggleMinimized(modelIndex());
+                            } else {
+                                tasksModel.requestActivate(modelIndex());
+                            }
+                        }
+
+                    }
+                }
+            }
+
+            //have to wait first for the launcher animation to end
+            if(!IsLauncher)
+                pressed = false;
+        }
+
+        ///////////////// End Of Mouse Area Events ///////////////////
+
+        ///// Handlers for Signals /////
+        function signalMouseWasEntered(nIndex, value){
+            if( index === nIndex)
+                mouseEntered = value;
+        }
+
+        function animationEnded(){
+            if(pressed){
+                if ((lastButtonClicked == Qt.LeftButton)||(lastButtonClicked == Qt.MidButton)){
+                    tasksModel.requestActivate(modelIndex());
+                }
+            }
+
+            pressed = false;
+            inAnimation = false;
+        }
+        ///// End of Handlers //////
+
+
+        ///// Helper functions /////
+
+        function modelIndex(){
+            return tasksModel.makeModelIndex(index);
+        }
+
+        ///// End of Helper functions ////
+
+
         Component.onCompleted: {
+            icList.mouseWasEntered.connect(signalMouseWasEntered);
+
             showWindowAnimation.showWindow();
         }
 
