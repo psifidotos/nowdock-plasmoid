@@ -25,26 +25,28 @@ Component {
         acceptedButtons: Qt.LeftButton | Qt.MidButton | Qt.RightButton
         hoverEnabled: (inAnimation !== true)&& (!IsStartup)
 
-        property int animationTime: 70
         property bool delayingRemove: ListView.delayRemove
         property bool buffersAreReady: false
-        property int itemIndex: index
-        property int hoveredIndex: icList.hoveredIndex
         property bool pressed: false
-        property int pressX: -1
-        property int pressY: -1
         property bool mouseEntered: false
         property bool isDragged: false
         property bool inAnimation: false
+        property bool isWindow: model.IsWindow ? true : false
+
+        property int animationTime: 70
+        property int resistanceDelay: 300
+        property int itemIndex: index
+        property int hoveredIndex: icList.hoveredIndex
+        property int pressX: -1
+        property int pressY: -1
         property int lastButtonClicked: -1;
+
         property real animationStep: panel.iconSize / 8
 
         readonly property var m: model
-        property bool isWindow: model.IsWindow ? true : false
+
         property QtObject contextMenu: null
         property QtObject draggingResistaner: null
-
-
 
         signal groupWindowAdded();
         signal groupWindowRemoved();
@@ -124,22 +126,20 @@ Component {
                 width: (IsStartup) ? 0 : showDelegateWidth
                 height: (IsStartup) ? 0 : showDelegateheight
 
+                property int addedSpace: 15
+
                 property real showDelegateWidth: (icList.orientation === Qt.Vertical ) ? basicScalingWidth+addedSpace :
                                                                                          basicScalingWidth
-
                 property real showDelegateheight: (icList.orientation === Qt.Vertical ) ? basicScalingHeight :
                                                                                           basicScalingHeight + addedSpace
 
-                property int addedSpace: 15
-
-
                 //scales which are used mainly for activating InLauncher
                 ////Scalers///////
+                property bool inTempScaling: (((tempScaleWidth !== 1) || (tempScaleHeight !== 1) ) && (!mainItemContainer.mouseEntered) )
 
                 property real scale: 1;
                 property real tempScaleWidth: 0
                 property real tempScaleHeight: 0
-                property bool inTempScaling: (((tempScaleWidth !== 1) || (tempScaleHeight !== 1) ) && (!mainItemContainer.mouseEntered) )
 
                 property real scaleWidth: (inTempScaling == true) ? tempScaleWidth : scale
                 property real scaleHeight: (inTempScaling == true) ? tempScaleHeight : scale
@@ -675,7 +675,7 @@ Component {
             id: resistanerTimerComponent
             Timer {
                 id: resistanerTimer
-                interval: 300
+                interval: mainItemContainer.resistanceDelay
                 repeat: false
 
                 onTriggered: {
