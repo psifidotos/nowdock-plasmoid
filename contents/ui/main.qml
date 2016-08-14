@@ -176,10 +176,10 @@ Item {
             var tasks = icList.contentItem.children;
             var lostMouse = true;
 
-    //        console.debug("---------");
+          //  console.debug("---------");
             for(var i=0; i<tasks.length; ++i){
                 var task = tasks[i];
-      //          console.debug(task.containsMouse);
+            //    console.debug(task.containsMouse);
                 if(task){
                     if (task.containsMouse){
                         lostMouse = false;
@@ -189,6 +189,7 @@ Item {
             }
 
             if(lostMouse){
+              //  console.log("Restore state....");
                 icList.currentSpot = -1000;
                 icList.hoveredIndex = -1;
             }
@@ -326,7 +327,7 @@ Item {
 
         MouseHandler {
             id: mouseHandler
-            property int maxSize: (panel.realSize) + 16
+            property int maxSize: panel.zoomFactor*panel.realSize + 16
             width: panel.vertical ? maxSize : icList.width
             height: panel.vertical ? icList.height : maxSize
 
@@ -384,8 +385,16 @@ Item {
                 border.color: "red"
                 color: "transparent"
             }*/
+
+            //the duration of this animation should be as small as possible
+            //it fixes a small issue with the dragging an item to change it's
+            //position, if the duration is too big there is a point in the
+            //list that an item is going back and forth too fast
             moveDisplaced: Transition {
-                NumberAnimation { properties: "x,y"; duration: 200 }
+                NumberAnimation { properties: "x,y"; duration: 80 }
+            }
+            move:  Transition {
+                NumberAnimation { properties: "x,y"; duration: 80 }
             }
         }
 
@@ -396,7 +405,7 @@ Item {
            // height: panel.dropNewLauncher ? parent.height : 0
 
             visible: opacity == 0 ? false : true
-            opacity: panel.dropNewLauncher ? 1 : 0
+            opacity: panel.dropNewLauncher && (panel.dragSource == null) ? 1 : 0
 
             Behavior on opacity{
                 NumberAnimation { duration: 200; }
@@ -532,6 +541,9 @@ Item {
         default:
             newPosition = PlasmaCore.Types.BottomPositioned;
         }
+
+        newPosition = PlasmaCore.Types.LeftPositioned;
+        tempVertical = true;
 
         movePanel(barLine,newPosition);
         movePanel(icList,newPosition);

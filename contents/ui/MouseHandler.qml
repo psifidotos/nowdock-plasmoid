@@ -37,7 +37,7 @@ Item {
         id: ignoreItemTimer
 
         repeat: false
-        interval: 750
+        interval: 500
 
         onTriggered: {
             ignoredItem = null;
@@ -83,19 +83,23 @@ Item {
             // by tracking the cursor movement vector and allowing the drag if
             // the movement direction has reversed, etablishing user intent to
             // move back.
-            if (panel.dragSource != null
+          /*  if (panel.dragSource != null
                  && panel.dragSource.m.IsLauncher === true && above != null
                  && above.m != null
                  && above.m.IsLauncher !== true && above == ignoredItem) {
                 return;
             } else {
                 ignoredItem = null;
-            }
+            }*/
+            if (panel.dragSource == null
+               && ignoredItem == above)
+                return;
 
-            if (tasksModel.sortMode == TaskManager.TasksModel.SortManual && panel.dragSource) {
+            if (tasksModel.sortMode == TaskManager.TasksModel.SortManual && panel.dragSource && above != ignoredItem) {
                 var insertAt = TaskTools.insertIndexAt(above, event.x, event.y);              
 
                 if (panel.dragSource != above && panel.dragSource.itemIndex != insertAt) {
+                    console.log(panel.dragSource.itemIndex + " - "+insertAt);
                     tasksModel.move(panel.dragSource.itemIndex, insertAt);
                     ignoredItem = above;
                     ignoreItemTimer.restart();
