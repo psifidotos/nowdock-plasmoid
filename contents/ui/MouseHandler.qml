@@ -99,7 +99,7 @@ Item {
                 var insertAt = TaskTools.insertIndexAt(above, event.x, event.y);              
 
                 if (panel.dragSource != above && panel.dragSource.itemIndex != insertAt) {
-                    console.log(panel.dragSource.itemIndex + " - "+insertAt);
+              //      console.log(panel.dragSource.itemIndex + " - "+insertAt);
                     tasksModel.move(panel.dragSource.itemIndex, insertAt);
                     ignoredItem = above;
                     ignoreItemTimer.restart();
