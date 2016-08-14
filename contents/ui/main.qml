@@ -17,26 +17,25 @@ Item {
     Layout.fillHeight: true
     Layout.fillWidth: true
 
-    //property real zoomFactor: 1.7
-    property real zoomFactor: ( 1 + (plasmoid.configuration.zoomLevel / 20) )
+    property bool glow: plasmoid.configuration.showGlow
+    property bool dropNewLauncher: false
+    property bool enableShadows: plasmoid.configuration.showShadows
+    property bool vertical: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
+                             (panel.position === PlasmaCore.Types.RightPositioned)) ? true : false
+
     property int iconSize: units.iconSizes.huge + plasmoid.configuration.iconSize
     property int iconMargin: 5
     property int realSize: iconSize + iconMargin
-
-    property bool glow: plasmoid.configuration.showGlow
     property int clearWidth
     property int clearHeight
-
     property int position : PlasmaCore.Types.BottomPositioned
+    property int newDroppedPosition: -1;
+
+    property real zoomFactor: ( 1 + (plasmoid.configuration.zoomLevel / 20) )
 
     Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
     Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground
 
-    property bool vertical: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
-                             (panel.position === PlasmaCore.Types.RightPositioned)) ? true : false
-
-
-    property bool enableShadows: plasmoid.configuration.showShadows
 
     property QtObject contextMenuComponent: Qt.createComponent("ContextMenu.qml");
     property Item dragSource: null
@@ -44,7 +43,6 @@ Item {
     signal requestLayout
     signal windowsHovered(variant winIds, bool hovered)
     signal presentWindows(variant winIds)
-
     signal draggingFinished();
 
     /*Rectangle{
@@ -105,10 +103,10 @@ Item {
 
         launchInPlace: true
         separateLaunchers: false
+        groupInline: false
 
         groupMode: TaskManager.TasksModel.GroupApplications
         sortMode: TaskManager.TasksModel.SortManual
-        groupInline: false
 
         onActivityChanged: {
             //panel.updateImplicits();
@@ -145,6 +143,7 @@ Item {
 
         onAddLauncher: {
             tasksModel.requestAddLauncher(url);
+             // tasksModel.move(pos, newDroppedPosition);
         }
     }
 
@@ -324,9 +323,10 @@ Item {
             border.color: "red"
             color: "white"
         } */
+
         MouseHandler {
             id: mouseHandler
-            property int maxSize: (panel.zoomFactor * panel.iconSize) + 16
+            property int maxSize: (panel.realSize) + 16
             width: panel.vertical ? maxSize : icList.width
             height: panel.vertical ? icList.height : maxSize
 
@@ -340,8 +340,10 @@ Item {
             anchors.verticalCenter: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
                                      (panel.position === PlasmaCore.Types.RightPositioned)) ? icList.verticalCenter : undefined
 
-            target: icList
+            target: icList.contentItem
+
         }
+
 
         ListView {
             id:icList
@@ -369,8 +371,8 @@ Item {
                                      (panel.position === PlasmaCore.Types.RightPositioned)) ? parent.verticalCenter : undefined
 
 
-            width: contentWidth+2
-            height: contentHeight+2
+            width: contentWidth + 2
+            height: contentHeight + 2
 
             orientation: Qt.Horizontal
 
@@ -385,8 +387,45 @@ Item {
             moveDisplaced: Transition {
                 NumberAnimation { properties: "x,y"; duration: 200 }
             }
-
         }
+
+        Item{
+            id: newDroppedLauncherVisual
+            anchors.fill: mouseHandler
+           // width: panel.dropNewLauncher ? parent.width : 0
+           // height: panel.dropNewLauncher ? parent.height : 0
+
+            visible: opacity == 0 ? false : true
+            opacity: panel.dropNewLauncher ? 1 : 0
+
+            Behavior on opacity{
+                NumberAnimation { duration: 200; }
+            }
+
+            Rectangle{
+                anchors.fill: parent
+
+                anchors.bottom: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.bottom : undefined
+                anchors.top: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.top : undefined
+                anchors.left: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.left : undefined
+                anchors.right: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.right : undefined
+
+                radius: panel.iconSize/8
+
+                property color tempColor: "#cc222222"
+                color: tempColor
+                border.width: 1
+                border.color: theme.highlightColor
+
+                property int crossSize: Math.min(parent.width/2, parent.height/2)
+
+                Rectangle{width: parent.crossSize; height: 2; anchors.centerIn: parent; color: theme.highlightColor}
+                Rectangle{width: 2; height: parent.crossSize; anchors.centerIn: parent; color: theme.highlightColor}
+            }
+        }
+
+
+
     }
 
     //// helpers
@@ -494,9 +533,6 @@ Item {
             newPosition = PlasmaCore.Types.BottomPositioned;
         }
 
-        newPosition = PlasmaCore.Types.LeftPositioned;
-        tempVertical = true;
-
         movePanel(barLine,newPosition);
         movePanel(icList,newPosition);
 
@@ -506,7 +542,7 @@ Item {
             icList.orientation = Qt.Horizontal;
 
         panel.position = newPosition;
-    }
+    }  
 
     function hasLauncher(url) {
         return tasksModel.launcherPosition(url) != -1;

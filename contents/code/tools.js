@@ -88,7 +88,7 @@ function activateNextPrevTask(next) {
 }
 
 function insertIndexAt(above, x, y) {
-    if (above) {
+    if (above && above.itemIndex) {
         return above.itemIndex;
     } else {
         var distance = panel.vertical ? y : x;
@@ -105,6 +105,8 @@ function insertIndexAt(above, x, y) {
         return stripe-1;
     }
 }
+
+
 
 function publishIconGeometries(taskItems) {   
     for (var i = 0; i < taskItems.length - 1; ++i) {

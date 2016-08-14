@@ -19,8 +19,10 @@ Component {
         anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
         anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
 
-        width: (icList.orientation === Qt.Horizontal) ? hiddenSpacerLeft.width+wrapper.width+hiddenSpacerRight.width : wrapper.width
-        height: (icList.orientation === Qt.Horizontal) ? wrapper.height : hiddenSpacerLeft.height + wrapper.height + hiddenSpacerRight.height
+        width: (icList.orientation === Qt.Horizontal) ? hiddenSpacerLeft.width+wrapper.width+hiddenSpacerRight.width:
+                                                        wrapper.width
+        height: (icList.orientation === Qt.Horizontal) ? wrapper.height :
+                                                         hiddenSpacerLeft.height + wrapper.height + hiddenSpacerRight.height
 
         acceptedButtons: Qt.LeftButton | Qt.MidButton | Qt.RightButton
         hoverEnabled: (inAnimation !== true)&& (!IsStartup)
@@ -214,7 +216,6 @@ Component {
                         } //Flow Element
                     }
                 }
-
 
                 function calculateScales( currentMousePosition ){
                     var distanceFromHovered = Math.abs(index - icList.hoveredIndex);
@@ -423,7 +424,7 @@ Component {
                 }
             }
 
-           /* if(draggingResistaner != null){
+            /* if(draggingResistaner != null){
                 draggingResistaner.destroy();
                 draggingResistaner = null;
                 isDragged = false;

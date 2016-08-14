@@ -62,6 +62,8 @@ Item {
 
         preventStealing: true;
 
+        property int droppedPosition: -1;
+
         property Item hoveredItem
 
         onDragMove: {
@@ -100,20 +102,25 @@ Item {
                 }
             } else if (!panel.dragSource && above && hoveredItem != above) {
                 hoveredItem = above;
-                activationTimer.restart();
+                panel.dropNewLauncher = true;
+             //   activationTimer.restart();
             } else if (!above) {
+                panel.dropNewLauncher = true;
                 hoveredItem = null;
-                activationTimer.stop();
+              //  activationTimer.stop();
             }
         }
 
         onDragLeave: {
             hoveredItem = null;
+            panel.dropNewLauncher = false;
             activationTimer.stop();
         }
 
         onDrop: {
             // Reject internal drops.
+            panel.dropNewLauncher = false;
+
             if (event.mimeData.formats.indexOf("application/x-orgkdeplasmataskmanager_taskbuttonitem") >= 0) {
                 return;
             }
@@ -130,12 +137,12 @@ Item {
             repeat: false
 
             onTriggered: {
-                if (parent.hoveredItem.m.IsGroupParent === true) {
+             /*   if (parent.hoveredItem.m.IsGroupParent === true) {
                     groupDialog.visualParent = parent.hoveredItem;
                     groupDialog.visible = true;
                 } else if (parent.hoveredItem.m.IsLauncher !== true) {
                     tasksModel.requestActivate(parent.hoveredItem.modelIndex());
-                }
+                }*/
             }
         }
     }
