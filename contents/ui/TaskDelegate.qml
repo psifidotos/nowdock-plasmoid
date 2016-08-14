@@ -219,7 +219,9 @@ Component {
 
                     // A new algorithm tryig to make the zoom calculation only once
                     // and at the same time fixing glitches
-                    if ((distanceFromHovered == 0)&&(currentMousePosition  > 0) ){
+                    if ((distanceFromHovered == 0)&&
+                        (currentMousePosition  > 0)&&
+                        (panel.dragSource == null) ){
 
                         var rDistance = Math.abs(currentMousePosition  - center);
 
@@ -330,7 +332,7 @@ Component {
                 repeat: false
 
                 onTriggered: {
-              //      mainItemContainer.hoverEnabled = true;
+                    //      mainItemContainer.hoverEnabled = true;
                     tasksModel.requestPublishDelegateGeometry(mainItemContainer.modelIndex(),
                                                               backend.globalRect(mainItemContainer), mainItemContainer);
                     timer.destroy();
@@ -350,7 +352,8 @@ Component {
             var distanceFromHovered = Math.abs(index - icList.hoveredIndex);
 
             if( (distanceFromHovered > 1) || (hoveredIndex < 0)){
-                wrapper.scale = 1;
+                if(!isDragged)
+                    wrapper.scale = 1;
                 hiddenSpacerLeft.nScale = 0;
                 hiddenSpacerRight.nScale = 0;
             }
@@ -379,7 +382,7 @@ Component {
 
         ///////////////// Mouse Area Events ///////////////////
         onEntered: {
-            if(!inAnimation){
+            if((!inAnimation)&&(panel.dragSource == null)){
                 icList.hoveredIndex = index;
                 mouseEntered = true;
                 icList.mouseWasEntered(index-2, false);
@@ -413,34 +416,33 @@ Component {
 
         onPositionChanged: {
             if(inAnimation == false){
-                if (icList.orientation == Qt.Horizontal){
-                    var step = Math.abs(icList.currentSpot-mouse.x);
-                    if (step >= animationStep){
-                        icList.hoveredIndex = index;
-                        icList.currentSpot = mouse.x;
+                if(panel.dragSource == null){
+                    if (icList.orientation == Qt.Horizontal){
+                        var step = Math.abs(icList.currentSpot-mouse.x);
+                        if (step >= animationStep){
+                            icList.hoveredIndex = index;
+                            icList.currentSpot = mouse.x;
 
-                        wrapper.calculateScales(mouse.x);
+                            wrapper.calculateScales(mouse.x);
+                        }
                     }
-                }
-                else{
-                    var step = Math.abs(icList.currentSpot-mouse.y);
-                    if (step >= animationStep){
-                        icList.hoveredIndex = index;
-                        icList.currentSpot = mouse.y;
+                    else{
+                        var step = Math.abs(icList.currentSpot-mouse.y);
+                        if (step >= animationStep){
+                            icList.hoveredIndex = index;
+                            icList.currentSpot = mouse.y;
 
-                        wrapper.calculateScales(mouse.y);
+                            wrapper.calculateScales(mouse.y);
+                        }
                     }
                 }
 
                 // mouse.button is always 0 here, hence checking with mouse.buttons
                 if (pressX != -1 && mouse.buttons == Qt.LeftButton && dragHelper.isDrag(pressX, pressY, mouse.x, mouse.y)) {
-
-//                            icList.hoveredIndex = -1;
                     icList.updateScale(index-1, 1, 0);
                     icList.updateScale(index+1, 1, 0);
-            //        icList.updateScale(index, 1, 0);
-
                     isDragged = true;
+                    wrapper.scale = 1.35;
 
                     panel.dragSource = mainItemContainer;
                     dragHelper.startDrag(mainItemContainer, model.MimeType, model.MimeData,
@@ -541,7 +543,12 @@ Component {
             pressed = false;
             inAnimation = false;
         }
+
+        function handlerDraggingFinished(){
+            isDragged = false;
+        }
         ///// End of Handlers //////
+
 
 
         ///// Helper functions /////
@@ -555,6 +562,7 @@ Component {
 
         Component.onCompleted: {
             icList.mouseWasEntered.connect(signalMouseWasEntered);
+            panel.draggingFinished.connect(handlerDraggingFinished);
 
             showWindowAnimation.showWindow();
         }

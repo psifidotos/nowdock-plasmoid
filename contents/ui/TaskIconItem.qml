@@ -47,6 +47,21 @@ Item{
         }
     }*/
 
+    Rectangle{
+        id: draggedRectangle
+        anchors.fill: iconImageBuffer
+        opacity: 0
+        radius: 3
+        anchors.margins: 5
+
+        property color tempColor: theme.highlightColor
+        color: tempColor
+        border.width: 1
+        border.color: theme.highlightColor
+
+        onTempColorChanged: tempColor.a = 0.35;
+    }
+
     Image {
         id: iconImageBuffer
 
@@ -75,6 +90,7 @@ Item{
         }
     }
 
+
     BrightnessContrast {
         id: brightnessTaskEffect
         anchors.fill: iconImageBuffer
@@ -83,6 +99,15 @@ Item{
         visible: clickedAnimation.running
     }
 
+    Colorize{
+        id: stateColorizer
+        source: iconImageBuffer
+        anchors.fill: iconImageBuffer
+        visible: false
+        hue:1
+        saturation:1
+        lightness:1
+    }
 
     //Something to show until the buffers are updated
 
@@ -133,8 +158,6 @@ Item{
     }
 
     ///////Activate animation/////
-
-
     SequentialAnimation{
         id: clickedAnimation
         property bool pressed: mainItemContainer.pressed
@@ -422,7 +445,6 @@ Item{
         }
 
     }
-
     ////////////////////////////
 
     ////////////////////////////Release Dragged Animation
@@ -472,7 +494,7 @@ Item{
             inHalf = false;
 
             mainItemContainer.inAnimation = false;
-            mainItemContainer.isDragged = false;
+            //mainItemContainer.isDragged = false;
             checkListHovered.start();
         }
 
@@ -496,6 +518,88 @@ Item{
     }
     /////////////////// end of release dragged animation
 
+    //////////// States ////////////////////
+
+    states: [
+        State{
+            name: "*"
+            when:  !mainItemContainer.isDragged
+            PropertyChanges { target: stateColorizer; visible:false }
+        },
+
+        State{
+            name: "isDragged"
+            when:  mainItemContainer.isDragged
+            PropertyChanges { target: stateColorizer; visible:true }
+        }
+    ]
+
+    //////////// Transitions //////////////
+
+    transitions: [
+        Transition{
+            id: isDraggedTransition
+            to: "isDragged"
+            property int speed: 300
+
+            ParallelAnimation{
+                PropertyAnimation {
+                    target: draggedRectangle
+                    property: "opacity"
+                    to: 1
+                    duration: isDraggedTransition.speed
+                    easing.type: Easing.OutQuad
+                }
+
+                PropertyAnimation {
+                    target: iconImageBuffer
+                    property: "opacity"
+                    to: 0
+                    duration: isDraggedTransition.speed
+                    easing.type: Easing.OutQuad
+                }
+
+                PropertyAnimation {
+                    target: stateColorizer
+                    properties: "hue,saturation,lightness"
+                    to: 0
+                    duration: isDraggedTransition.speed
+                    easing.type: Easing.OutQuad
+                }
+            }
+        },
+        Transition{
+            id: defaultTransition
+            to: "*"
+            property int speed: 300
+
+            ParallelAnimation{
+                PropertyAnimation {
+                    target: draggedRectangle
+                    property: "opacity"
+                    to: 0
+                    duration: defaultTransition.speed
+                    easing.type: Easing.OutQuad
+                }
+
+                PropertyAnimation {
+                    target: iconImageBuffer
+                    property: "opacity"
+                    to: 1
+                    duration: defaultTransition.speed
+                    easing.type: Easing.OutQuad
+                }
+
+                PropertyAnimation {
+                    target: stateColorizer
+                    properties: "hue,saturation,lightness"
+                    to: 1
+                    duration: isDraggedTransition.speed
+                    easing.type: Easing.OutQuad
+                }
+            }
+        }
+    ]
 
 
     //////////////////////////
