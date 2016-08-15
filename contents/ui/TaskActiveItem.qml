@@ -12,6 +12,7 @@ Item{
 
     Rectangle{
         opacity: m.IsActive ? 1 : 0
+        visible: false
 
         color: theme.buttonFocusColor
 

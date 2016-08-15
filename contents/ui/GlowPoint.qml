@@ -27,12 +27,9 @@ Item{
 
         Rectangle {
             id: smallCircle
-            property int incSizeAttention: (showAttention == false) ? 0 : 0
-
-            width: Math.round(parent.width / 1.8) + incSizeAttention
-            height: Math.round(parent.height / 1.8) + incSizeAttention
+            anchors.fill: parent
             color: glowItem.basicColor
-            radius: width*0.5
+            radius: Math.min(width,height) / 2
             anchors.centerIn: parent
 
             SequentialAnimation{
@@ -58,24 +55,25 @@ Item{
         }
 
        RectangularGlow {
+            id:recGlow
             anchors.fill: smallCircle
-            glowRadius: 2 * smallCircle.width
+            glowRadius: 2 * Math.min(smallCircle.width, smallCircle.height)
             spread: 0.2
             color: smallCircle.color
             //color: "#cc222222"
-            cornerRadius: smallCircle.radius + glowRadius
+         //   cornerRadius: smallCircle.radius + glowRadius
             opacity: panel.showBarLine ? 0.25 : 0.45
             visible: panel.glow
         }
 
-        BrightnessContrast {
-            anchors.fill: smallCircle
-            source: smallCircle
+     /*   BrightnessContrast {
+            anchors.fill: recGlow
+            source: recGlow
             anchors.margins: 1
             brightness: 0.4
             contrast: 0.3
             visible: panel.glow
-        }
+        }*/
     }
 
 

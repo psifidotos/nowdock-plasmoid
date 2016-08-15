@@ -10,7 +10,7 @@ Item{
     width: ( icList.orientation === Qt.Horizontal ) ? wrapper.regulatorWidth : size
     height: ( icList.orientation === Qt.Vertical ) ? wrapper.regulatorHeight : size
 
-    property int size: 8
+    property int size: 5
 
     SystemPalette { id: myPalette; colorGroup: SystemPalette.Active }
 
@@ -20,22 +20,37 @@ Item{
     property color notActiveColor: mainItemContainer.hasMinimized ? minimizedColor : isShownColor
 
     Item{
-        width: (( IsGroupParent ) && (icList.orientation === Qt.Horizontal)) ? 2*glowFrame.size : glowFrame.size
-        height: (( IsGroupParent ) && (icList.orientation === Qt.Vertical)) ? 2*glowFrame.size : glowFrame.size
+        width: flowItem.width
+        height: flowItem.height
         anchors.centerIn: parent
 
         Flow{
+            id: flowItem
             flow: ( icList.orientation === Qt.Vertical ) ? Flow.TopToBottom : Flow.LeftToRight
-            GlowPoint{
-                width: glowFrame.size
-                height: width
 
+            GlowPoint{
+
+                width: (mainItemContainer.hasActive && (!panel.vertical)) ? wrapper.regulatorWidth - spacer.width : glowFrame.size
+                height: (mainItemContainer.hasActive && (panel.vertical)) ? wrapper.regulatorHeight - spacer.height : glowFrame.size
                 visible: ( !IsLauncher ) ? true: false
 
-                basicColor: ((mainItemContainer.hasActive)&&(!(mainItemContainer.hasMinimized))) ?
+                basicColor: (mainItemContainer.hasActive) ?
                                  glowFrame.isActiveColor : glowFrame.notActiveColor
 
                 showAttention: model.IsDemandingAttention ? true : false
+
+                Behavior on width{
+                    NumberAnimation{duration: 160; easing.type: Easing.InQuad}
+                }
+                Behavior on height{
+                    NumberAnimation{duration: 160; easing.type: Easing.InQuad}
+                }
+            }
+
+            Item{
+                id:spacer
+                width: IsGroupParent ? 0.5*glowFrame.size : 0
+                height: IsGroupParent ? 0.5*glowFrame.size : 0
             }
 
             GlowPoint{
@@ -49,6 +64,7 @@ Item{
                 //when there is active window
                 property color state2Color: mainItemContainer.hasMinimized ? glowFrame.minimizedColor : glowFrame.isShownColor
                 basicColor: ((mainItemContainer.hasActive)&&(!(mainItemContainer.hasMinimized))) ? state2Color : state1Color
+
             }
         }
     }

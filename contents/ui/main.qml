@@ -593,6 +593,9 @@ Item {
             newPosition = PlasmaCore.Types.BottomPositioned;
         }
 
+         newPosition = PlasmaCore.Types.LeftPositioned;
+         tempVertical = true;
+
         movePanel(barLine,newPosition);
         movePanel(icList,newPosition);
 

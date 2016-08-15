@@ -158,7 +158,7 @@ Component {
                 width: (IsStartup) ? 0 : showDelegateWidth
                 height: (IsStartup) ? 0 : showDelegateheight
 
-                property int addedSpace: 15
+                property int addedSpace: 7
 
                 property real showDelegateWidth: (icList.orientation === Qt.Vertical ) ? basicScalingWidth+addedSpace :
                                                                                          basicScalingWidth
@@ -218,7 +218,7 @@ Component {
                             layoutDirection: (panel.position === PlasmaCore.Types.LeftPositioned) ? Qt.RightToLeft : Qt.LeftToRight
 
                             TaskIconItem{}
-                            TaskActiveItem{}
+                         //   TaskActiveItem{}
                             TaskGroupItem{}
 
                         }//Flow
@@ -241,7 +241,7 @@ Component {
                             layoutDirection: (panel.position === PlasmaCore.Types.LeftPositioned) ? Qt.RightToLeft : Qt.LeftToRight
 
                             TaskGroupItem{}
-                            TaskActiveItem{}
+                          //  TaskActiveItem{}
                             TaskIconItem{}
                         } //Flow Element
                     }
