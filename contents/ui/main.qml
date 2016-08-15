@@ -26,7 +26,7 @@ Item {
     property bool showBarLine: plasmoid.configuration.showBarLine
 
     //property int iconSize: units.iconSizes.huge + plasmoid.configuration.iconSize
-    property int iconSize: plasmoid.configuration.iconSize
+    property int iconSize: Math.max(plasmoid.configuration.iconSize, 16)
     property int iconMargin: 5
     property int realSize: iconSize + iconMargin
     property int clearWidth
