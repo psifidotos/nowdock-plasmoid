@@ -27,9 +27,6 @@ Item{
     property int shadowInterval: firstDrawed ? 400 : 150
     //property int normalIconInterval: 40
 
-    ///just for catching the signals
-    //    property int tempIconSize: panel.iconSize
-    //  property bool tempEnableShadows: panel.enableShadows
 
     Connections{
         target: panel
@@ -37,15 +34,6 @@ Item{
         onEnableShadowsChanged: updateImages()
     }
 
-    /*  onTempIconSizeChanged: {
-        updateImages();
-    }
-
-    onTempEnableShadowsChanged: {
-        if(tempEnableShadows){
-            updateImages();
-        }
-    }*/
 
     Rectangle{
         id: draggedRectangle
@@ -643,18 +631,13 @@ Item{
                 height: width
                 visible:false
 
-                //KQuickControlAddons.QIconItem{
                 PlasmaCore.IconItem{
                     id: iconImage2
-                    //width: parent.width - (shadowImageNoActive.radius)
-                    // height: parent.height - (shadowImageNoActive.radius)
-                    //  width: (panel.zoomFactor/2)*centralItem.doubleSize
+
                     width: Math.ceil(panel.zoomFactor * panel.iconSize)
                     height: width
                     anchors.centerIn: parent
 
-                    // state: KQuickControlAddons.QIconItem.DefaultState
-                    //icon: decoration
                     active: false
                     enabled: true
                     source: decoration
@@ -673,18 +656,13 @@ Item{
 
                 visible:false
 
-                //KQuickControlAddons.QIconItem{
                 PlasmaCore.IconItem{
                     id: iconImage
-                    //width: parent.width - (shadowImageNoActive.radius)
-                    // height: parent.height - (shadowImageNoActive.radius)
-                    //  width: (panel.zoomFactor/2)*centralItem.doubleSize
+
                     width: panel.iconSize
                     height: width
                     anchors.centerIn: parent
 
-                    // state: KQuickControlAddons.QIconItem.DefaultState
-                    //icon: decoration
                     active: false
                     enabled: true
                     source: decoration
@@ -692,16 +670,9 @@ Item{
 
                     visible: true
 
-                    // too many draws must be disabled, instead
-                    // we can blacklist the application which creates
-                    // drawing errors (libreoffice writer)
-                    property int counter:0;
-
                     onSourceChanged: {
                         centralItem.updateImages();
                     }
-
-                    // use this when using Image instead of Rectangle
 
                     Component{
                         id:tttTimer
@@ -734,7 +705,7 @@ Item{
                                         }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
                                     }
                                     else{
-                                        /*          if(AppId=="yarock"){
+                                        /*if(AppId=="yarock"){
                                             console.log(panel.iconSize);
                                             fixedIcon.grabToImage(function(result){
                                                 result.saveToFile("/home/michail/yarockscreen.png");
@@ -766,23 +737,6 @@ Item{
                                         iconHoveredBuffer.source = result.url;
                                         result.destroy();
                                     }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
-
-                                  /*  if(AppId=="yarock"){
-                                        hoveredImage.grabToImage(function(result){
-                                            result.saveToFile("/home/michail/yarockscreen.png");
-                                        });
-                                    }
-                                    if(AppId=="writer"){
-                                        hoveredImage.grabToImage(function(result){
-                                            result.saveToFile("/home/michail/writerscreen.png");
-                                        });
-                                    }
-
-                                    if(AppId == "org.kde.dolphin"){
-                                        console.log("1:"+fixedIcon.width + " - "+centralItem.shadowSize);
-                                        console.log("2:"+fixedIcon2.width + " - "+shadowImageNoActive2.radius);
-                                        console.log("3:"+iconImage.width + " - "+iconImage2.width);
-                                    }*/
 
                                     mainItemContainer.buffersAreReady = true;
                                     iconImageBuffer.opacity = 1;

@@ -596,7 +596,7 @@ Component {
             if(!IsLauncher)
                 pressed = false;
 
-            checkListHovered.start();
+            checkListHovered.startDuration(2000);
         }
 
         ///////////////// End Of Mouse Area Events ///////////////////

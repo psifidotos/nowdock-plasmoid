@@ -211,6 +211,14 @@ Item {
                 icList.currentSpot = -1000;
                 icList.hoveredIndex = -1;
             }
+
+            interval = 60;
+        }
+
+       function startDuration( duration){
+            interval = duration;
+
+            start();
         }
     }
 
@@ -452,9 +460,6 @@ Item {
                 Rectangle{width: 4; height: parent.crossSize; anchors.centerIn: parent; color: theme.highlightColor}
             }
         }
-
-
-
     }
 
     //// helpers
