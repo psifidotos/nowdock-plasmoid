@@ -19,7 +19,7 @@ Item{
     height: wrapper.regulatorHeight
 
     property int doubleSize : 2 * panel.iconSize
-    property int shadowSize : Math.ceil(panel.iconSize / 7)
+    property int shadowSize : Math.ceil(panel.iconSize / 20)
 
     //big interval to show shadows only after all the crappy adds and removes of tasks
     //have happened
@@ -746,7 +746,7 @@ Item{
                 anchors.centerIn: fixedIcon
 
                 radius: centralItem.shadowSize
-                samples: 1.8 * radius
+                samples: 2 * radius
                 color: "#cc080808"
                 source: fixedIcon
 

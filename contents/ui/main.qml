@@ -441,15 +441,15 @@ Item {
 
                 radius: panel.iconSize/8
 
-                property color tempColor: "#cc222222"
+                property color tempColor: "#aa222222"
                 color: tempColor
                 border.width: 1
-                border.color: theme.highlightColor
+                border.color: "#ff656565"
 
                 property int crossSize: Math.min(parent.width/2, parent.height/2)
 
-                Rectangle{width: parent.crossSize; height: 2; anchors.centerIn: parent; color: theme.highlightColor}
-                Rectangle{width: 2; height: parent.crossSize; anchors.centerIn: parent; color: theme.highlightColor}
+                Rectangle{width: parent.crossSize; height: 4; anchors.centerIn: parent; color: theme.highlightColor}
+                Rectangle{width: 4; height: parent.crossSize; anchors.centerIn: parent; color: theme.highlightColor}
             }
         }
 
