@@ -73,7 +73,7 @@ Item {
         target: plasmoid
         property: "status"
         value: (tasksModel.anyTaskDemandsAttention && icList.hoveredIndex == -1) ?
-                 PlasmaCore.Types.RequiresAttentionStatus : PlasmaCore.Types.PassiveStatus
+                   PlasmaCore.Types.RequiresAttentionStatus : PlasmaCore.Types.PassiveStatus
     }
 
     /////
@@ -144,7 +144,7 @@ Item {
 
         onAddLauncher: {
             tasksModel.requestAddLauncher(url);
-             // tasksModel.move(pos, newDroppedPosition);
+            // tasksModel.move(pos, newDroppedPosition);
         }
     }
 
@@ -177,10 +177,10 @@ Item {
             var tasks = icList.contentItem.children;
             var lostMouse = true;
 
-          //  console.debug("---------");
+            //  console.debug("---------");
             for(var i=0; i<tasks.length; ++i){
                 var task = tasks[i];
-            //    console.debug(task.containsMouse);
+                //    console.debug(task.containsMouse);
                 if(task){
                     if (task.containsMouse){
                         lostMouse = false;
@@ -190,7 +190,7 @@ Item {
             }
 
             if(lostMouse){
-              //  console.log("Restore state....");
+                //  console.log("Restore state....");
                 icList.currentSpot = -1000;
                 icList.hoveredIndex = -1;
             }
@@ -390,19 +390,22 @@ Item {
             //it fixes a small issue with the dragging an item to change it's
             //position, if the duration is too big there is a point in the
             //list that an item is going back and forth too fast
+
+            //more of a trouble
             moveDisplaced: Transition {
-                NumberAnimation { properties: "x,y"; duration: 80 }
+                NumberAnimation { properties: "x,y"; duration: 100; easing.type: Easing.Linear }
             }
+
             move:  Transition {
-                NumberAnimation { properties: "x,y"; duration: 80 }
+                NumberAnimation { properties: "x,y"; duration: 100; easing.type: Easing.Linear }
             }
         }
 
         Item{
             id: newDroppedLauncherVisual
             anchors.fill: mouseHandler
-           // width: panel.dropNewLauncher ? parent.width : 0
-           // height: panel.dropNewLauncher ? parent.height : 0
+            // width: panel.dropNewLauncher ? parent.width : 0
+            // height: panel.dropNewLauncher ? parent.height : 0
 
             visible: opacity == 0 ? false : true
             opacity: panel.dropNewLauncher && (panel.dragSource == null) ? 1 : 0
@@ -521,12 +524,38 @@ Item {
         }*/
     }
 
+    /*PlasmaComponents.Button{
+        id: orientationBtn
+        text:"Orientation"
+
+        anchors.centerIn: parent
+        visible: true
+
+        onClicked:{
+            switch(plasmoid.position){
+            case PlasmaCore.Types.BottomPositioned:
+                panel.position = PlasmaCore.Types.LeftPositioned;
+                break;
+            case PlasmaCore.Types.LeftPositioned:
+                panel.position = PlasmaCore.Types.TopPositioned;
+                break;
+            case PlasmaCore.Types.TopPositioned:
+                panel.position = PlasmaCore.Types.RightPositioned;
+                break;
+            case PlasmaCore.Types.RightPositioned:
+                panel.position = PlasmaCore.Types.BottomPositioned;
+                break;
+            }
+            updatePosition();
+        }
+    }*/
+
 
     function updatePosition(){
         var newPosition;
         var tempVertical=false;
 
-        switch (plasmoid.location) {
+         switch (plasmoid.location) {
         case PlasmaCore.Types.LeftEdge:
             newPosition = PlasmaCore.Types.LeftPositioned;
             tempVertical = true;
@@ -551,7 +580,7 @@ Item {
             icList.orientation = Qt.Horizontal;
 
         panel.position = newPosition;
-    }  
+    }
 
     function hasLauncher(url) {
         return tasksModel.launcherPosition(url) != -1;

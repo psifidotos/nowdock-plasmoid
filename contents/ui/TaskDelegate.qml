@@ -105,9 +105,8 @@ Component {
 
             onWindowsCountChanged: {
                 if ((windowsCount >= 2) && (windowsCount > previousCount)){
-                    // if( ! wrapper.containsMouse){
-                    mainItemContainer.groupWindowAdded();
-                    //     }
+                    if(panel.dragSource == null)
+                        mainItemContainer.groupWindowAdded();
                 }
                 else if ((windowsCount >=1) &&(windowsCount < previousCount)){
                     //sometimes this is triggered in dragging with no reason

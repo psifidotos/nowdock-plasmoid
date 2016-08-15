@@ -37,7 +37,7 @@ Item {
         id: ignoreItemTimer
 
         repeat: false
-        interval: 500
+        interval: 150
 
         onTriggered: {
             ignoredItem = null;
@@ -95,7 +95,11 @@ Item {
                && ignoredItem == above)
                 return;
 
-            if (tasksModel.sortMode == TaskManager.TasksModel.SortManual && panel.dragSource && above != ignoredItem) {
+            //at some point it was needed the following  && above != ignoredItem
+            //but know not... strange... && above != ignoredItem
+            //I use the ignoredItem in order to reduce the move calls as much
+            //as possible
+            if (tasksModel.sortMode == TaskManager.TasksModel.SortManual && panel.dragSource && ignoredItem == null) {
                 var insertAt = TaskTools.insertIndexAt(above, event.x, event.y);              
 
                 if (panel.dragSource != above && panel.dragSource.itemIndex != insertAt) {
