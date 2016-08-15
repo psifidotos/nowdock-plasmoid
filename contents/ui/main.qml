@@ -421,9 +421,11 @@ Item {
                 NumberAnimation { properties: "x,y"; duration: 100; easing.type: Easing.Linear }
             }
 
-            move:  Transition {
+            ///this transition can not be used with dragging !!!! I breaks
+            ///the lists indexes !!!!!
+          /*  move:  Transition {
                 NumberAnimation { properties: "x,y"; duration: 100; easing.type: Easing.Linear }
-            }
+            } */
         }
 
         Item{
