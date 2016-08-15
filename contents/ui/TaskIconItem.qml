@@ -19,7 +19,7 @@ Item{
     height: wrapper.regulatorHeight
 
     property int doubleSize : 2 * panel.iconSize
-    property int shadowSize : (panel.iconSize / 7)
+    property int shadowSize : Math.ceil(panel.iconSize / 7)
 
     //big interval to show shadows only after all the crappy adds and removes of tasks
     //have happened
@@ -65,11 +65,17 @@ Item{
     Image {
         id: iconImageBuffer
 
+        property real basicScalingWidth : (wrapper.inTempScaling == true) ? (panel.iconSize * wrapper.scaleWidth) :
+                                                                            panel.iconSize * wrapper.scale
+        property real basicScalingHeight : (wrapper.inTempScaling == true) ? (panel.iconSize * wrapper.scaleHeight) :
+                                                                            panel.iconSize * wrapper.scale
         //property real newTempSize: panel.iconSize * wrapper.scale
-        property real newTempSize: (wrapper.opacity == 1) ?  Math.min(wrapper.basicScalingWidth, wrapper.basicScalingHeight) :
-                                                            Math.max(wrapper.basicScalingWidth, wrapper.basicScalingHeight)
-        width: newTempSize + (centralItem.shadowSize/2)
-        height: newTempSize + (centralItem.shadowSize/2)
+        property real newTempSize: (wrapper.opacity == 1) ?  Math.min(basicScalingWidth, basicScalingHeight) :
+                                                            Math.max(basicScalingWidth, basicScalingHeight)
+     //   width: newTempSize + (centralItem.shadowSize/2)
+     //   height: newTempSize + (centralItem.shadowSize/2)
+        width: newTempSize + 2*centralItem.shadowSize
+        height: width
 
         anchors.centerIn: parent
 
@@ -629,7 +635,8 @@ Item{
 
             Item{
                 id:fixedIcon
-                width: (panel.zoomFactor/2)*(centralItem.doubleSize+(2*shadowImageNoActive.radius) )
+            //    width: (panel.zoomFactor/2)*(centralItem.doubleSize+(2*shadowImageNoActive.radius) )
+                width: panel.iconSize + 2*shadowImageNoActive.radius
                 height: width
 
                 visible:false
@@ -639,7 +646,8 @@ Item{
                     id: iconImage
                     //width: parent.width - (shadowImageNoActive.radius)
                     // height: parent.height - (shadowImageNoActive.radius)
-                    width: (panel.zoomFactor/2)*centralItem.doubleSize
+                  //  width: (panel.zoomFactor/2)*centralItem.doubleSize
+                    width: panel.iconSize
                     height: width
                     anchors.centerIn: parent
 
@@ -685,6 +693,18 @@ Item{
                                         }, Qt.size(fixedIcon.width,fixedIcon.height) );
                                     }
                                     else{
+                              /*          if(AppId=="yarock"){
+                                            console.log(panel.iconSize);
+                                            fixedIcon.grabToImage(function(result){
+                                                result.saveToFile("/home/michail/yarockscreen.png");
+                                            });
+                                        }
+                                        if(AppId=="writer"){
+                                            fixedIcon.grabToImage(function(result){
+                                                result.saveToFile("/home/michail/writerscreen.png");
+                                            });
+                                        }*/
+
                                         fixedIcon.grabToImage(function(result) {
                                             iconImageBuffer.source.destroy();
                                             iconImageBuffer.source = result.url;

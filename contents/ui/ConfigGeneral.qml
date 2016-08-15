@@ -42,7 +42,7 @@ Item {
     property alias cfg_showShadows: showShadows.checked
     property alias cfg_showGlow: showGlow.checked
     property alias cfg_zoomLevel: zoomLevel.value
-    property alias cfg_iconSize: iconSize.value
+    property alias cfg_iconSize: iconSizeCmb.realValue
     property alias cfg_zoomHelper: zoomHelper.checked
     property alias cfg_threeColorsWindows: threeColorsWindows.checked
 
@@ -112,39 +112,92 @@ Item {
                     text: ( 1 + (zoomLevel.value / 20) )
                 }
 
-                Label {
-                    text: i18n("Icon size: ")
-                }
-
-                Slider {
-                    id: iconSize
-                    Layout.fillWidth: true
-                    minimumValue: -32
-                    maximumValue: 64
-                    stepSize: 8
-                    tickmarksEnabled: true
-                }
-
-                Label {
-                    Layout.maximumWidth: 25
-                    text: iconSize.value + i18n(" px.")
-                }
-
-                Label {
-                    text: ""
-                }
-
-                Label {
-                    text: i18n("Notice: 0px. is the default Huge icon size in Plasma")
-                    font.italic: true
-                    Layout.columnSpan: 2
-                }
-
                 CheckBox {
                     id: zoomHelper
                     text: i18n("Show a red line on the limit which is needed for animations")
                     enabled: true
                     Layout.columnSpan: 3
+                }
+
+
+                Label {
+                    text: i18n("Icon size: ")
+                }
+
+                ComboBox {
+                    // 16, 22, 32, 48, 64,128, 256
+                    id: iconSizeCmb
+
+                    property int realValue
+                    property bool startup: true
+                    model: ["16px.", "22px.", "32px.", "48px.", "64px.", "92px", "128px.", "256px."]
+
+                    onCurrentIndexChanged: {
+                        switch(currentIndex){
+                        case 0:
+                            realValue = 16;
+                            break;
+                        case 1:
+                            realValue = 22;
+                            break;
+                        case 2:
+                            realValue = 32;
+                            break;
+                        case 3:
+                            realValue = 48;
+                            break;
+                        case 4:
+                            realValue = 64;
+                            break;
+                        case 5:
+                            realValue = 92;
+                            break;
+                        case 6:
+                            realValue = 128;
+                            break;
+                        case 7:
+                            realValue = 256;
+                            break;
+                        default:
+                            realValue = 64;
+                            break
+                        }
+                    }
+
+                    onRealValueChanged: {
+                        if(startup){
+                            switch (realValue){
+                            case 16:
+                                currentIndex = 0;
+                                break;
+                            case 22:
+                                currentIndex = 1;
+                                break;
+                            case 32:
+                                currentIndex = 2;
+                                break;
+                            case 48:
+                                currentIndex = 3;
+                                break;
+                            case 64:
+                                currentIndex = 4;
+                                break;
+                            case 92:
+                                currentIndex = 5;
+                                break;
+                            case 128:
+                                currentIndex = 6;
+                                break;
+                            case 256:
+                                currentIndex = 7;
+                                break;
+                            default:
+                                currentIndex = 4;
+                                break
+                            }
+                            startup = false;
+                        }
+                    }
                 }
             }
 

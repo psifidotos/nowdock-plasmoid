@@ -25,7 +25,8 @@ Item {
     property bool isHovered: false
     property bool showBarLine: plasmoid.configuration.showBarLine
 
-    property int iconSize: units.iconSizes.huge + plasmoid.configuration.iconSize
+    //property int iconSize: units.iconSizes.huge + plasmoid.configuration.iconSize
+    property int iconSize: plasmoid.configuration.iconSize
     property int iconMargin: 5
     property int realSize: iconSize + iconMargin
     property int clearWidth
