@@ -34,6 +34,12 @@ Component {
         property bool isDragged: false
         property bool inAnimation: false
         property bool isWindow: model.IsWindow ? true : false
+        property bool isActive: IsActive ? true : false
+        property bool isMinimized: IsMinimized ? true : false
+        //states that exist in windows in a Group of windows
+        property bool hasMinimized: IsGroupParent ? tasksWindows.hasMinimized : isMinimized
+        property bool hasShown: IsGroupParent ? tasksWindows.hasShown : !isMinimized
+        property bool hasActive: IsGroupParent ? tasksWindows.hasActive : isActive
 
         property int animationTime: 70
         property int resistanceDelay: 300
@@ -52,7 +58,32 @@ Component {
 
         signal groupWindowAdded();
         signal groupWindowRemoved();
+        signal checkWindowsStates();
 
+    /*    onHasMinimizedChanged:{
+            console.log(AppId);
+            if(AppId == "org.kde.dolphin"){
+            console.log("1. Minimized:"+hasMinimized);
+            console.log("2. Active:"+hasActive);
+            console.log("3. Shown:"+hasShown);
+            }
+        }
+        onHasShownChanged:{
+            console.log(AppId);
+            if(AppId == "org.kde.dolphin"){
+            console.log("1. Minimized:"+hasMinimized);
+            console.log("2. Active:"+hasActive);
+            console.log("3. Shown:"+hasShown);
+            }
+        }
+        onHasActiveChanged:{
+            console.log(AppId);
+            if(AppId == "org.kde.dolphin"){
+            console.log("1. Minimized:"+hasMinimized);
+            console.log("2. Active:"+hasActive);
+            console.log("3. Shown:"+hasShown);
+            }
+        }*/
 
         /*Rectangle{
             anchors.fill: parent
@@ -386,6 +417,14 @@ Component {
             if (isWindow) {
                 taskInitComponent.createObject(mainItemContainer);
             }
+        }
+
+        onIsMinimizedChanged: {
+            checkWindowsStates();
+        }
+
+        onIsActiveChanged: {
+            checkWindowsStates();
         }
 
         ////// End of Values Changes /////

@@ -8,7 +8,7 @@ Item{
     //   property string color
     id: glowItem  
 
-    property color basicColor: theme.buttonFocusColor
+    property color basicColor: "blue"
     property color attentionColor: colorScopePalette.negativeTextColor // "#ffff1717"
 
     property bool showAttention: false

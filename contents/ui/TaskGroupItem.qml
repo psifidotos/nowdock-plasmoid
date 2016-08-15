@@ -12,6 +12,13 @@ Item{
 
     property int size: 8
 
+    SystemPalette { id: myPalette; colorGroup: SystemPalette.Active }
+
+    property color isActiveColor: theme.buttonFocusColor
+    property color minimizedColor: myPalette.mid
+    property color isShownColor: myPalette.shadow
+    property color notActiveColor: mainItemContainer.hasMinimized ? minimizedColor : isShownColor
+
     Item{
         width: (( IsGroupParent ) && (icList.orientation === Qt.Horizontal)) ? 2*glowFrame.size : glowFrame.size
         height: (( IsGroupParent ) && (icList.orientation === Qt.Vertical)) ? 2*glowFrame.size : glowFrame.size
@@ -25,27 +32,23 @@ Item{
 
                 visible: ( !IsLauncher ) ? true: false
 
-                showAttention: model.IsDemandingAttention ? true : false
+                basicColor: ((mainItemContainer.hasActive)&&(!(mainItemContainer.hasMinimized))) ?
+                                 glowFrame.isActiveColor : glowFrame.notActiveColor
 
-                onVisibleChanged: {
-                    if((model.AppId === "writer") &&(model.AppName ==="LibreOffice Writer")){
-                   //     console.log("Ok I am in !!!");
-                   //    panel.forceIconsUpdate = true;
-                    }
-                }
+                showAttention: model.IsDemandingAttention ? true : false
             }
+
             GlowPoint{
                 width: glowFrame.size
                 height: width
 
                 visible: (IsGroupParent) ? true: false
 
-                onVisibleChanged: {
-                    if((model.AppId === "writer") &&(model.AppName ==="LibreOffice Writer")){
-                     //   console.log("Ok I am in !!!");
-                     //   panel.forceIconsUpdate = true;
-                    }
-                }
+                //when there is no active window
+                property color state1Color: mainItemContainer.hasShown ? glowFrame.isShownColor : glowFrame.minimizedColor
+                //when there is active window
+                property color state2Color: mainItemContainer.hasMinimized ? glowFrame.minimizedColor : glowFrame.isShownColor
+                basicColor: ((mainItemContainer.hasActive)&&(!(mainItemContainer.hasMinimized))) ? state2Color : state1Color
             }
         }
     }
