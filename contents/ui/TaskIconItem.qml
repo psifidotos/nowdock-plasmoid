@@ -522,13 +522,13 @@ Item{
     states: [
         State{
             name: "*"
-            when:  !mainItemContainer.isDragged
+            when:  !mainItemContainer.isDragged||(panel.dragSource==null)
             PropertyChanges { target: stateColorizer; visible:false }
         },
 
         State{
             name: "isDragged"
-            when:  mainItemContainer.isDragged
+            when:  (mainItemContainer.isDragged)&&(panel.dragSource!=null)
             PropertyChanges { target: stateColorizer; visible:true }
         }
     ]

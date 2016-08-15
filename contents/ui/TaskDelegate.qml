@@ -395,7 +395,10 @@ Component {
 
 
         onIsDraggedChanged: {
-            if(isDragged){
+          /*
+          //  unfortunately this conflicts the desktop behavior bug #8
+          //  except if I can find I way to know the state of locking in desktop
+              if(isDragged){
                 icList.updateScale(index-1, 1, 0);
                 icList.updateScale(index+1, 1, 0);
                 wrapper.scale = 1.35;
@@ -405,7 +408,7 @@ Component {
                                      model.LauncherUrlWithoutIcon, model.decoration);
                 pressX = -1;
                 pressY = -1;
-            }
+            }*/
         }
 
         onDelayingRemoveChanged: {
@@ -595,6 +598,8 @@ Component {
             //have to wait first for the launcher animation to end
             if(!IsLauncher)
                 pressed = false;
+
+            checkListHovered.start();
         }
 
         ///////////////// End Of Mouse Area Events ///////////////////

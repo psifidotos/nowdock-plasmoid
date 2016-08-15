@@ -22,6 +22,7 @@ Item {
     property bool enableShadows: plasmoid.configuration.showShadows
     property bool vertical: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
                              (panel.position === PlasmaCore.Types.RightPositioned)) ? true : false
+    property bool isHovered: false
 
     property int iconSize: units.iconSizes.huge + plasmoid.configuration.iconSize
     property int iconMargin: 5
@@ -71,8 +72,8 @@ Item {
     Binding {
         target: plasmoid
         property: "status"
-        value: (tasksModel.anyTaskDemandsAttention
-                ? PlasmaCore.Types.NeedsAttentionStatus : PlasmaCore.Types.PassiveStatus)
+        value: (tasksModel.anyTaskDemandsAttention && icList.hoveredIndex == -1) ?
+                 PlasmaCore.Types.RequiresAttentionStatus : PlasmaCore.Types.PassiveStatus
     }
 
     /////
@@ -193,7 +194,6 @@ Item {
                 icList.currentSpot = -1000;
                 icList.hoveredIndex = -1;
             }
-
         }
     }
 
