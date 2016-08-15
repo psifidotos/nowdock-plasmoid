@@ -62,24 +62,30 @@ Item{
         onTempColorChanged: tempColor.a = 0.35;
     }
 
+    Image{
+        id:zoomedImage
+        anchors.fill: iconImageBuffer
+        opacity: (iconImageBuffer.opacity == 0) ?  1 : 0
+    }
+
     Image {
         id: iconImageBuffer
 
         property real basicScalingWidth : (wrapper.inTempScaling == true) ? (panel.iconSize * wrapper.scaleWidth) :
                                                                             panel.iconSize * wrapper.scale
         property real basicScalingHeight : (wrapper.inTempScaling == true) ? (panel.iconSize * wrapper.scaleHeight) :
-                                                                            panel.iconSize * wrapper.scale
+                                                                             panel.iconSize * wrapper.scale
         //property real newTempSize: panel.iconSize * wrapper.scale
         property real newTempSize: (wrapper.opacity == 1) ?  Math.min(basicScalingWidth, basicScalingHeight) :
                                                             Math.max(basicScalingWidth, basicScalingHeight)
-     //   width: newTempSize + (centralItem.shadowSize/2)
-     //   height: newTempSize + (centralItem.shadowSize/2)
+        //   width: newTempSize + (centralItem.shadowSize/2)
+        //   height: newTempSize + (centralItem.shadowSize/2)
         width: newTempSize + 2*centralItem.shadowSize
         height: width
 
         anchors.centerIn: parent
 
-        opacity: 0
+        opacity: ((iconHoveredBuffer.opacity>0)||(wrapper.scale!=1)) ? 0 : 1
 
         Image{
             id: iconHoveredBuffer
@@ -95,6 +101,7 @@ Item{
             }
         }
     }
+
 
 
     BrightnessContrast {
@@ -535,7 +542,7 @@ Item{
         State{
             name: "isDragged"
             when: ( (mainItemContainer.isDragged)&&(panel.dragSource!=null)
-                     && (plasmoid.immutable) )
+                   && (plasmoid.immutable) )
             PropertyChanges { target: stateColorizer; visible:true }
         }
     ]
@@ -634,8 +641,37 @@ Item{
             }
 
             Item{
+                id:fixedIcon2
+
+                width: panel.zoomFactor * panel.iconSize + 2*shadowImageNoActive.radius
+                height: width
+                visible:false
+
+                //KQuickControlAddons.QIconItem{
+                PlasmaCore.IconItem{
+                    id: iconImage2
+                    //width: parent.width - (shadowImageNoActive.radius)
+                    // height: parent.height - (shadowImageNoActive.radius)
+                    //  width: (panel.zoomFactor/2)*centralItem.doubleSize
+                    width: panel.zoomFactor * panel.iconSize
+                    height: width
+                    anchors.centerIn: parent
+
+                    // state: KQuickControlAddons.QIconItem.DefaultState
+                    //icon: decoration
+                    active: false
+                    enabled: true
+                    source: decoration
+                    usesPlasmaTheme: false
+
+                    visible: true
+                }
+            }
+
+
+            Item{
                 id:fixedIcon
-            //    width: (panel.zoomFactor/2)*(centralItem.doubleSize+(2*shadowImageNoActive.radius) )
+
                 width: panel.iconSize + 2*shadowImageNoActive.radius
                 height: width
 
@@ -646,7 +682,7 @@ Item{
                     id: iconImage
                     //width: parent.width - (shadowImageNoActive.radius)
                     // height: parent.height - (shadowImageNoActive.radius)
-                  //  width: (panel.zoomFactor/2)*centralItem.doubleSize
+                    //  width: (panel.zoomFactor/2)*centralItem.doubleSize
                     width: panel.iconSize
                     height: width
                     anchors.centerIn: parent
@@ -691,9 +727,15 @@ Item{
                                             iconImageBuffer.source = result.url;
                                             result.destroy();
                                         }, Qt.size(fixedIcon.width,fixedIcon.height) );
+
+                                        shadowImageNoActive2.grabToImage(function(result) {
+                                            zoomedImage.source.destroy();
+                                            zoomedImage.source = result.url;
+                                            result.destroy();
+                                        }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
                                     }
                                     else{
-                              /*          if(AppId=="yarock"){
+                                        /*          if(AppId=="yarock"){
                                             console.log(panel.iconSize);
                                             fixedIcon.grabToImage(function(result){
                                                 result.saveToFile("/home/michail/yarockscreen.png");
@@ -710,18 +752,35 @@ Item{
                                             iconImageBuffer.source = result.url;
                                             result.destroy();
                                         }, Qt.size(fixedIcon.width,fixedIcon.height) );
+
+                                        fixedIcon2.grabToImage(function(result) {
+                                            zoomedImage.source.destroy();
+                                            zoomedImage.source = result.url;
+                                            result.destroy();
+                                        }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
                                     }
 
                                     hoveredImage.grabToImage(function(result) {
                                         iconHoveredBuffer.source.destroy();
                                         iconHoveredBuffer.source = result.url;
                                         result.destroy();
-                                    }, Qt.size(fixedIcon.width,fixedIcon.height) );
+                                    }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
+
+                                  /*  if(AppId=="yarock"){
+                                        hoveredImage.grabToImage(function(result){
+                                            result.saveToFile("/home/michail/yarockscreen.png");
+                                        });
+                                    }
+                                    if(AppId=="writer"){
+                                        hoveredImage.grabToImage(function(result){
+                                            result.saveToFile("/home/michail/writerscreen.png");
+                                        });
+                                    }*/
 
 
                                     // hideBackTimer.createObject(iconImageBackground);
                                     mainItemContainer.buffersAreReady = true;
-                                    iconImageBuffer.opacity = 1;
+                                 //   iconImageBuffer.opacity = 1;
 
                                     ttt.destroy(100);
                                 }
@@ -753,15 +812,30 @@ Item{
                 verticalOffset: 2
             }
 
+            DropShadow {
+                id:shadowImageNoActive2
+                visible: false
+                width: fixedIcon2.width
+                height: fixedIcon2.height
+                anchors.centerIn: fixedIcon2
+
+                radius: centralItem.shadowSize
+                samples: 2 * radius
+                color: "#cc080808"
+                source: fixedIcon2
+
+                verticalOffset: 2
+            }
+
             BrightnessContrast{
                 id:hoveredImage
                 visible: false
-                width: fixedIcon.width
-                height: fixedIcon.height
-                anchors.centerIn: fixedIcon
+                width: fixedIcon2.width
+                height: fixedIcon2.height
+                anchors.centerIn: fixedIcon2
 
-                brightness: 0.4
-                source: fixedIcon
+                brightness: 0.25
+                source: fixedIcon2
             }
         }
     }
