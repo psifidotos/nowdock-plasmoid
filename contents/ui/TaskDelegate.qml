@@ -60,7 +60,7 @@ Component {
         signal groupWindowRemoved();
         signal checkWindowsStates();
 
-    /*    onHasMinimizedChanged:{
+        /*    onHasMinimizedChanged:{
             console.log(AppId);
             if(AppId == "org.kde.dolphin"){
             console.log("1. Minimized:"+hasMinimized);
@@ -394,10 +394,9 @@ Component {
 
 
         onIsDraggedChanged: {
-          /*
-          //  unfortunately this conflicts the desktop behavior bug #8
-          //  except if I can find I way to know the state of locking in desktop
-              if(isDragged){
+            //  unfortunately this conflicts the desktop behavior bug #8
+            //  except if I can find I way to know the state of locking in desktop
+            if(isDragged && (plasmoid.immutable)){
                 icList.updateScale(index-1, 1, 0);
                 icList.updateScale(index+1, 1, 0);
                 wrapper.scale = 1.35;
@@ -407,7 +406,7 @@ Component {
                                      model.LauncherUrlWithoutIcon, model.decoration);
                 pressX = -1;
                 pressY = -1;
-            }*/
+            }
         }
 
         onDelayingRemoveChanged: {
@@ -498,6 +497,7 @@ Component {
                 // mouse.button is always 0 here, hence checking with mouse.buttons
                 if (pressX != -1 && mouse.buttons == Qt.LeftButton
                         && isDragged
+                        && plasmoid.immutable
                         && dragHelper.isDrag(pressX, pressY, mouse.x, mouse.y) ) {
                     icList.updateScale(index-1, 1, 0);
                     icList.updateScale(index+1, 1, 0);

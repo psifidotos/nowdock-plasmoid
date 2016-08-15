@@ -528,7 +528,8 @@ Item{
 
         State{
             name: "isDragged"
-            when:  (mainItemContainer.isDragged)&&(panel.dragSource!=null)
+            when: ( (mainItemContainer.isDragged)&&(panel.dragSource!=null)
+                     && (plasmoid.immutable) )
             PropertyChanges { target: stateColorizer; visible:true }
         }
     ]
