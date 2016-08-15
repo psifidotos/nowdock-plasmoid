@@ -394,8 +394,6 @@ Component {
 
 
         onIsDraggedChanged: {
-            //  unfortunately this conflicts the desktop behavior bug #8
-            //  except if I can find I way to know the state of locking in desktop
             if(isDragged && (plasmoid.immutable)){
                 icList.updateScale(index-1, 1, 0);
                 icList.updateScale(index+1, 1, 0);

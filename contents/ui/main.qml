@@ -70,13 +70,6 @@ Item {
         onGroupingLauncherUrlBlacklistChanged: tasksModel.groupingLauncherUrlBlacklist = plasmoid.configuration.groupingLauncherUrlBlacklist;
     }
 
-    Binding {
-        target: plasmoid
-        property: "status"
-        value: (tasksModel.anyTaskDemandsAttention && icList.hoveredIndex == -1) ?
-                   PlasmaCore.Types.RequiresAttentionStatus : PlasmaCore.Types.PassiveStatus
-    }
-
     /////
     PlasmaCore.ColorScope{
         id: colorScopePalette
@@ -127,6 +120,13 @@ Item {
             plasmoid.configuration.groupingLauncherUrlBlacklist = groupingLauncherUrlBlacklist;
         }
 
+        onAnyTaskDemandsAttentionChanged: {
+            if (anyTaskDemandsAttention){
+                plasmoid.status = PlasmaCore.Types.RequiresAttentionStatus;
+                attentionTimerComponent.createObject(panel);
+            }
+        }
+
         Component.onCompleted: {
             launcherList = plasmoid.configuration.launchers;
             groupingAppIdBlacklist = plasmoid.configuration.groupingAppIdBlacklist;
@@ -167,6 +167,21 @@ Item {
     /*  IconsModel{
         id: iconsmdl
     }*/
+
+    Component{
+        id: attentionTimerComponent
+        Timer{
+            id: attentionTimer
+            interval:6500
+            onTriggered: {
+                plasmoid.status = PlasmaCore.Types.PassiveStatus;
+                destroy();
+            }
+            Component.onCompleted: {
+                start();
+            }
+        }
+    }
 
     //Timer to check if the mouse is still inside the ListView
     Timer{
