@@ -23,6 +23,7 @@ Item {
     property bool vertical: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
                              (panel.position === PlasmaCore.Types.RightPositioned)) ? true : false
     property bool isHovered: false
+    property bool showBarLine: plasmoid.configuration.showBarLine
 
     property int iconSize: units.iconSizes.huge + plasmoid.configuration.iconSize
     property int iconMargin: 5

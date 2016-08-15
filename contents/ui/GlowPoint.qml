@@ -54,16 +54,17 @@ Item{
                     duration: glowItem.animation
                     easing.type: Easing.InOutQuad
                 }
-            }
+            }           
         }
 
        RectangularGlow {
             anchors.fill: smallCircle
             glowRadius: 2 * smallCircle.width
-            spread: 0.01
+            spread: 0.2
             color: smallCircle.color
+            //color: "#cc222222"
             cornerRadius: smallCircle.radius + glowRadius
-            opacity: 0.4
+            opacity: panel.showBarLine ? 0.25 : 0.45
             visible: panel.glow
         }
 

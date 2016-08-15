@@ -44,6 +44,7 @@ Item {
     property alias cfg_zoomLevel: zoomLevel.value
     property alias cfg_iconSize: iconSize.value
     property alias cfg_zoomHelper: zoomHelper.checked
+    property alias cfg_threeColorsWindows: threeColorsWindows.checked
 
     ColumnLayout {
         spacing: 15
@@ -72,6 +73,12 @@ Item {
                 CheckBox {
                     id: showGlow
                     text: i18n("Show glow around windows points")
+                    enabled: true
+                }
+
+                CheckBox {
+                    id: threeColorsWindows
+                    text: i18n("Different colors for window states")
                     enabled: true
                 }
             }

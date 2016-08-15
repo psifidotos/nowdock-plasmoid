@@ -15,8 +15,8 @@ Item{
     SystemPalette { id: myPalette; colorGroup: SystemPalette.Active }
 
     property color isActiveColor: theme.buttonFocusColor
-    property color minimizedColor: myPalette.mid
-    property color isShownColor: myPalette.shadow
+    property color minimizedColor: plasmoid.configuration.threeColorsWindows ? "#e8e8e8" : isActiveColor // myPalette.mid
+    property color isShownColor: plasmoid.configuration.threeColorsWindows ? "#717171" : isActiveColor // myPalette.shadow
     property color notActiveColor: mainItemContainer.hasMinimized ? minimizedColor : isShownColor
 
     Item{
