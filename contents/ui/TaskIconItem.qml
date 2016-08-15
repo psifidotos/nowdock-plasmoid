@@ -62,47 +62,43 @@ Item{
         onTempColorChanged: tempColor.a = 0.35;
     }
 
-    Image{
-        id:zoomedImage
-        anchors.fill: iconImageBuffer
-        opacity: (iconImageBuffer.opacity == 0) ?  1 : 0
-    }
+    //temporary buffers containing the normal Image icon and the zoomed Image icon
+    Image{id:zoomedImage; visible:false}
+    Image{id:normalImage; visible:false}
 
     Image {
         id: iconImageBuffer
+
+        width: newTempSize + 2*centralItem.shadowSize
+        height: width
+        anchors.centerIn: parent
 
         property real basicScalingWidth : (wrapper.inTempScaling == true) ? (panel.iconSize * wrapper.scaleWidth) :
                                                                             panel.iconSize * wrapper.scale
         property real basicScalingHeight : (wrapper.inTempScaling == true) ? (panel.iconSize * wrapper.scaleHeight) :
                                                                              panel.iconSize * wrapper.scale
-        //property real newTempSize: panel.iconSize * wrapper.scale
+
         property real newTempSize: (wrapper.opacity == 1) ?  Math.min(basicScalingWidth, basicScalingHeight) :
                                                             Math.max(basicScalingWidth, basicScalingHeight)
-        //   width: newTempSize + (centralItem.shadowSize/2)
-        //   height: newTempSize + (centralItem.shadowSize/2)
-        width: newTempSize + 2*centralItem.shadowSize
-        height: width
 
-        anchors.centerIn: parent
+        property real internalLimit: 1 + ((panel.zoomFactor-1)/2)
+        source: ((iconHoveredBuffer.opacity>0)||(wrapper.scale>internalLimit)) ? zoomedImage.source : normalImage.source
 
-        opacity: ((iconHoveredBuffer.opacity>0)||(wrapper.scale!=1)) ? 0 : 1
-
-        Image{
-            id: iconHoveredBuffer
-            anchors.fill: parent
-
-            opacity: mainItemContainer.containsMouse ? 1 : 0
-
-            visible: ((!clickedAnimation.running) &&
-                      (!launcherAnimation.running) )
-
-            Behavior on opacity {
-                NumberAnimation { duration: 300 }
-            }
-        }
     }
 
+    Image{
+        id: iconHoveredBuffer
+        anchors.fill: iconImageBuffer
 
+        opacity: mainItemContainer.containsMouse ? 1 : 0
+
+        visible: ((!clickedAnimation.running) &&
+                  (!launcherAnimation.running) )
+
+        Behavior on opacity {
+            NumberAnimation { duration: 300 }
+        }
+    }
 
     BrightnessContrast {
         id: brightnessTaskEffect
@@ -643,7 +639,7 @@ Item{
             Item{
                 id:fixedIcon2
 
-                width: panel.zoomFactor * panel.iconSize + 2*shadowImageNoActive.radius
+                width: Math.ceil(panel.zoomFactor * (panel.iconSize + 2*shadowImageNoActive.radius))
                 height: width
                 visible:false
 
@@ -653,7 +649,7 @@ Item{
                     //width: parent.width - (shadowImageNoActive.radius)
                     // height: parent.height - (shadowImageNoActive.radius)
                     //  width: (panel.zoomFactor/2)*centralItem.doubleSize
-                    width: panel.zoomFactor * panel.iconSize
+                    width: Math.ceil(panel.zoomFactor * panel.iconSize)
                     height: width
                     anchors.centerIn: parent
 
@@ -724,11 +720,14 @@ Item{
                                     if(panel.enableShadows == true){
                                         shadowImageNoActive.grabToImage(function(result) {
                                             iconImageBuffer.source.destroy();
-                                            iconImageBuffer.source = result.url;
+                                            normalImage.source.destroy();
+                                            normalImage.source = result.url;
+                                            //iconImageBuffer.source = result.url;
                                             result.destroy();
                                         }, Qt.size(fixedIcon.width,fixedIcon.height) );
 
                                         shadowImageNoActive2.grabToImage(function(result) {
+                                            iconImageBuffer.source.destroy();
                                             zoomedImage.source.destroy();
                                             zoomedImage.source = result.url;
                                             result.destroy();
@@ -749,11 +748,13 @@ Item{
 
                                         fixedIcon.grabToImage(function(result) {
                                             iconImageBuffer.source.destroy();
-                                            iconImageBuffer.source = result.url;
+                                            normalImage.source.destroy();
+                                            normalImage.source = result.url;
                                             result.destroy();
                                         }, Qt.size(fixedIcon.width,fixedIcon.height) );
 
                                         fixedIcon2.grabToImage(function(result) {
+                                            iconImageBuffer.source.destroy();
                                             zoomedImage.source.destroy();
                                             zoomedImage.source = result.url;
                                             result.destroy();
@@ -775,12 +776,16 @@ Item{
                                         hoveredImage.grabToImage(function(result){
                                             result.saveToFile("/home/michail/writerscreen.png");
                                         });
+                                    }
+
+                                    if(AppId == "org.kde.dolphin"){
+                                        console.log("1:"+fixedIcon.width + " - "+centralItem.shadowSize);
+                                        console.log("2:"+fixedIcon2.width + " - "+shadowImageNoActive2.radius);
+                                        console.log("3:"+iconImage.width + " - "+iconImage2.width);
                                     }*/
 
-
-                                    // hideBackTimer.createObject(iconImageBackground);
                                     mainItemContainer.buffersAreReady = true;
-                                 //   iconImageBuffer.opacity = 1;
+                                    iconImageBuffer.opacity = 1;
 
                                     ttt.destroy(100);
                                 }
@@ -819,7 +824,7 @@ Item{
                 height: fixedIcon2.height
                 anchors.centerIn: fixedIcon2
 
-                radius: centralItem.shadowSize
+                radius: Math.ceil(panel.zoomFactor*centralItem.shadowSize)
                 samples: 2 * radius
                 color: "#cc080808"
                 source: fixedIcon2
