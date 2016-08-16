@@ -10,7 +10,8 @@ Item{
     width: ( icList.orientation === Qt.Horizontal ) ? wrapper.regulatorWidth : size
     height: ( icList.orientation === Qt.Vertical ) ? wrapper.regulatorHeight : size
 
-    property int size: Math.ceil( panel.iconSize/13 ) //5
+    //property int size: Math.ceil( panel.iconSize/13 ) //5
+    property int size: wrapper.statesLineSize
 
     //SystemPalette { id: myPalette; colorGroup: SystemPalette.Active }
 
@@ -29,15 +30,17 @@ Item{
             flow: ( icList.orientation === Qt.Vertical ) ? Flow.TopToBottom : Flow.LeftToRight
 
             GlowPoint{
-
-                width: (mainItemContainer.hasActive && (!panel.vertical)) ? wrapper.regulatorWidth - spacer.width : glowFrame.size
-                height: (mainItemContainer.hasActive && (panel.vertical)) ? wrapper.regulatorHeight - spacer.height : glowFrame.size
+                width: (mainItemContainer.hasActive && (!panel.vertical)) ? stateWidth : glowFrame.size
+                height: (mainItemContainer.hasActive && (panel.vertical)) ? stateHeight : glowFrame.size
                 visible: ( !IsLauncher ) ? true: false
 
                 basicColor: (mainItemContainer.hasActive) ?
                                  glowFrame.isActiveColor : glowFrame.notActiveColor
 
                 showAttention: model.IsDemandingAttention ? true : false
+
+                property int stateWidth: IsGroupParent ? (wrapper.regulatorWidth - glowFrame.size) : wrapper.regulatorWidth - spacer.width
+                property int stateHeight: IsGroupParent ? wrapper.regulatorHeight - glowFrame.size : wrapper.regulatorHeight - spacer.height
 
                 Behavior on width{
                     NumberAnimation{duration: mainItemContainer.containsMouse ? 20:160; easing.type: Easing.InQuad}

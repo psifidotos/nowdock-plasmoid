@@ -158,8 +158,9 @@ Component {
                 width: (IsStartup) ? 0 : showDelegateWidth
                 height: (IsStartup) ? 0 : showDelegateheight
 
-                property int addedSpace: 7
-
+                //size neede
+                property int statesLineSize: panel.statesLineSize
+                property int addedSpace: statesLineSize + 2 //7
                 property real showDelegateWidth: (icList.orientation === Qt.Vertical ) ? basicScalingWidth+addedSpace :
                                                                                          basicScalingWidth
                 property real showDelegateheight: (icList.orientation === Qt.Vertical ) ? basicScalingHeight :

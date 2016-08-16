@@ -28,6 +28,7 @@ Item {
     //property int iconSize: units.iconSizes.huge + plasmoid.configuration.iconSize
     property int iconSize: Math.max(plasmoid.configuration.iconSize, 16)
     property int iconMargin: 5
+    property int statesLineSize: Math.ceil( panel.iconSize/13 )
     property int realSize: iconSize + iconMargin
     property int clearWidth
     property int clearHeight
@@ -250,10 +251,8 @@ Item {
 
     Item{
         id:barLine
-        //   property bool blockLoop: false
-        opacity: tasksModel.count > 0 ? 1 : 0
 
-        property int spacing: panel.iconSize / 2
+        opacity: tasksModel.count > 0 ? 1 : 0       
 
         anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
         anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
@@ -267,10 +266,11 @@ Item {
 
         //   property int currentSizeW: (icList.hoveredIndex >= 0) ? panel.implicitWidth : panel.clearWidth + spacing
         //   property int currentSizeH: (icList.hoveredIndex >= 0) ? panel.implicitHeight : panel.clearHeight + spacing
+        property int spacing: panel.iconSize / 2
+        property int smallSize: Math.max(3.4*panel.statesLineSize, 16)
 
-
-        width: ( icList.orientation === Qt.Horizontal ) ? icList.width + spacing : 18
-        height: ( icList.orientation === Qt.Vertical ) ? icList.height + spacing : 18
+        width: ( icList.orientation === Qt.Horizontal ) ? icList.width + spacing : smallSize
+        height: ( icList.orientation === Qt.Vertical ) ? icList.height + spacing : smallSize
 
         //debugging code
         //      width: ( icList.orientation === Qt.Horizontal ) ? icList.width+8 : 18
