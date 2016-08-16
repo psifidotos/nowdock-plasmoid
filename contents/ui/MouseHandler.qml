@@ -66,7 +66,17 @@ Item {
 
         property Item hoveredItem
 
+        onDragEnter:{
+            if(panel.dragSource == null){
+                panel.dropNewLauncher = true;
+            }
+        }
+
         onDragMove: {
+            if(panel.dragSource == null){
+                panel.dropNewLauncher = true;
+            }
+
             if (target.animating) {
                 return;
             }
