@@ -24,7 +24,7 @@ Item{
     //big interval to show shadows only after all the crappy adds and removes of tasks
     //have happened
     property bool firstDrawed: false
-    property int shadowInterval: firstDrawed ? 400 : 150
+    property int shadowInterval: firstDrawed ? 750 : 150
     //property int normalIconInterval: 40
 
 

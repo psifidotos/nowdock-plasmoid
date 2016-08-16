@@ -30,6 +30,7 @@ Item{
             flow: ( icList.orientation === Qt.Vertical ) ? Flow.TopToBottom : Flow.LeftToRight
 
             GlowPoint{
+                id:firstPoint
                 width: (mainItemContainer.hasActive && (!panel.vertical)) ? stateWidth : glowFrame.size
                 height: (mainItemContainer.hasActive && (panel.vertical)) ? stateHeight : glowFrame.size
                 visible: ( !IsLauncher ) ? true: false
@@ -39,8 +40,8 @@ Item{
 
                 showAttention: model.IsDemandingAttention ? true : false
 
-                property int stateWidth: IsGroupParent ? (wrapper.regulatorWidth - glowFrame.size) : wrapper.regulatorWidth - spacer.width
-                property int stateHeight: IsGroupParent ? wrapper.regulatorHeight - glowFrame.size : wrapper.regulatorHeight - spacer.height
+                property int stateWidth: IsGroupParent ? (wrapper.regulatorWidth - secondPoint.width) : wrapper.regulatorWidth - spacer.width
+                property int stateHeight: IsGroupParent ? wrapper.regulatorHeight - secondPoint.height : wrapper.regulatorHeight - spacer.height
 
                 Behavior on width{
                     NumberAnimation{duration: mainItemContainer.containsMouse ? 20:160; easing.type: Easing.InQuad}
@@ -57,6 +58,7 @@ Item{
             }
 
             GlowPoint{
+                id:secondPoint
                 width: visible ? glowFrame.size : 0
                 height: width
 

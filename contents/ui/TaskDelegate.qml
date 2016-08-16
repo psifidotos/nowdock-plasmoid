@@ -39,7 +39,9 @@ Component {
         //states that exist in windows in a Group of windows
         property bool hasMinimized: IsGroupParent ? tasksWindows.hasMinimized : isMinimized
         property bool hasShown: IsGroupParent ? tasksWindows.hasShown : !isMinimized
-        property bool hasActive: IsGroupParent ? tasksWindows.hasActive : isActive
+        //property bool hasActiveFirstCheck: (tasksWindows.hasActive != isActive)
+        //property bool hasActive: IsGroupParent ? tasksWindows.hasActive : isActive
+        property bool hasActive: isActive
 
         property int animationTime: 70
         property int resistanceDelay: 300
