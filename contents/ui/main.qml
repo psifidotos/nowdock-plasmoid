@@ -223,11 +223,12 @@ Item {
         }
     }
 
+    ///Red Liner!!! show the upper needed limit for annimations
     Rectangle{
         width: panel.vertical ? 1 : 2 * panel.iconSize
         height: panel.vertical ? 2 * panel.iconSize : 1
 
-        property int neededSpace: ( (zoomFactor+0.1)*iconSize)+15
+        property int neededSpace: ( (zoomFactor+0.1)*iconSize)+barLine.smallSize
 
         anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
         anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
