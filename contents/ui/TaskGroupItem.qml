@@ -10,9 +10,9 @@ Item{
     width: ( icList.orientation === Qt.Horizontal ) ? wrapper.regulatorWidth : size
     height: ( icList.orientation === Qt.Vertical ) ? wrapper.regulatorHeight : size
 
-    property int size: 5
+    property int size: Math.ceil( panel.iconSize/13 ) //5
 
-    SystemPalette { id: myPalette; colorGroup: SystemPalette.Active }
+    //SystemPalette { id: myPalette; colorGroup: SystemPalette.Active }
 
     property color isActiveColor: theme.buttonFocusColor
     property color minimizedColor: plasmoid.configuration.threeColorsWindows ? "#e8e8e8" : isActiveColor // myPalette.mid
@@ -40,10 +40,10 @@ Item{
                 showAttention: model.IsDemandingAttention ? true : false
 
                 Behavior on width{
-                    NumberAnimation{duration: 160; easing.type: Easing.InQuad}
+                    NumberAnimation{duration: mainItemContainer.containsMouse ? 20:160; easing.type: Easing.InQuad}
                 }
                 Behavior on height{
-                    NumberAnimation{duration: 160; easing.type: Easing.InQuad}
+                    NumberAnimation{duration: mainItemContainer.containsMouse ? 20:160; easing.type: Easing.InQuad}
                 }
             }
 
