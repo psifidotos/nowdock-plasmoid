@@ -70,7 +70,9 @@ Item{
                                                             Math.max(basicScalingWidth, basicScalingHeight)
 
         property real internalLimit: 1 + ((panel.zoomFactor-1)/2)
-        source: ((iconHoveredBuffer.opacity>0)||(wrapper.scale>internalLimit)) ? zoomedImage.source : normalImage.source
+        source: (((iconHoveredBuffer.opacity>0)||(wrapper.scale>internalLimit))&&(panel.iconSize >= 48)) ?
+                    zoomedImage.source : normalImage.source
+       // source: normalImage.source
 
     }
 
@@ -627,14 +629,14 @@ Item{
             Item{
                 id:fixedIcon2
 
-                width: Math.ceil(panel.zoomFactor * (panel.iconSize + 2*shadowImageNoActive.radius))
+                width: panel.zoomFactor * (panel.iconSize + 2*shadowImageNoActive.radius)
                 height: width
                 visible:false
 
                 PlasmaCore.IconItem{
                     id: iconImage2
 
-                    width: Math.ceil(panel.zoomFactor * panel.iconSize)
+                    width: panel.zoomFactor * panel.iconSize
                     height: width
                     anchors.centerIn: parent
 
@@ -737,6 +739,7 @@ Item{
                                         iconHoveredBuffer.source = result.url;
                                         result.destroy();
                                     }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
+
 
                                     mainItemContainer.buffersAreReady = true;
                                     iconImageBuffer.opacity = 1;
