@@ -43,12 +43,12 @@ Item{
                 property int stateWidth: IsGroupParent ? (wrapper.regulatorWidth - secondPoint.width) : wrapper.regulatorWidth - spacer.width
                 property int stateHeight: IsGroupParent ? wrapper.regulatorHeight - secondPoint.height : wrapper.regulatorHeight - spacer.height
 
-                Behavior on width{
-                    NumberAnimation{duration: mainItemContainer.containsMouse ? 20:160; easing.type: Easing.InQuad}
+               /*Behavior on width{
+                    NumberAnimation{duration: (wrapper.scale != 1) ? 20:160; easing.type: Easing.InQuad}
                 }
                 Behavior on height{
-                    NumberAnimation{duration: mainItemContainer.containsMouse ? 20:160; easing.type: Easing.InQuad}
-                }
+                    NumberAnimation{duration: (wrapper.scale != 1) ? 20:160; easing.type: Easing.InQuad}
+                }*/
             }
 
             Item{
