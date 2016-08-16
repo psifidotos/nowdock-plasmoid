@@ -57,10 +57,11 @@ Item{
             }
 
             GlowPoint{
-                width: glowFrame.size
+                width: visible ? glowFrame.size : 0
                 height: width
 
-                visible: (IsGroupParent) ? true: false
+                visible:  ( IsGroupParent && plasmoid.configuration.dotsOnActive )
+                         || (IsGroupParent && !mainItemContainer.hasActive)? true: false
 
                 //when there is no active window
                 property color state1Color: mainItemContainer.hasShown ? glowFrame.isShownColor : glowFrame.minimizedColor

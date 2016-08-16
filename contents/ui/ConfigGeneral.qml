@@ -45,6 +45,7 @@ Item {
     property alias cfg_iconSize: iconSizeCmb.realValue
     property alias cfg_zoomHelper: zoomHelper.checked
     property alias cfg_threeColorsWindows: threeColorsWindows.checked
+    property alias cfg_dotsOnActive: dotsOnActive.checked
 
     ColumnLayout {
         spacing: 15
@@ -81,6 +82,12 @@ Item {
                     text: i18n("Different colors for window states")
                     enabled: true
                 }
+
+                CheckBox {
+                    id: dotsOnActive
+                    text: i18n("Dots on active window")
+                    enabled: true
+                }
             }
         }
 
@@ -108,8 +115,9 @@ Item {
                 }
 
                 Label {
-                    Layout.maximumWidth: 25
-                    text: ( 1 + (zoomLevel.value / 20) )
+                    Layout.minimumWidth: 50
+                    Layout.maximumWidth: 50
+                    text: ( "x"+ (1 + (zoomLevel.value / 20)) )
                 }
 
                 CheckBox {
