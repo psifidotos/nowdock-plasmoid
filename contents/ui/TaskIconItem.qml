@@ -18,14 +18,21 @@ Item{
     width: wrapper.regulatorWidth
     height: wrapper.regulatorHeight
 
-    property int doubleSize : 2 * panel.iconSize
-    property int shadowSize : Math.ceil(panel.iconSize / 20)
+
 
     //big interval to show shadows only after all the crappy adds and removes of tasks
     //have happened
-    property bool firstDrawed: false
-    property int shadowInterval: firstDrawed ? 750 : 150
-    //property int normalIconInterval: 40
+    property bool firstDrawed: true
+
+    // three intervals in order to create the necessarty buffers from the
+    // PlasmaCore.IconItem, one big interval for the first creation of the
+    // plasmoid, a second one for the first creation of a task and a small one
+    // for simple updates.
+    // This is done before especially on initialization stage some visuals
+    // are not ready and empty buffers are created
+    property int firstDrawedInterval: panel.initializationStep ? 1000 : 500
+    property int shadowInterval: firstDrawed ? firstDrawedInterval : 150
+    property int shadowSize : Math.ceil(panel.iconSize / 20)
 
 
     Connections{
@@ -687,7 +694,11 @@ Item{
                             //   property int counter2: 0;
 
                             onTriggered: {
-                                if(index !== -1){
+                                if(index !== -1){                                   
+                                    if(panel.initializationStep){
+                                        panel.initializationStep = false;
+                                    }
+
                                     centralItem.firstDrawed = true;
 
                                     if(panel.enableShadows == true){

@@ -17,13 +17,16 @@ Item {
     Layout.fillHeight: true
     Layout.fillWidth: true
 
-    property bool glow: plasmoid.configuration.showGlow
+
     property bool dropNewLauncher: false
     property bool enableShadows: plasmoid.configuration.showShadows
-    property bool vertical: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
-                             (panel.position === PlasmaCore.Types.RightPositioned)) ? true : false
+    property bool glow: plasmoid.configuration.showGlow
+    property bool initializationStep: true
     property bool isHovered: false
     property bool showBarLine: plasmoid.configuration.showBarLine
+    property bool vertical: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
+                             (panel.position === PlasmaCore.Types.RightPositioned)) ? true : false
+
 
     //property int iconSize: units.iconSizes.huge + plasmoid.configuration.iconSize
     property int iconSize: Math.max(plasmoid.configuration.iconSize, 16)
