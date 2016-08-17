@@ -379,7 +379,7 @@ Item{
         }
 
         function bounceNewWindow(){
-            init();
+            newWindowAnimation.init();
             start();
         }
 
@@ -438,7 +438,7 @@ Item{
         }
 
         function removeTask(){
-            init();
+            removingAnimation.init();
             start();
         }
 

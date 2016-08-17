@@ -17,7 +17,7 @@ Item {
     Layout.fillHeight: true
     Layout.fillWidth: true
 
-
+    property bool debugLocation: false
     property bool dropNewLauncher: false
     property bool enableShadows: plasmoid.configuration.showShadows
     property bool glow: plasmoid.configuration.showGlow
@@ -40,12 +40,11 @@ Item {
 
     property real zoomFactor: ( 1 + (plasmoid.configuration.zoomLevel / 20) )
 
-    Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
-    Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground
-
-
     property QtObject contextMenuComponent: Qt.createComponent("ContextMenu.qml");
     property Item dragSource: null
+
+    Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
+    Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground   
 
     signal requestLayout
     signal windowsHovered(variant winIds, bool hovered)
@@ -556,38 +555,48 @@ Item {
         }*/
     }
 
-    /*PlasmaComponents.Button{
+    property int newLocationDebugUse: PlasmaCore.Types.BottomPositioned
+
+    PlasmaComponents.Button{
         id: orientationBtn
         text:"Orientation"
 
         anchors.centerIn: parent
-        visible: true
+        visible: panel.debugLocation
 
         onClicked:{
-            switch(plasmoid.position){
+            switch(panel.position){
             case PlasmaCore.Types.BottomPositioned:
-                panel.position = PlasmaCore.Types.LeftPositioned;
+                panel.newLocationDebugUse = PlasmaCore.Types.LeftEdge;
                 break;
             case PlasmaCore.Types.LeftPositioned:
-                panel.position = PlasmaCore.Types.TopPositioned;
+                panel.newLocationDebugUse = PlasmaCore.Types.TopEdge;
                 break;
             case PlasmaCore.Types.TopPositioned:
-                panel.position = PlasmaCore.Types.RightPositioned;
+                panel.newLocationDebugUse = PlasmaCore.Types.RightEdge;
                 break;
             case PlasmaCore.Types.RightPositioned:
-                panel.position = PlasmaCore.Types.BottomPositioned;
+                panel.newLocationDebugUse = PlasmaCore.Types.BottomEdge;
                 break;
             }
             updatePosition();
         }
-    }*/
+    }
 
 
     function updatePosition(){
         var newPosition;
         var tempVertical=false;
 
-        switch (plasmoid.location) {
+        var positionUsed;
+
+
+        if (panel.debugLocation)
+            positionUsed = panel.newLocationDebugUse;
+        else
+            positionUsed = plasmoid.location;
+
+        switch (positionUsed) {
         case PlasmaCore.Types.LeftEdge:
             newPosition = PlasmaCore.Types.LeftPositioned;
             tempVertical = true;
@@ -601,6 +610,7 @@ Item {
             break;
         default:
             newPosition = PlasmaCore.Types.BottomPositioned;
+            break
         }
 
         movePanel(barLine,newPosition);
