@@ -353,6 +353,9 @@ Item{
                 clear();
                 //  wrapper.animationEnded();
             }
+            else if(isDemandingAttention){
+                bounceNewWindow();
+            }
         }
 
         function init(){
