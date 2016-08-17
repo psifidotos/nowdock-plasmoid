@@ -304,7 +304,7 @@ Item{
         id:newWindowAnimation
 
         property int speed: 300
-        property bool isDemandingAttention: IsDemandingAttention ? true : false
+        property bool isDemandingAttention: (IsDemandingAttention === true) ? true : false
         property bool entered: mainItemContainer.mouseEntered
 
         SequentialAnimation{

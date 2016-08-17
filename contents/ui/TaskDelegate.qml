@@ -34,11 +34,16 @@ Component {
         property bool hasMinimized: (IsGroupParent === true) ? tasksWindows.hasMinimized : isMinimized
         property bool hasShown: (IsGroupParent === true) ? tasksWindows.hasShown : !isMinimized
         property bool inAnimation: false
+
         property bool isActive: (IsActive === true) ? true : false
+        property bool isDemandingAttention: (IsDemandingAttention === true) ? true : false
         property bool isDragged: false
         property bool isGroupParent: (IsGroupParent === true) ? true : false
+        property bool isLauncher: (IsLauncher === true) ? true : false
         property bool isMinimized: (IsMinimized === true) ? true : false
-        property bool isWindow: model.IsWindow ? true : false
+        property bool isStartup: (IsStartup === true) ? true : false
+        property bool isWindow: (IsWindow === true) ? true : false
+
         property bool mouseEntered: false
         property bool pressed: false
 
@@ -156,8 +161,8 @@ Component {
                 id: wrapper
 
                 opacity: 0
-                width: (IsStartup) ? 0 : showDelegateWidth
-                height: (IsStartup) ? 0 : showDelegateheight
+                width: (mainItemContainer.isStartup) ? 0 : showDelegateWidth
+                height: (mainItemContainer.isStartup) ? 0 : showDelegateheight
 
                 //size neede
                 property int statesLineSize: panel.statesLineSize
@@ -554,7 +559,7 @@ Component {
 
             if(pressed){
                 if (mouse.button == Qt.MidButton){
-                    if( !model.IsLauncher){
+                    if( !mainItemContainer.isLauncher){
                         if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.NewInstance) {
                             tasksModel.requestNewInstance(modelIndex());
                         } else if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.Close) {
@@ -570,7 +575,7 @@ Component {
                     }
                 }
                 else if (mouse.button == Qt.LeftButton){
-                    if( model.IsLauncher ){
+                    if( mainItemContainer.isLauncher ){
                         mouseEntered = false;
                         inAnimation = true;
                         wrapper.runLauncherAnimation();
@@ -595,7 +600,7 @@ Component {
             }
 
             //have to wait first for the launcher animation to end
-            if(!IsLauncher)
+            if(!mainItemContainer.isLauncher)
                 pressed = false;
 
             checkListHovered.startDuration(2000);
@@ -685,9 +690,9 @@ Component {
             }
 
             onStopped: {
-                if(IsWindow || IsStartup){
+                if(mainItemContainer.isWindow || mainItemContainer.isStartup){
                     taskInitComponent.createObject(wrapper);
-                    if (IsDemandingAttention){
+                    if (mainItemContainer.isDemandingAttention){
                         mainItemContainer.groupWindowAdded();
                     }
                 }
@@ -699,7 +704,7 @@ Component {
             }
 
             function showWindow(){
-                if(IsLauncher || IsStartup || icList.delayingRemoval){
+                if(mainItemContainer.isLauncher || mainItemContainer.isStartup || icList.delayingRemoval){
                     delayShowWindow.createObject(mainItemContainer);
                 }
                 else{
@@ -751,7 +756,7 @@ Component {
         //I will blacklist google-chrome as I have not found any other case for this bug
         //to appear, but even this way there are cases that still appears...
         property int mainDelay: (AppId == "google-chrome") ? 0 : 2*showWindowAnimation.speed
-        property int windowDelay: IsStartup ? 5000 : mainDelay
+        property int windowDelay: mainItemContainer.isStartup ? 5000 : mainDelay
 
         Component {
             id: delayShowWindow
