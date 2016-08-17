@@ -40,8 +40,8 @@ Item{
 
                 showAttention: model.IsDemandingAttention ? true : false
 
-                property int stateWidth: IsGroupParent ? (wrapper.regulatorWidth - secondPoint.width) : wrapper.regulatorWidth - spacer.width
-                property int stateHeight: IsGroupParent ? wrapper.regulatorHeight - secondPoint.height : wrapper.regulatorHeight - spacer.height
+                property int stateWidth: mainItemContainer.isGroupParent ? (wrapper.regulatorWidth - secondPoint.width) : wrapper.regulatorWidth - spacer.width
+                property int stateHeight: mainItemContainer.isGroupParent ? wrapper.regulatorHeight - secondPoint.height : wrapper.regulatorHeight - spacer.height
 
                /*Behavior on width{
                     NumberAnimation{duration: (wrapper.scale != 1) ? 20:160; easing.type: Easing.InQuad}
@@ -53,8 +53,8 @@ Item{
 
             Item{
                 id:spacer
-                width: IsGroupParent ? 0.5*glowFrame.size : 0
-                height: IsGroupParent ? 0.5*glowFrame.size : 0
+                width: mainItemContainer.isGroupParent ? 0.5*glowFrame.size : 0
+                height: mainItemContainer.isGroupParent ? 0.5*glowFrame.size : 0
             }
 
             GlowPoint{
@@ -62,8 +62,8 @@ Item{
                 width: visible ? glowFrame.size : 0
                 height: width
 
-                visible:  ( IsGroupParent && plasmoid.configuration.dotsOnActive )
-                         || (IsGroupParent && !mainItemContainer.hasActive)? true: false
+                visible:  ( mainItemContainer.isGroupParent && plasmoid.configuration.dotsOnActive )
+                         || (mainItemContainer.isGroupParent && !mainItemContainer.hasActive)? true: false
 
                 //when there is no active window
                 property color state1Color: mainItemContainer.hasShown ? glowFrame.isShownColor : glowFrame.minimizedColor

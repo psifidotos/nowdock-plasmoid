@@ -27,29 +27,28 @@ Component {
         acceptedButtons: Qt.LeftButton | Qt.MidButton | Qt.RightButton
         hoverEnabled: (inAnimation !== true)&& (!IsStartup)
 
-        property bool delayingRemove: ListView.delayRemove
         property bool buffersAreReady: false
-        property bool pressed: false
-        property bool mouseEntered: false
-        property bool isDragged: false
-        property bool inAnimation: false
-        property bool isWindow: model.IsWindow ? true : false
-        property bool isActive: IsActive ? true : false
-        property bool isMinimized: IsMinimized ? true : false
+        property bool delayingRemove: ListView.delayRemove
         //states that exist in windows in a Group of windows
-        property bool hasMinimized: IsGroupParent ? tasksWindows.hasMinimized : isMinimized
-        property bool hasShown: IsGroupParent ? tasksWindows.hasShown : !isMinimized
-        //property bool hasActiveFirstCheck: (tasksWindows.hasActive != isActive)
-        //property bool hasActive: IsGroupParent ? tasksWindows.hasActive : isActive
         property bool hasActive: isActive
+        property bool hasMinimized: (IsGroupParent === true) ? tasksWindows.hasMinimized : isMinimized
+        property bool hasShown: (IsGroupParent === true) ? tasksWindows.hasShown : !isMinimized
+        property bool inAnimation: false
+        property bool isActive: (IsActive === true) ? true : false
+        property bool isDragged: false
+        property bool isGroupParent: (IsGroupParent === true) ? true : false
+        property bool isMinimized: (IsMinimized === true) ? true : false
+        property bool isWindow: model.IsWindow ? true : false
+        property bool mouseEntered: false
+        property bool pressed: false
 
         property int animationTime: 70
-        property int resistanceDelay: 300
-        property int itemIndex: index
         property int hoveredIndex: icList.hoveredIndex
+        property int itemIndex: index
+        property int lastButtonClicked: -1;
         property int pressX: -1
         property int pressY: -1
-        property int lastButtonClicked: -1;
+        property int resistanceDelay: 300
 
         property real animationStep: panel.iconSize / 8
 
