@@ -12,7 +12,7 @@ Component {
     MouseArea{
         id: mainItemContainer
 
-        visible: (IsStartup) ? false : true
+        visible: (isStartup) ? false : true
 
         anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
         anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined

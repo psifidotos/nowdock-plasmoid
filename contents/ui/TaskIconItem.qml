@@ -157,7 +157,7 @@ Item{
     Loader{
         id:defaultWithShadow
         sourceComponent: component
-        active: (IsStartup) ? false : true
+        active: mainItemContainer.isStartup ? false : true
     }
 
     ///////Activate animation/////
