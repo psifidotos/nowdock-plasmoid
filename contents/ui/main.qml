@@ -277,12 +277,13 @@ Item {
         width: ( icList.orientation === Qt.Horizontal ) ? icList.width + spacing : smallSize
         height: ( icList.orientation === Qt.Vertical ) ? icList.height + spacing : smallSize
 
-        //debugging code
-        //      width: ( icList.orientation === Qt.Horizontal ) ? icList.width+8 : 18
-        //    height: ( icList.orientation === Qt.Vertical ) ? icList.height+8 : 18
-        //   onWidthChanged: console.log("!!!!! New Width:"+width);
+
+        Behavior on opacity{
+            NumberAnimation { duration: 150 }
+        }
 
 
+        /// plasmoid's default panel
         BorderImage{
             anchors.fill:parent
             source: "../images/panel-west.png"
@@ -301,17 +302,10 @@ Item {
         }
 
 
-        Behavior on opacity{
-            NumberAnimation { duration: 150 }
-        }
-
-
-
-
+        /// item which is used as anchors for the plasma's theme
         Item{
             id:belower
-        //    width: (marginsSvgItem.margins.top + marginsSvgItem.margins.bottom)/2
-          //  height: (marginsSvgItem)
+
             width: (panel.position === PlasmaCore.Types.LeftPositioned) ? shadowsSvgItem.margins.left : shadowsSvgItem.margins.right
             height: (panel.position === PlasmaCore.Types.BottomPositioned)? shadowsSvgItem.margins.bottom : shadowsSvgItem.margins.top
 
@@ -322,6 +316,7 @@ Item {
         }
 
 
+        /// the current theme's panel
         PlasmaCore.FrameSvgItem{
             id: shadowsSvgItem
             visible: (opacity == 0) ? false : true
@@ -344,7 +339,7 @@ Item {
                 anchors.margins: belower.width-1
                 anchors.fill:parent
                 imagePath: plasmoid.configuration.transparentPanel ? "translucent/widgets/panel-background" :
-                                                                     "opaque/widgets/panel-background"
+                                                                     "widgets/panel-background"
             }
 
             Behavior on opacity{
