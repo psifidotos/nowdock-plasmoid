@@ -19,10 +19,11 @@ Component {
         anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
         anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
 
-        width: (icList.orientation === Qt.Horizontal) ? hiddenSpacerLeft.width+wrapper.width+hiddenSpacerRight.width:
-                                                        wrapper.width
-        height: (icList.orientation === Qt.Horizontal) ? wrapper.height :
-                                                         hiddenSpacerLeft.height + wrapper.height + hiddenSpacerRight.height
+        width: panel.vertical ? wrapper.width :
+                                hiddenSpacerLeft.width+wrapper.width+hiddenSpacerRight.width
+
+        height: panel.vertical ? hiddenSpacerLeft.height + wrapper.height + hiddenSpacerRight.height :
+                                 wrapper.height
 
         acceptedButtons: Qt.LeftButton | Qt.MidButton | Qt.RightButton
         hoverEnabled: (inAnimation !== true)&& (!IsStartup)
@@ -133,14 +134,13 @@ Component {
             // IMPORTANT: hidden spacers must be tested on vertical !!!
             Item{
                 id: hiddenSpacerLeft
+                //we add one missing pixel from calculations
+                width: panel.vertical ? wrapper.width : nHiddenSize
+                height: panel.vertical ? nHiddenSize : wrapper.height
+
                 visible: (index === 0)
 
                 property real nHiddenSize: (nScale > 0) ? (panel.realSize * nScale) : 0
-
-                //we add one missing pixel from calculations
-                width: (icList.orientation === Qt.Horizontal) ? nHiddenSize : wrapper.width
-                height: (icList.orientation === Qt.Vertical) ? nHiddenSize : wrapper.height
-
                 property real nScale: 0
 
                 Behavior on nScale {
@@ -164,13 +164,13 @@ Component {
                 width: (mainItemContainer.isStartup) ? 0 : showDelegateWidth
                 height: (mainItemContainer.isStartup) ? 0 : showDelegateheight
 
-                //size neede
+                //size needed fom the states below icons
                 property int statesLineSize: panel.statesLineSize
                 property int addedSpace: statesLineSize + 2 //7
-                property real showDelegateWidth: (icList.orientation === Qt.Vertical ) ? basicScalingWidth+addedSpace :
-                                                                                         basicScalingWidth
-                property real showDelegateheight: (icList.orientation === Qt.Vertical ) ? basicScalingHeight :
-                                                                                          basicScalingHeight + addedSpace
+                property real showDelegateWidth: panel.vertical ? basicScalingWidth+addedSpace :
+                                                                  basicScalingWidth
+                property real showDelegateheight: panel.vertical ? basicScalingHeight :
+                                                                   basicScalingHeight + addedSpace
 
                 //scales which are used mainly for activating InLauncher
                 ////Scalers///////
@@ -225,7 +225,7 @@ Component {
                             layoutDirection: (panel.position === PlasmaCore.Types.LeftPositioned) ? Qt.RightToLeft : Qt.LeftToRight
 
                             TaskIconItem{}
-                         //   TaskActiveItem{}
+                            //   TaskActiveItem{}
                             TaskGroupItem{}
 
                         }//Flow
@@ -248,7 +248,7 @@ Component {
                             layoutDirection: (panel.position === PlasmaCore.Types.LeftPositioned) ? Qt.RightToLeft : Qt.LeftToRight
 
                             TaskGroupItem{}
-                          //  TaskActiveItem{}
+                            //  TaskActiveItem{}
                             TaskIconItem{}
                         } //Flow Element
                     }
@@ -337,14 +337,13 @@ Component {
             // a hidden spacer on the right for the last item to add stability
             Item{
                 id: hiddenSpacerRight
+                //we add one missing pixel from calculations
+                width: panel.vertical ? wrapper.width : nHiddenSize
+                height: panel.vertical ? nHiddenSize : wrapper.height
+
                 visible: (index === icList.count - 1)
 
                 property real nHiddenSize: (nScale > 0) ? (panel.realSize * nScale) : 0
-
-                //we add one missing pixel from calculations
-                width: (icList.orientation === Qt.Horizontal) ? nHiddenSize : wrapper.width
-                height: (icList.orientation === Qt.Vertical) ? nHiddenSize : wrapper.height
-
                 property real nScale: 0
 
                 Behavior on nScale {

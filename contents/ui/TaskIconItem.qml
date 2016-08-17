@@ -7,7 +7,6 @@ import org.kde.plasma.components 2.0 as PlasmaComponents
 
 import org.kde.kquickcontrolsaddons 2.0 as KQuickControlAddons
 
-
 //I am using  KQuickControlAddons.QIconItem even though onExit it triggers the following error
 //QObject::~QObject: Timers cannot be stopped from another thread
 //but it increases performance almost to double during animation
@@ -17,8 +16,6 @@ Item{
 
     width: wrapper.regulatorWidth
     height: wrapper.regulatorHeight
-
-
 
     //big interval to show shadows only after all the crappy adds and removes of tasks
     //have happened
@@ -63,24 +60,24 @@ Item{
 
     Image {
         id: iconImageBuffer
+        anchors.centerIn: parent
 
         width: newTempSize + 2*centralItem.shadowSize
         height: width
-        anchors.centerIn: parent
 
-        property real basicScalingWidth : (wrapper.inTempScaling == true) ? (panel.iconSize * wrapper.scaleWidth) :
-                                                                            panel.iconSize * wrapper.scale
-        property real basicScalingHeight : (wrapper.inTempScaling == true) ? (panel.iconSize * wrapper.scaleHeight) :
-                                                                             panel.iconSize * wrapper.scale
+        source: (((iconHoveredBuffer.opacity>0)||(wrapper.scale>internalLimit))&&(panel.iconSize >= 48)) ?
+                    zoomedImage.source : normalImage.source
+
+        property real basicScalingWidth : wrapper.inTempScaling ? (panel.iconSize * wrapper.scaleWidth) :
+                                                                  panel.iconSize * wrapper.scale
+        property real basicScalingHeight : wrapper.inTempScaling ? (panel.iconSize * wrapper.scaleHeight) :
+                                                                   panel.iconSize * wrapper.scale
 
         property real newTempSize: (wrapper.opacity == 1) ?  Math.min(basicScalingWidth, basicScalingHeight) :
                                                             Math.max(basicScalingWidth, basicScalingHeight)
 
+        //over which zoom value the high dpi buffer is used instead of the normal size
         property real internalLimit: 1 + ((panel.zoomFactor-1)/2)
-        source: (((iconHoveredBuffer.opacity>0)||(wrapper.scale>internalLimit))&&(panel.iconSize >= 48)) ?
-                    zoomedImage.source : normalImage.source
-       // source: normalImage.source
-
     }
 
     Image{
@@ -461,9 +458,9 @@ Item{
     SequentialAnimation{
         id: releaseDraggedAnimation
 
-        property int speed: 300
-
         property bool inHalf: false
+
+        property int speed: 300
 
         SequentialAnimation{
 
@@ -697,7 +694,7 @@ Item{
                             //   property int counter2: 0;
 
                             onTriggered: {
-                                if(index !== -1){                                   
+                                if(index !== -1){
                                     if(panel.initializationStep){
                                         panel.initializationStep = false;
                                     }
