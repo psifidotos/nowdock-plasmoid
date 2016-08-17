@@ -18,6 +18,7 @@ Item {
     Layout.fillWidth: true
 
     property bool debugLocation: false
+
     property bool dropNewLauncher: false
     property bool enableShadows: plasmoid.configuration.showShadows
     property bool glow: plasmoid.configuration.showGlow
@@ -27,10 +28,9 @@ Item {
     property bool vertical: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
                              (panel.position === PlasmaCore.Types.RightPositioned)) ? true : false
 
-
-    //property int iconSize: units.iconSizes.huge + plasmoid.configuration.iconSize
     property int iconSize: Math.max(plasmoid.configuration.iconSize, 16)
     property int iconMargin: 5
+    property int newLocationDebugUse: PlasmaCore.Types.BottomPositioned
     property int statesLineSize: Math.ceil( panel.iconSize/13 )
     property int realSize: iconSize + iconMargin
     property int clearWidth
@@ -233,7 +233,10 @@ Item {
 
         property int neededSpace: (zoomFactor+0.1)*iconSize + statesLineSize + 2
 
-        anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
+        x: (panel.position === PlasmaCore.Types.LeftPositioned) ? neededSpace : parent.width - neededSpace
+        y: (panel.position === PlasmaCore.Types.TopPositioned) ? neededSpace : parent.height - neededSpace
+
+       /* anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
         anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
         anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
         anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
@@ -242,7 +245,7 @@ Item {
         anchors.topMargin: (panel.position === PlasmaCore.Types.TopPositioned) ? neededSpace : undefined
         anchors.leftMargin: (panel.position === PlasmaCore.Types.LeftPositioned) ? neededSpace : undefined
         anchors.rightMargin: (panel.position === PlasmaCore.Types.RightPositioned) ? neededSpace : undefined
-
+*/
         anchors.horizontalCenter: ((panel.position === PlasmaCore.Types.BottomPositioned) ||
                                    (panel.position === PlasmaCore.Types.TopPositioned)) ? parent.horizontalCenter : undefined
         anchors.verticalCenter: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
@@ -554,8 +557,6 @@ Item {
             iconGeometryTimer.restart();
         }*/
     }
-
-    property int newLocationDebugUse: PlasmaCore.Types.BottomPositioned
 
     PlasmaComponents.Button{
         id: orientationBtn
