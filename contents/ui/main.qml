@@ -228,32 +228,17 @@ Item {
 
     ///Red Liner!!! show the upper needed limit for annimations
     Rectangle{
+        anchors.horizontalCenter: !panel.vertical ? parent.horizontalCenter : undefined
+        anchors.verticalCenter: panel.vertical ? parent.verticalCenter : undefined
+
         width: panel.vertical ? 1 : 2 * panel.iconSize
         height: panel.vertical ? 2 * panel.iconSize : 1
-
-        property int neededSpace: (zoomFactor+0.1)*iconSize + statesLineSize + 2
-
+        color: "red"
         x: (panel.position === PlasmaCore.Types.LeftPositioned) ? neededSpace : parent.width - neededSpace
         y: (panel.position === PlasmaCore.Types.TopPositioned) ? neededSpace : parent.height - neededSpace
-
-       /* anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
-        anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
-        anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
-        anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
-
-        anchors.bottomMargin: (panel.position === PlasmaCore.Types.BottomPositioned) ? neededSpace : undefined
-        anchors.topMargin: (panel.position === PlasmaCore.Types.TopPositioned) ? neededSpace : undefined
-        anchors.leftMargin: (panel.position === PlasmaCore.Types.LeftPositioned) ? neededSpace : undefined
-        anchors.rightMargin: (panel.position === PlasmaCore.Types.RightPositioned) ? neededSpace : undefined
-*/
-        anchors.horizontalCenter: ((panel.position === PlasmaCore.Types.BottomPositioned) ||
-                                   (panel.position === PlasmaCore.Types.TopPositioned)) ? parent.horizontalCenter : undefined
-        anchors.verticalCenter: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
-                                 (panel.position === PlasmaCore.Types.RightPositioned)) ? parent.verticalCenter : undefined
-
-        color: "red"
-
         visible: plasmoid.configuration.zoomHelper
+
+        property int neededSpace: (zoomFactor+0.1)*iconSize + statesLineSize + 2
     }
 
     Item{
@@ -266,24 +251,18 @@ Item {
         anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
         anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
 
-        anchors.horizontalCenter: ((panel.position === PlasmaCore.Types.BottomPositioned) ||
-                                   (panel.position === PlasmaCore.Types.TopPositioned)) ? parent.horizontalCenter : undefined
-        anchors.verticalCenter: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
-                                 (panel.position === PlasmaCore.Types.RightPositioned)) ? parent.verticalCenter : undefined
-
-        //   property int currentSizeW: (icList.hoveredIndex >= 0) ? panel.implicitWidth : panel.clearWidth + spacing
-        //   property int currentSizeH: (icList.hoveredIndex >= 0) ? panel.implicitHeight : panel.clearHeight + spacing
-        property int spacing: panel.iconSize / 2
-        property int smallSize: Math.max(3.7*panel.statesLineSize, 16)
+        anchors.horizontalCenter: !parent.vertical ? parent.horizontalCenter : undefined
+        anchors.verticalCenter: parent.vertical ? parent.verticalCenter : undefined
 
         width: ( icList.orientation === Qt.Horizontal ) ? icList.width + spacing : smallSize
         height: ( icList.orientation === Qt.Vertical ) ? icList.height + spacing : smallSize
 
+        property int spacing: panel.iconSize / 2
+        property int smallSize: Math.max(3.7*panel.statesLineSize, 16)
 
         Behavior on opacity{
             NumberAnimation { duration: 150 }
         }
-
 
         /// plasmoid's default panel
         BorderImage{
@@ -321,21 +300,33 @@ Item {
         /// the current theme's panel
         PlasmaCore.FrameSvgItem{
             id: shadowsSvgItem
-            visible: (opacity == 0) ? false : true
-            opacity: (plasmoid.configuration.showBarLine && plasmoid.configuration.useThemePanel) ? 1 : 0
-
-            property int panelSize: plasmoid.configuration.panelSize
-            width: panel.vertical ? panelSize + margins.left + margins.right: parent.width
-            height: panel.vertical ? parent.height : panelSize + margins.top + margins.bottom
 
             anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? belower.bottom : undefined
             anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? belower.top : undefined
             anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? belower.left : undefined
             anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? belower.right : undefined
 
+            anchors.horizontalCenter: !panel.vertical ? parent.horizontalCenter : undefined
+            anchors.verticalCenter: panel.vertical ? parent.verticalCenter : undefined
+
+            width: panel.vertical ? panelSize + margins.left + margins.right: parent.width
+            height: panel.vertical ? parent.height : panelSize + margins.top + margins.bottom
 
             imagePath: "translucent/widgets/panel-background"
             prefix:"shadow"
+
+            opacity: (plasmoid.configuration.showBarLine && plasmoid.configuration.useThemePanel) ? 1 : 0
+            visible: (opacity == 0) ? false : true
+
+            property int panelSize: ((panel.position === PlasmaCore.Types.BottomPositioned) ||
+                                     (panel.position === PlasmaCore.Types.TopPositioned)) ?
+                                        plasmoid.configuration.panelSize + belower.height:
+                                        plasmoid.configuration.panelSize + belower.width
+
+            Behavior on opacity{
+                NumberAnimation { duration: 200 }
+            }
+
 
             PlasmaCore.FrameSvgItem{
                 anchors.margins: belower.width-1
@@ -343,41 +334,25 @@ Item {
                 imagePath: plasmoid.configuration.transparentPanel ? "translucent/widgets/panel-background" :
                                                                      "widgets/panel-background"
             }
-
-            Behavior on opacity{
-                NumberAnimation { duration: 200 }
-            }
         }
 
 
-        /*  Rectangle{
-            width:icList.width
-            anchors.bottom: parent.bottom
-            anchors.horizontalCenter: parent.horizontalCenter
-            height: 240
-            border.width: 1
-            border.color: "red"
-            color: "white"
-        } */
-
         MouseHandler {
             id: mouseHandler
-            property int maxSize: panel.zoomFactor*panel.realSize + 16
-            width: panel.vertical ? maxSize : icList.width
-            height: panel.vertical ? icList.height : maxSize
-
             anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? icList.bottom : undefined
             anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? icList.top : undefined
             anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? icList.left : undefined
             anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? icList.right : undefined
 
-            anchors.horizontalCenter: ((panel.position === PlasmaCore.Types.BottomPositioned) ||
-                                       (panel.position === PlasmaCore.Types.TopPositioned)) ? icList.horizontalCenter : undefined
-            anchors.verticalCenter: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
-                                     (panel.position === PlasmaCore.Types.RightPositioned)) ? icList.verticalCenter : undefined
+            anchors.horizontalCenter: !panel.vertical ? icList.horizontalCenter : undefined
+            anchors.verticalCenter: panel.vertical ? icList.verticalCenter : undefined
+
+            width: panel.vertical ? maxSize : icList.width
+            height: panel.vertical ? icList.height : maxSize
 
             target: icList.contentItem
 
+            property int maxSize: panel.zoomFactor*panel.realSize + 16
         }
 
 
@@ -392,7 +367,6 @@ Item {
             property int hoveredIndex : -1
             property int previousCount : 0
 
-
             property bool delayingRemoval: false
 
             //  property int count: children ? children.length : 0
@@ -401,11 +375,8 @@ Item {
             anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
             anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
 
-            anchors.horizontalCenter: ((panel.position === PlasmaCore.Types.BottomPositioned) ||
-                                       (panel.position === PlasmaCore.Types.TopPositioned)) ? parent.horizontalCenter : undefined
-            anchors.verticalCenter: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
-                                     (panel.position === PlasmaCore.Types.RightPositioned)) ? parent.verticalCenter : undefined
-
+            anchors.horizontalCenter: !panel.vertical ? parent.horizontalCenter : undefined
+            anchors.verticalCenter: panel.vertical ? parent.verticalCenter : undefined
 
             width: contentWidth + 2
             height: contentHeight + 2
