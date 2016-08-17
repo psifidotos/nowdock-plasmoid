@@ -224,13 +224,12 @@ Item {
     }
 
 
-
     ///Red Liner!!! show the upper needed limit for annimations
     Rectangle{
         width: panel.vertical ? 1 : 2 * panel.iconSize
         height: panel.vertical ? 2 * panel.iconSize : 1
 
-        property int neededSpace: ( (zoomFactor+0.1)*iconSize)+barLine.smallSize
+        property int neededSpace: (zoomFactor+0.1)*iconSize + statesLineSize + 2
 
         anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
         anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
@@ -281,12 +280,12 @@ Item {
         //   onWidthChanged: console.log("!!!!! New Width:"+width);
 
 
-      /*  BorderImage{
+        BorderImage{
             anchors.fill:parent
             source: "../images/panel-west.png"
             border { left:8; right:8; top:8; bottom:8 }
 
-            opacity: plasmoid.configuration.showBarLine ? 1 : 0
+            opacity: (plasmoid.configuration.showBarLine && !plasmoid.configuration.useThemePanel) ? 1 : 0
 
             visible: (opacity == 0) ? false : true
 
@@ -296,38 +295,13 @@ Item {
             Behavior on opacity{
                 NumberAnimation { duration: 200 }
             }
-        }*/
-
-        /*  Rectangle{
-            anchors.horizontalCenter:  parent.horizontalCenter
-            anchors.verticalCenter: parent.bottom
-
-            width: ( icList.orientation === Qt.Horizontal ) ? panel.implicitWidth+4 : 60
-            height: ( icList.orientation === Qt.Vertical ) ? panel.implicitHeight+4 : 60
-            opacity: tasksModel.count > 0 ? 1 : 0
-
-            radius: 6
-
-           // color: "transparent"
-            gradient: Gradient {
-                GradientStop { position: 0.0; color: "#00000000" }
-                GradientStop { position: 0.5; color: "#ff000000" }
-                GradientStop { position: 1.0; color: "#ff000000" }
-            }
-        }*/
+        }
 
 
         Behavior on opacity{
             NumberAnimation { duration: 150 }
         }
 
-        /*     Behavior on width{
-            NumberAnimation { duration: 40 }
-        }
-
-        Behavior on height{
-            NumberAnimation { duration: 40 }
-        }*/
 
         Item{
             id:belower
@@ -343,8 +317,12 @@ Item {
 
 
         PlasmaCore.FrameSvgItem{
-            width: panel.vertical ? parent.width+belower.width : parent.width
-            height: panel.vertical ? parent.height : parent.height + belower.width
+            visible: (opacity == 0) ? false : true
+            opacity: (plasmoid.configuration.showBarLine && plasmoid.configuration.useThemePanel) ? 1 : 0
+
+            property int panelSize: plasmoid.configuration.panelSize
+            width: panel.vertical ? panelSize+belower.width : parent.width
+            height: panel.vertical ? parent.height : panelSize + belower.width
 
             anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? belower.bottom : undefined
             anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? belower.top : undefined
@@ -360,16 +338,12 @@ Item {
                 anchors.fill:parent
                 imagePath: "opaque/widgets/panel-background"
             }
+
+            Behavior on opacity{
+                NumberAnimation { duration: 200 }
+            }
         }
 
-        /*  Rectangle{
-            anchors.centerIn: parent
-            width: icList.width
-            height: icList.height+50
-            border.width: 1
-            border.color: "red"
-            color: "lightblue"
-        }*/
 
         /*  Rectangle{
             width:icList.width

@@ -23,8 +23,13 @@ import org.kde.plasma.configuration 2.0
 
 ConfigModel {
     ConfigCategory {
-         name: i18n("General")
+         name: i18n("Appearance")
+         icon: "preferences-color"
+         source: "ConfigAppearance.qml"
+    }
+    ConfigCategory {
+         name: i18n("Interaction")
          icon: "preferences-system-windows"
-         source: "ConfigGeneral.qml"
+         source: "ConfigInteraction.qml"
     }
 }
