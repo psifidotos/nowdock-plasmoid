@@ -223,6 +223,8 @@ Item {
         }
     }
 
+
+
     ///Red Liner!!! show the upper needed limit for annimations
     Rectangle{
         width: panel.vertical ? 1 : 2 * panel.iconSize
@@ -253,7 +255,7 @@ Item {
     Item{
         id:barLine
 
-        opacity: tasksModel.count > 0 ? 1 : 0       
+        opacity: tasksModel.count > 0 ? 1 : 0
 
         anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
         anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
@@ -268,7 +270,7 @@ Item {
         //   property int currentSizeW: (icList.hoveredIndex >= 0) ? panel.implicitWidth : panel.clearWidth + spacing
         //   property int currentSizeH: (icList.hoveredIndex >= 0) ? panel.implicitHeight : panel.clearHeight + spacing
         property int spacing: panel.iconSize / 2
-        property int smallSize: Math.max(3.4*panel.statesLineSize, 16)
+        property int smallSize: Math.max(3.7*panel.statesLineSize, 16)
 
         width: ( icList.orientation === Qt.Horizontal ) ? icList.width + spacing : smallSize
         height: ( icList.orientation === Qt.Vertical ) ? icList.height + spacing : smallSize
@@ -279,7 +281,7 @@ Item {
         //   onWidthChanged: console.log("!!!!! New Width:"+width);
 
 
-        BorderImage{
+      /*  BorderImage{
             anchors.fill:parent
             source: "../images/panel-west.png"
             border { left:8; right:8; top:8; bottom:8 }
@@ -294,7 +296,7 @@ Item {
             Behavior on opacity{
                 NumberAnimation { duration: 200 }
             }
-        }
+        }*/
 
         /*  Rectangle{
             anchors.horizontalCenter:  parent.horizontalCenter
@@ -327,11 +329,39 @@ Item {
             NumberAnimation { duration: 40 }
         }*/
 
-        /*        PlasmaCore.FrameSvgItem{
-            anchors.fill:parent
-            imagePath: "widgets/panel-background"
-            prefix:"east"
-        }*/
+        Item{
+            id:belower
+            width: 6
+            height: 6
+
+            anchors.top: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
+            anchors.bottom: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
+            anchors.right: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
+            anchors.left: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
+
+        }
+
+
+        PlasmaCore.FrameSvgItem{
+            width: panel.vertical ? parent.width+belower.width : parent.width
+            height: panel.vertical ? parent.height : parent.height + belower.width
+
+            anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? belower.bottom : undefined
+            anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? belower.top : undefined
+            anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? belower.left : undefined
+            anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? belower.right : undefined
+
+
+            imagePath: "translucent/widgets/panel-background"
+            prefix:"shadow"
+
+            PlasmaCore.FrameSvgItem{
+                anchors.margins: belower.width-1
+                anchors.fill:parent
+                imagePath: "opaque/widgets/panel-background"
+            }
+        }
+
         /*  Rectangle{
             anchors.centerIn: parent
             width: icList.width
