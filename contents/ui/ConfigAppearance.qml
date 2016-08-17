@@ -40,6 +40,7 @@ Item {
     property alias cfg_showBarLine: showBarLine.checked
     property alias cfg_useThemePanel: useThemePanel.checked
     property alias cfg_panelSize: panelSize.value
+    property alias cfg_transparentPanel: transparentPanel.checked
 
     ColumnLayout {
         spacing: 15
@@ -187,6 +188,13 @@ Item {
                         Layout.columnSpan: 3
                         text: i18n("Use plasma theme panel")
                         enabled: showBarLine.checked
+                    }
+
+                    CheckBox {
+                        id: transparentPanel
+                        Layout.columnSpan: 3
+                        text: i18n("Use transparency in the panel")
+                        enabled: parent.panelConfigEnabled
                     }
 
 

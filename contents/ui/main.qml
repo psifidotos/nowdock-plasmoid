@@ -216,7 +216,7 @@ Item {
             interval = 60;
         }
 
-       function startDuration( duration){
+        function startDuration( duration){
             interval = duration;
 
             start();
@@ -303,26 +303,30 @@ Item {
         }
 
 
+
+
         Item{
             id:belower
-            width: 6
-            height: 6
+        //    width: (marginsSvgItem.margins.top + marginsSvgItem.margins.bottom)/2
+          //  height: (marginsSvgItem)
+            width: (panel.position === PlasmaCore.Types.LeftPositioned) ? shadowsSvgItem.margins.left : shadowsSvgItem.margins.right
+            height: (panel.position === PlasmaCore.Types.BottomPositioned)? shadowsSvgItem.margins.bottom : shadowsSvgItem.margins.top
 
             anchors.top: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
             anchors.bottom: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
             anchors.right: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
             anchors.left: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
-
         }
 
 
         PlasmaCore.FrameSvgItem{
+            id: shadowsSvgItem
             visible: (opacity == 0) ? false : true
             opacity: (plasmoid.configuration.showBarLine && plasmoid.configuration.useThemePanel) ? 1 : 0
 
             property int panelSize: plasmoid.configuration.panelSize
-            width: panel.vertical ? panelSize+belower.width : parent.width
-            height: panel.vertical ? parent.height : panelSize + belower.width
+            width: panel.vertical ? panelSize + margins.left + margins.right: parent.width
+            height: panel.vertical ? parent.height : panelSize + margins.top + margins.bottom
 
             anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? belower.bottom : undefined
             anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? belower.top : undefined
@@ -336,7 +340,8 @@ Item {
             PlasmaCore.FrameSvgItem{
                 anchors.margins: belower.width-1
                 anchors.fill:parent
-                imagePath: "opaque/widgets/panel-background"
+                imagePath: plasmoid.configuration.transparentPanel ? "translucent/widgets/panel-background" :
+                                                                     "opaque/widgets/panel-background"
             }
 
             Behavior on opacity{
@@ -428,7 +433,7 @@ Item {
 
             ///this transition can not be used with dragging !!!! I breaks
             ///the lists indexes !!!!!
-          /*  move:  Transition {
+            /*  move:  Transition {
                 NumberAnimation { properties: "x,y"; duration: 100; easing.type: Easing.Linear }
             } */
         }
@@ -584,7 +589,7 @@ Item {
         var newPosition;
         var tempVertical=false;
 
-         switch (plasmoid.location) {
+        switch (plasmoid.location) {
         case PlasmaCore.Types.LeftEdge:
             newPosition = PlasmaCore.Types.LeftPositioned;
             tempVertical = true;
