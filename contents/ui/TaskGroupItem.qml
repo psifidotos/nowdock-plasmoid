@@ -16,14 +16,16 @@ Item{
     //SystemPalette { id: myPalette; colorGroup: SystemPalette.Active }
 
     property color isActiveColor: theme.buttonFocusColor
-    property color minimizedColor: plasmoid.configuration.threeColorsWindows ? "#e8e8e8" : isActiveColor // myPalette.mid
     property color isShownColor: plasmoid.configuration.threeColorsWindows ? "#717171" : isActiveColor // myPalette.shadow
+
+    property color minimizedColor: plasmoid.configuration.threeColorsWindows ? "#e8e8e8" : isActiveColor // myPalette.mid
     property color notActiveColor: mainItemContainer.hasMinimized ? minimizedColor : isShownColor
 
     Item{
+        anchors.centerIn: parent
+
         width: flowItem.width
         height: flowItem.height
-        anchors.centerIn: parent
 
         Flow{
             id: flowItem
@@ -38,6 +40,7 @@ Item{
                 basicColor: (mainItemContainer.hasActive) ?
                                  glowFrame.isActiveColor : glowFrame.notActiveColor
 
+                roundCorners: true
                 showAttention: model.IsDemandingAttention ? true : false
 
                 property int stateWidth: mainItemContainer.isGroupParent ? (wrapper.regulatorWidth - secondPoint.width) : wrapper.regulatorWidth - spacer.width
@@ -62,6 +65,8 @@ Item{
                 width: visible ? glowFrame.size : 0
                 height: width
 
+                basicColor: ((mainItemContainer.hasActive)&&(!(mainItemContainer.hasMinimized))) ? state2Color : state1Color
+                roundCorners: true
                 visible:  ( mainItemContainer.isGroupParent && plasmoid.configuration.dotsOnActive )
                          || (mainItemContainer.isGroupParent && !mainItemContainer.hasActive)? true: false
 
@@ -69,8 +74,6 @@ Item{
                 property color state1Color: mainItemContainer.hasShown ? glowFrame.isShownColor : glowFrame.minimizedColor
                 //when there is active window
                 property color state2Color: mainItemContainer.hasMinimized ? glowFrame.minimizedColor : glowFrame.isShownColor
-                basicColor: ((mainItemContainer.hasActive)&&(!(mainItemContainer.hasMinimized))) ? state2Color : state1Color
-
             }
         }
     }

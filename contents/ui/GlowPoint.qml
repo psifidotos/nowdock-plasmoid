@@ -8,12 +8,13 @@ Item{
     //   property string color
     id: glowItem  
 
-    property color basicColor: "blue"
-    property color attentionColor: colorScopePalette.negativeTextColor // "#ffff1717"
-
+    property bool roundCorners: true
     property bool showAttention: false
 
     property int animation: 1500
+
+    property color attentionColor: colorScopePalette.negativeTextColor // "#ffff1717"
+    property color basicColor: "blue"
 
     onShowAttentionChanged: {
         if(showAttention == false){
@@ -27,10 +28,12 @@ Item{
 
         Rectangle {
             id: smallCircle
-            anchors.fill: parent
-            color: glowItem.basicColor
-            radius: Math.min(width,height) / 2
             anchors.centerIn: parent
+            anchors.fill: parent
+
+            color: glowItem.basicColor
+            radius: glowItem.roundCorners ? Math.min(width,height) / 2 : 0
+
 
             SequentialAnimation{
                 running: (glowItem.showAttention == true)
