@@ -399,7 +399,7 @@ Item {
 
             //more of a trouble
             moveDisplaced: Transition {
-                NumberAnimation { properties: "x,y"; duration: 100; easing.type: Easing.Linear }
+                NumberAnimation { properties: "x,y"; duration: 60; easing.type: Easing.Linear }
             }
 
             ///this transition can not be used with dragging !!!! I breaks

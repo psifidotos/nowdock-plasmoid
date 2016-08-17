@@ -27,7 +27,7 @@ Item{
     // for simple updates.
     // This is done before especially on initialization stage some visuals
     // are not ready and empty buffers are created
-    property int firstDrawedInterval: panel.initializationStep ? 1000 : 500
+    property int firstDrawedInterval: panel.initializationStep ? 2000 : 500
     property int shadowInterval: firstDrawed ? firstDrawedInterval : 150
     property int shadowSize : Math.ceil(panel.iconSize / 20)
 

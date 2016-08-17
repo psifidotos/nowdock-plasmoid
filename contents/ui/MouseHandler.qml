@@ -37,7 +37,7 @@ Item {
         id: ignoreItemTimer
 
         repeat: false
-        interval: 150
+        interval: 120
 
         onTriggered: {
             ignoredItem = null;
