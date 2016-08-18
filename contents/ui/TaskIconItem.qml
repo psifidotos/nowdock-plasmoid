@@ -177,7 +177,7 @@ Item{
             PropertyAnimation {
                 target: wrapper
                 property: "scale"
-                to: wrapper.scale - 0.3
+                to: panel.taskInAnimation ? 0.9 : wrapper.scale - 0.3
                 duration: clickedAnimation.speed
                 easing.type: Easing.OutQuad
             }
@@ -194,7 +194,7 @@ Item{
             PropertyAnimation {
                 target: wrapper
                 property: "scale"
-                to: panel.zoomFactor
+                to: panel.taskInAnimation ? 1 : panel.zoomFactor
                 duration: clickedAnimation.speed
                 easing.type: Easing.OutQuad
             }
@@ -261,11 +261,12 @@ Item{
 
         onStopped: {
             wrapper.scale = 1;
-
             mainItemContainer.animationEnded();
+            panel.noTasksInAnimation--;
         }
 
         function init(){
+            panel.noTasksInAnimation++;
             wrapper.tempScaleWidth = wrapper.scale;
             wrapper.tempScaleHeight = wrapper.scale;
 

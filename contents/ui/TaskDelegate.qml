@@ -26,7 +26,7 @@ Component {
                                  wrapper.height
 
         acceptedButtons: Qt.LeftButton | Qt.MidButton | Qt.RightButton
-        hoverEnabled: (inAnimation !== true)&& (!IsStartup)
+        hoverEnabled: (inAnimation !== true)&& (!IsStartup)&&(!panel.taskInAnimation)
 
         property bool buffersAreReady: false
         property bool delayingRemove: ListView.delayRemove
@@ -437,7 +437,7 @@ Component {
 
         ///////////////// Mouse Area Events ///////////////////
         onEntered: {
-            if((!inAnimation)&&(panel.dragSource == null)){
+            if((!inAnimation)&&(panel.dragSource == null)&&(!panel.taskInAnimation)){
                 icList.hoveredIndex = index;
                 mouseEntered = true;
                 icList.mouseWasEntered(index-2, false);
@@ -476,7 +476,7 @@ Component {
         }
 
         onPositionChanged: {
-            if(inAnimation == false){
+            if((inAnimation == false)&&(!panel.taskInAnimation)){
                 if(panel.dragSource == null){
                     if (icList.orientation == Qt.Horizontal){
                         var step = Math.abs(icList.currentSpot-mouse.x);

@@ -25,12 +25,14 @@ Item {
     property bool initializationStep: true
     property bool isHovered: false
     property bool showBarLine: plasmoid.configuration.showBarLine
+    property bool taskInAnimation: noTasksInAnimation > 0 ? true : false
     property bool vertical: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
                              (panel.position === PlasmaCore.Types.RightPositioned)) ? true : false
 
     property int iconSize: Math.max(plasmoid.configuration.iconSize, 16)
     property int iconMargin: 5
     property int newLocationDebugUse: PlasmaCore.Types.BottomPositioned
+    property int noTasksInAnimation: 0
     property int statesLineSize: Math.ceil( panel.iconSize/13 )
     property int realSize: iconSize + iconMargin
     property int clearWidth
