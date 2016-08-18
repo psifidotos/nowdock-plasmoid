@@ -703,16 +703,17 @@ Item{
 
                                     if(panel.enableShadows == true){
                                         shadowImageNoActive.grabToImage(function(result) {
-                                            iconImageBuffer.source.destroy();
-                                            normalImage.source.destroy();
+                                  //          iconImageBuffer.source.destroy();
+                                     //       normalImage.source.destroy();
+
                                             normalImage.source = result.url;
                                             //iconImageBuffer.source = result.url;
                                             result.destroy();
                                         }, Qt.size(fixedIcon.width,fixedIcon.height) );
 
                                         shadowImageNoActive2.grabToImage(function(result) {
-                                            iconImageBuffer.source.destroy();
-                                            zoomedImage.source.destroy();
+                                    //        iconImageBuffer.source.destroy();
+                                    //        zoomedImage.source.destroy();
                                             zoomedImage.source = result.url;
                                             result.destroy();
                                         }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
@@ -731,22 +732,22 @@ Item{
                                         }*/
 
                                         fixedIcon.grabToImage(function(result) {
-                                            iconImageBuffer.source.destroy();
-                                            normalImage.source.destroy();
+                                      //      iconImageBuffer.source.destroy();
+                                     //       normalImage.source.destroy();
                                             normalImage.source = result.url;
                                             result.destroy();
                                         }, Qt.size(fixedIcon.width,fixedIcon.height) );
 
                                         fixedIcon2.grabToImage(function(result) {
-                                            iconImageBuffer.source.destroy();
-                                            zoomedImage.source.destroy();
+                                       //     iconImageBuffer.source.destroy();
+                                      //      zoomedImage.source.destroy();
                                             zoomedImage.source = result.url;
                                             result.destroy();
                                         }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
                                     }
 
                                     hoveredImage.grabToImage(function(result) {
-                                        iconHoveredBuffer.source.destroy();
+                               //         iconHoveredBuffer.source.destroy();
                                         iconHoveredBuffer.source = result.url;
                                         result.destroy();
                                     }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
