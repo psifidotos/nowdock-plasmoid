@@ -703,7 +703,8 @@ Component {
             }
 
             function showWindow(){
-                if(mainItemContainer.isLauncher || mainItemContainer.isStartup || icList.delayingRemoval){
+                if(mainItemContainer.isLauncher || mainItemContainer.isStartup
+                   || icList.delayingRemoval || (!mainItemContainer.buffersAreReady && !panel.initializatedBuffers)){
                     delayShowWindow.createObject(mainItemContainer);
                 }
                 else{
@@ -768,7 +769,12 @@ Component {
 
                 onTriggered: {
                     //console.log("I am in here: "+mainItemContainer.windowDelay);
-                    showWindowAnimation.execute();
+                   // showWindowAnimation.execute();
+                    if(!mainItemContainer.buffersAreReady && !panel.initializatedBuffers)
+                        showWindowAnimation.showWindow();
+                    else
+                        showWindowAnimation.execute();
+
                     timerWindow.destroy();
                 }
 

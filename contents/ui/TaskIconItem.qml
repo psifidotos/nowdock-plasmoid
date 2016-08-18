@@ -744,6 +744,9 @@ Item{
 
 
                                     mainItemContainer.buffersAreReady = true;
+                                    if(!panel.initializatedBuffers)
+                                        panel.noInitCreatedBuffers++;
+
                                     iconImageBuffer.opacity = 1;
 
                                     ttt.destroy(300);

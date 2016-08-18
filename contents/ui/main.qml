@@ -23,22 +23,25 @@ Item {
     property bool enableShadows: plasmoid.configuration.showShadows
     property bool glow: plasmoid.configuration.showGlow
     property bool initializationStep: true
+    property bool initializatedBuffers: noInitCreatedBuffers >= tasksStarting ? true : false
     property bool isHovered: false
     property bool showBarLine: plasmoid.configuration.showBarLine
     property bool taskInAnimation: noTasksInAnimation > 0 ? true : false
     property bool vertical: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
                              (panel.position === PlasmaCore.Types.RightPositioned)) ? true : false
 
+    property int clearWidth
+    property int clearHeight
     property int iconSize: Math.max(plasmoid.configuration.iconSize, 16)
     property int iconMargin: 5
     property int newLocationDebugUse: PlasmaCore.Types.BottomPositioned
-    property int noTasksInAnimation: 0
-    property int statesLineSize: Math.ceil( panel.iconSize/13 )
-    property int realSize: iconSize + iconMargin
-    property int clearWidth
-    property int clearHeight
-    property int position : PlasmaCore.Types.BottomPositioned
     property int newDroppedPosition: -1;
+    property int noInitCreatedBuffers: 0;
+    property int noTasksInAnimation: 0
+    property int position : PlasmaCore.Types.BottomPositioned
+    property int tasksStarting: 0;
+    property int realSize: iconSize + iconMargin
+    property int statesLineSize: Math.ceil( panel.iconSize/13 )
 
     property real zoomFactor: ( 1 + (plasmoid.configuration.zoomLevel / 20) )
 
@@ -139,6 +142,8 @@ Item {
             groupingLauncherUrlBlacklist = plasmoid.configuration.groupingLauncherUrlBlacklist;
 
             icList.model = tasksModel;
+
+            tasksStarting = count;
         }
     }
 
@@ -246,7 +251,7 @@ Item {
     Item{
         id:barLine
 
-        opacity: tasksModel.count > 0 ? 1 : 0
+        opacity: (tasksModel.count > 0) && panel.initializatedBuffers ? 1 : 0
 
         anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
         anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
