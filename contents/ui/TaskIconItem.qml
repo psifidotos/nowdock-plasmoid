@@ -20,6 +20,7 @@ Item{
     //big interval to show shadows only after all the crappy adds and removes of tasks
     //have happened
     property bool firstDrawed: true
+    property bool toBeDestroyed: false
 
     // three intervals in order to create the necessarty buffers from the
     // PlasmaCore.IconItem, one big interval for the first creation of the
@@ -214,6 +215,7 @@ Item{
         wrapper.runActivateAnimation.connect(startAnimation);
     }*/
     Component.onDestruction: {
+        centralItem.toBeDestroyed = true;
         if(normalImage.source)
             normalImage.source.destroy();
         if(zoomedImage.source)
@@ -706,7 +708,7 @@ Item{
                             //   property int counter2: 0;
 
                             onTriggered: {
-                                if(index !== -1){
+                                if((index !== -1) &&(!centralItem.toBeDestroyed)){
                                     if(panel.initializationStep){
                                         panel.initializationStep = false;
                                     }
