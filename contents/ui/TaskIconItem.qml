@@ -701,6 +701,14 @@ Item{
                                     }
 
                                     centralItem.firstDrawed = true;
+                                    if(normalImage.source)
+                                        normalImage.source.destroy();
+                                    if(zoomedImage.source)
+                                        zoomedImage.source.destroy();
+                                    if(iconImageBuffer.source)
+                                        iconImageBuffer.source.destroy();
+                                    if(iconHoveredBuffer.source)
+                                        iconHoveredBuffer.source.destroy();
 
                                     if(panel.enableShadows == true){
                                         shadowImageNoActive.grabToImage(function(result) {
