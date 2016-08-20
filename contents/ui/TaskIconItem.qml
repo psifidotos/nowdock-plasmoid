@@ -209,9 +209,20 @@ Item{
         }
     }
 
+
     /*Component.onCompleted: {
         wrapper.runActivateAnimation.connect(startAnimation);
     }*/
+    Component.onDestruction: {
+        if(normalImage.source)
+            normalImage.source.destroy();
+        if(zoomedImage.source)
+            zoomedImage.source.destroy();
+        if(iconImageBuffer.source)
+            iconImageBuffer.source.destroy();
+        if(iconHoveredBuffer.source)
+            iconHoveredBuffer.source.destroy();
+    }
     ////end of activate animation////
 
     ////bouncing task, e.g. on launcher activating and when a new window is
