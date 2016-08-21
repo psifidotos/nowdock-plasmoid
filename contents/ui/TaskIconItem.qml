@@ -224,6 +224,9 @@ Item{
             iconImageBuffer.source.destroy();
         if(iconHoveredBuffer.source)
             iconHoveredBuffer.source.destroy();
+
+        if(removingAnimation.removingItem)
+            removingAnimation.removingItem.destroy();
     }
     ////end of activate animation////
 
@@ -463,7 +466,6 @@ Item{
         Component.onCompleted: {
             mainItemContainer.groupWindowRemoved.connect(removeTask);
         }
-
     }
     ////////////////////////////
 
