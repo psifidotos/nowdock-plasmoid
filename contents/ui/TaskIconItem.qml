@@ -777,6 +777,19 @@ Item{
                             }
 
                             Component.onCompleted: ttt.start();
+                            Component.onDestruction: {
+                                if(normalImage.source)
+                                    normalImage.source.destroy();
+                                if(zoomedImage.source)
+                                    zoomedImage.source.destroy();
+                                if(iconImageBuffer.source)
+                                    iconImageBuffer.source.destroy();
+                                if(iconHoveredBuffer.source)
+                                    iconHoveredBuffer.source.destroy();
+
+                                if(removingAnimation.removingItem)
+                                    removingAnimation.removingItem.destroy();
+                            }
                         }// end of timer
 
                     }//end of component of timer
