@@ -460,7 +460,8 @@ Item{
         }
 
         onStopped: {
-            removingItem.destroy();
+            if(removingItem)
+                removingItem.destroy();
         }
 
         Component.onCompleted: {
