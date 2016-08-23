@@ -227,6 +227,8 @@ Item{
 
         if(removingAnimation.removingItem)
             removingAnimation.removingItem.destroy();
+
+        gc();
     }
     ////end of activate animation////
 
