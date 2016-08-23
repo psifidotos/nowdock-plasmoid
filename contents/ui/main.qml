@@ -43,10 +43,15 @@ Item {
     property int realSize: iconSize + iconMargin
     property int statesLineSize: Math.ceil( panel.iconSize/13 )
 
+    property real backColorLuma: 0.2126*theme.backgroundColor.r + 0.7152*theme.backgroundColor.g + 0.0722*theme.backgroundColor.b
     property real zoomFactor: ( 1 + (plasmoid.configuration.zoomLevel / 20) )
+    property real textColorLuma: 0.2126*theme.textColor.r + 0.7152*theme.textColor.g + 0.0722*theme.textColor.b
 
     property QtObject contextMenuComponent: Qt.createComponent("ContextMenu.qml");
     property Item dragSource: null
+
+    property color minimizedDotColor: textColorLuma > 0.5 ? Qt.darker(theme.textColor, 1+ (1-textColorLuma)) : Qt.lighter(theme.textColor, 1+textColorLuma/4)
+    property color shownDotColor: backColorLuma < 0.5 ? Qt.lighter(theme.backgroundColor, 1+Math.abs(1-backColorLuma)) : Qt.darker(theme.backgroundColor, 1+backColorLuma/4)
 
     Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
     Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground   

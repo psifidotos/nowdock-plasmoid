@@ -14,11 +14,9 @@ Item{
     property int size: wrapper.statesLineSize
 
     //SystemPalette { id: myPalette; colorGroup: SystemPalette.Active }
-
     property color isActiveColor: theme.buttonFocusColor
-    property color isShownColor: plasmoid.configuration.threeColorsWindows ? "#717171" : isActiveColor // myPalette.shadow
-
-    property color minimizedColor: plasmoid.configuration.threeColorsWindows ? "#e8e8e8" : isActiveColor // myPalette.mid
+    property color isShownColor: plasmoid.configuration.threeColorsWindows ? panel.shownDotColor : isActiveColor
+    property color minimizedColor: plasmoid.configuration.threeColorsWindows ? panel.minimizedDotColor : isActiveColor
     property color notActiveColor: mainItemContainer.hasMinimized ? minimizedColor : isShownColor
 
     Item{
