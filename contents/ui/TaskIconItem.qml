@@ -777,9 +777,11 @@ Item{
 
                                     ttt.destroy(300);
                                 }
+
                             }
 
                             Component.onCompleted: ttt.start();
+
                             Component.onDestruction: {
                                 if(normalImage.source)
                                     normalImage.source.destroy();
@@ -792,6 +794,8 @@ Item{
 
                                 if(removingAnimation.removingItem)
                                     removingAnimation.removingItem.destroy();
+
+                                gc();
                             }
                         }// end of timer
 
