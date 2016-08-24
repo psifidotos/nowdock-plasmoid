@@ -15,7 +15,8 @@ Item{
 
     //SystemPalette { id: myPalette; colorGroup: SystemPalette.Active }
     property color isActiveColor: theme.buttonFocusColor
-    property color isShownColor: plasmoid.configuration.threeColorsWindows ? panel.shownDotColor : isActiveColor
+    //property color isShownColor: plasmoid.configuration.threeColorsWindows ? panel.shownDotColor : isActiveColor
+    property color isShownColor: isActiveColor
     property color minimizedColor: plasmoid.configuration.threeColorsWindows ? panel.minimizedDotColor : isActiveColor
     property color notActiveColor: mainItemContainer.hasMinimized ? minimizedColor : isShownColor
 

@@ -151,7 +151,7 @@ Item {
 
                 CheckBox {
                     id: threeColorsWindows
-                    text: i18n("Different colors for window states")
+                    text: i18n("Different color for minimized windows")
                     enabled: true
                 }
 
