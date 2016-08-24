@@ -34,7 +34,7 @@ Component {
         property bool hasActive: isActive
         property bool hasMinimized: (IsGroupParent === true) ? tasksWindows.hasMinimized : isMinimized
         property bool hasShown: (IsGroupParent === true) ? tasksWindows.hasShown : !isMinimized
-        property bool inAnimation: false
+        property bool inAnimation: true
 
         property bool isActive: (IsActive === true) ? true : false
         property bool isDemandingAttention: (IsDemandingAttention === true) ? true : false
@@ -320,7 +320,7 @@ Component {
 
 
                 function signalUpdateScale(nIndex, nScale, step){
-                    if( index === nIndex){
+                    if ((index === nIndex)&&(!mainItemContainer.inAnimation)){
                         if(nScale >= 0)
                             scale = nScale + step;
                         else
@@ -695,6 +695,7 @@ Component {
                         mainItemContainer.groupWindowAdded();
                     }
                 }
+                mainItemContainer.inAnimation = false;
             }
 
             function init(){
@@ -786,6 +787,7 @@ Component {
 
         ListView.onRemove: SequentialAnimation {
             PropertyAction { target: mainItemContainer; property: "ListView.delayRemove"; value: true }
+            PropertyAction { target: mainItemContainer; property: "inAnimation"; value: true }
             PropertyAction { target: icList; property: "delayingRemoval"; value: true }
             PropertyAction { target: wrapper; property: "opacity"; value: isWindow ? 0 : 1 }
             //animation mainly for launchers removal and startups
@@ -815,6 +817,7 @@ Component {
                 easing.type: Easing.InQuad
             }
 
+            PropertyAction { target: mainItemContainer; property: "inAnimation"; value: false }
             PropertyAction { target: mainItemContainer; property: "ListView.delayRemove"; value: false }
             PropertyAction { target: icList; property: "delayingRemoval"; value: false }
         }
