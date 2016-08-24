@@ -730,7 +730,7 @@ Item{
                             //   property int counter2: 0;
 
                             onTriggered: {
-                                if((index !== -1) &&(!centralItem.toBeDestroyed)){
+                                if((index !== -1) &&(!centralItem.toBeDestroyed) &&(!mainItemContainer.delayingRemove)){
                                     if(panel.initializationStep){
                                         panel.initializationStep = false;
                                     }
