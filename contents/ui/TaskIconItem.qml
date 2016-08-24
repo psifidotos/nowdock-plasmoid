@@ -779,10 +779,9 @@ Item{
                                         panel.noInitCreatedBuffers++;
 
                                     iconImageBuffer.opacity = 1;
-
-                                    ttt.destroy(300);
                                 }
 
+                                ttt.destroy(300);
                             }
 
                             Component.onCompleted: ttt.start();
