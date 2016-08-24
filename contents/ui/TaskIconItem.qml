@@ -66,7 +66,7 @@ Item{
         width: newTempSize + 2*centralItem.shadowSize
         height: width
 
-        source: (((iconHoveredBuffer.opacity>0)||(wrapper.scale>internalLimit))&&(panel.iconSize >= 48)) ?
+        source: (wrapper.scale>internalLimit && (panel.iconSize >= 48)) ?
                     zoomedImage.source : normalImage.source
 
         property real basicScalingWidth : wrapper.inTempScaling ? (panel.iconSize * wrapper.scaleWidth) :
@@ -81,7 +81,7 @@ Item{
         property real internalLimit: 1 + ((panel.zoomFactor-1)/2)
     }
 
-    Image{
+    /*   Image{
         id: iconHoveredBuffer
         anchors.fill: iconImageBuffer
 
@@ -89,6 +89,18 @@ Item{
 
         visible: ((!clickedAnimation.running) &&
                   (!launcherAnimation.running) )
+
+        Behavior on opacity {
+            NumberAnimation { duration: 300 }
+        }
+    }*/
+    BrightnessContrast{
+        id:hoveredImage
+        opacity: mainItemContainer.containsMouse ? 1 : 0
+        anchors.fill: iconImageBuffer
+
+        brightness: 0.25
+        source: iconImageBuffer
 
         Behavior on opacity {
             NumberAnimation { duration: 300 }
@@ -222,8 +234,8 @@ Item{
             zoomedImage.source.destroy();
         if(iconImageBuffer.source)
             iconImageBuffer.source.destroy();
-        if(iconHoveredBuffer.source)
-            iconHoveredBuffer.source.destroy();
+        //  if(iconHoveredBuffer.source)
+        // iconHoveredBuffer.source.destroy();
 
         if(removingAnimation.removingItem)
             removingAnimation.removingItem.destroy();
@@ -457,13 +469,18 @@ Item{
         }
 
         function removeTask(){
-            removingAnimation.init();
-            start();
+            if(centralItem.firstDrawed && !centralItem.toBeDestroyed &&
+                    mainItemContainer.buffersAreReady){
+                removingAnimation.init();
+                start();
+            }
         }
 
         onStopped: {
             if(removingItem)
                 removingItem.destroy();
+
+            gc();
         }
 
         Component.onCompleted: {
@@ -725,8 +742,8 @@ Item{
                                         zoomedImage.source.destroy();
                                     if(iconImageBuffer.source)
                                         iconImageBuffer.source.destroy();
-                                    if(iconHoveredBuffer.source)
-                                        iconHoveredBuffer.source.destroy();
+                                    //           if(iconHoveredBuffer.source)
+                                    //    iconHoveredBuffer.source.destroy();
 
                                     if(panel.enableShadows == true){
                                         shadowImageNoActive.grabToImage(function(result) {
@@ -740,18 +757,6 @@ Item{
                                         }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
                                     }
                                     else{
-                                        /*if(AppId=="yarock"){
-                                            console.log(panel.iconSize);
-                                            fixedIcon.grabToImage(function(result){
-                                                result.saveToFile("/home/michail/yarockscreen.png");
-                                            });
-                                        }
-                                        if(AppId=="writer"){
-                                            fixedIcon.grabToImage(function(result){
-                                                result.saveToFile("/home/michail/writerscreen.png");
-                                            });
-                                        }*/
-
                                         fixedIcon.grabToImage(function(result) {
                                             normalImage.source = result.url;
                                             result.destroy();
@@ -763,10 +768,10 @@ Item{
                                         }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
                                     }
 
-                                    hoveredImage.grabToImage(function(result) {
+                                    /*         hoveredImage.grabToImage(function(result) {
                                         iconHoveredBuffer.source = result.url;
                                         result.destroy();
-                                    }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
+                                    }, Qt.size(fixedIcon2.width,fixedIcon2.height) );*/
 
 
                                     mainItemContainer.buffersAreReady = true;
@@ -789,8 +794,8 @@ Item{
                                     zoomedImage.source.destroy();
                                 if(iconImageBuffer.source)
                                     iconImageBuffer.source.destroy();
-                                if(iconHoveredBuffer.source)
-                                    iconHoveredBuffer.source.destroy();
+                                //      if(iconHoveredBuffer.source)
+                                //     iconHoveredBuffer.source.destroy();
 
                                 if(removingAnimation.removingItem)
                                     removingAnimation.removingItem.destroy();
@@ -837,7 +842,7 @@ Item{
                 verticalOffset: 2
             }
 
-            BrightnessContrast{
+            /*        BrightnessContrast{
                 id:hoveredImage
                 visible: false
                 width: fixedIcon2.width
@@ -846,7 +851,7 @@ Item{
 
                 brightness: 0.25
                 source: fixedIcon2
-            }
+            }*/
         }
     }
 
