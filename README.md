@@ -5,11 +5,11 @@ mac style effect for tasks
 
 Installation
 ============
-1) Right click on Plasma Desktop -> Unlock Widgets
-2) Right click on Plasma Desktop -> Add Widgets
-3) Download New Widgets
-4) Search for "Now Dock"
-5) Install
+1. Right click on Plasma Desktop -> Unlock Widgets
+2. Right click on Plasma Desktop -> Add Widgets
+3. Download New Widgets
+4. Search for "Now Dock"
+5. Install
     
 Requirements  
 ------------
