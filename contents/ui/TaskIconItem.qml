@@ -35,6 +35,7 @@ Item{
 
     Connections{
         target: panel
+        onZoomFactorChanged: updateImages()
         onIconSizeChanged: updateImages()
         onEnableShadowsChanged: updateImages()
     }
@@ -66,8 +67,10 @@ Item{
         width: newTempSize + 2*centralItem.shadowSize
         height: width
 
-        source: (wrapper.scale>internalLimit && (panel.iconSize >= 48)) ?
+        source: (wrapper.scale>internalLimit && (zoomedSize>=64)) ?
                     zoomedImage.source : normalImage.source
+
+        property int zoomedSize: panel.zoomFactor * panel.iconSize
 
         property real basicScalingWidth : wrapper.inTempScaling ? (panel.iconSize * wrapper.scaleWidth) :
                                                                   panel.iconSize * wrapper.scale
@@ -676,6 +679,7 @@ Item{
                 height: width
                 visible:false
 
+           //     KQuickControlAddons.QIconItem{
                 PlasmaCore.IconItem{
                     id: iconImage2
 
@@ -683,6 +687,8 @@ Item{
                     height: width
                     anchors.centerIn: parent
 
+                //   icon: decoration
+                //    state: KQuickControlAddons.QIconItem.DefaultState
                     active: false
                     enabled: true
                     source: decoration
@@ -701,6 +707,7 @@ Item{
 
                 visible:false
 
+              //  KQuickControlAddons.QIconItem{
                 PlasmaCore.IconItem{
                     id: iconImage
 
@@ -708,6 +715,8 @@ Item{
                     height: width
                     anchors.centerIn: parent
 
+                 //   icon: decoration
+                    state: KQuickControlAddons.QIconItem.DefaultState
                     active: false
                     enabled: true
                     source: decoration
