@@ -195,7 +195,7 @@ Component {
 
                 //property int curIndex: icList.hoveredIndex
                 //  property int index: mainItemContainer.Positioner.index
-                property real center: Math.floor(width / 2)
+                property real center: width / 2
 
                 signal runLauncherAnimation();
 
