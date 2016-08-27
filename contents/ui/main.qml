@@ -39,7 +39,9 @@ Item {
     property int noInitCreatedBuffers: 0;
     property int noTasksInAnimation: 0
     property int position : PlasmaCore.Types.BottomPositioned
+    property int tasksHeight: mouseHandler.height
     property int tasksStarting: 0;
+    property int tasksWidth: mouseHandler.width
     property int realSize: iconSize + iconMargin
     property int statesLineSize: Math.ceil( panel.iconSize/13 )
 
