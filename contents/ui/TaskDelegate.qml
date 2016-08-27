@@ -299,17 +299,17 @@ Component {
 
 
                         //activate messages to update the the neighbour scales
-                        icList.updateScale(index+1, rightScale, 0);
-                        icList.updateScale(index-1,leftScale, 0);
+                        panel.updateScale(index+1, rightScale, 0);
+                        panel.updateScale(index-1,leftScale, 0);
 
 
                         //Left hiddenSpacer
-                        if((index === 0 )&&(icList.count > 1)){
+                        if(((index === 0 )&&(icList.count > 1)) && !panel.disableLeftSpacer){
                             hiddenSpacerLeft.nScale = leftScale - 1;
                         }
 
                         //Right hiddenSpacer
-                        if((index === icList.count - 1 )&&(icList.count>1)){
+                        if(((index === icList.count - 1 )&&(icList.count>1)) && (!panel.disableRightSpacer)){
                             hiddenSpacerRight.nScale =  rightScale - 1;
                         }
 
@@ -330,7 +330,7 @@ Component {
                 }
 
                 Component.onCompleted: {
-                    icList.updateScale.connect(signalUpdateScale);
+                    panel.updateScale.connect(signalUpdateScale);
                 }
             }// Main task area // id:wrapper
 
@@ -401,8 +401,8 @@ Component {
 
         onIsDraggedChanged: {
             if(isDragged && (plasmoid.immutable)){
-                icList.updateScale(index-1, 1, 0);
-                icList.updateScale(index+1, 1, 0);
+                panel.updateScale(index-1, 1, 0);
+                panel.updateScale(index+1, 1, 0);
                 wrapper.scale = 1.35;
 
                 panel.dragSource = mainItemContainer;
@@ -440,10 +440,10 @@ Component {
             if((!inAnimation)&&(panel.dragSource == null)&&(!panel.taskInAnimation)){
                 icList.hoveredIndex = index;
                 mouseEntered = true;
-                icList.mouseWasEntered(index-2, false);
-                icList.mouseWasEntered(index+2, false);
-                icList.mouseWasEntered(index-1, true);
-                icList.mouseWasEntered(index+1, true);
+                panel.mouseWasEntered(index-2, false);
+                panel.mouseWasEntered(index+2, false);
+                panel.mouseWasEntered(index-1, true);
+                panel.mouseWasEntered(index+1, true);
 
                 if (icList.orientation == Qt.Horizontal){
                     icList.currentSpot = mouseX;
@@ -503,8 +503,8 @@ Component {
                         && isDragged
                         && plasmoid.immutable
                         && dragHelper.isDrag(pressX, pressY, mouse.x, mouse.y) ) {
-                    icList.updateScale(index-1, 1, 0);
-                    icList.updateScale(index+1, 1, 0);
+                    panel.updateScale(index-1, 1, 0);
+                    panel.updateScale(index+1, 1, 0);
                     wrapper.scale = 1.35;
 
                     panel.dragSource = mainItemContainer;
@@ -641,7 +641,7 @@ Component {
 
 
         Component.onCompleted: {
-            icList.mouseWasEntered.connect(signalMouseWasEntered);
+            panel.mouseWasEntered.connect(signalMouseWasEntered);
             panel.draggingFinished.connect(handlerDraggingFinished);
 
             showWindowAnimation.showWindow();
@@ -705,7 +705,7 @@ Component {
 
             function showWindow(){
                 if(mainItemContainer.isLauncher || mainItemContainer.isStartup
-                   || icList.delayingRemoval || (!mainItemContainer.buffersAreReady && !panel.initializatedBuffers)){
+                        || icList.delayingRemoval || (!mainItemContainer.buffersAreReady && !panel.initializatedBuffers)){
                     delayShowWindow.createObject(mainItemContainer);
                 }
                 else{
@@ -770,7 +770,7 @@ Component {
 
                 onTriggered: {
                     //console.log("I am in here: "+mainItemContainer.windowDelay);
-                   // showWindowAnimation.execute();
+                    // showWindowAnimation.execute();
                     if(!mainItemContainer.buffersAreReady && !panel.initializatedBuffers)
                         showWindowAnimation.showWindow();
                     else

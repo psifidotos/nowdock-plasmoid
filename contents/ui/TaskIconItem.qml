@@ -530,8 +530,8 @@ Item{
         onInHalfChanged: {
             if(inHalf){
                 var halfZoom = 1 + ((panel.zoomFactor - 1) / 2);
-                icList.updateScale(index-1, halfZoom, 0);
-                icList.updateScale(index+1, halfZoom, 0);
+                panel.updateScale(index-1, halfZoom, 0);
+                panel.updateScale(index+1, halfZoom, 0);
             }
         }
 

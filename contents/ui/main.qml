@@ -26,6 +26,7 @@ Item {
     property bool initializatedBuffers: noInitCreatedBuffers >= tasksStarting ? true : false
     property bool isHovered: false
     property bool showBarLine: plasmoid.configuration.showBarLine
+    property bool useThemePanel: plasmoid.configuration.useThemePanel
     property bool taskInAnimation: noTasksInAnimation > 0 ? true : false
     property bool vertical: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
                              (panel.position === PlasmaCore.Types.RightPositioned)) ? true : false
@@ -38,14 +39,12 @@ Item {
     property int newDroppedPosition: -1;
     property int noInitCreatedBuffers: 0;
     property int noTasksInAnimation: 0
+    property int themePanelSize: plasmoid.configuration.panelSize
     property int position : PlasmaCore.Types.BottomPositioned
-    property int tasksHeight: mouseHandler.height
     property int tasksStarting: 0;
-    property int tasksWidth: mouseHandler.width
     property int realSize: iconSize + iconMargin
     property int statesLineSize: Math.ceil( panel.iconSize/13 )
 
-  //  property real backColorLuma: 0.2126*theme.backgroundColor.r + 0.7152*theme.backgroundColor.g + 0.0722*theme.backgroundColor.b
     property real zoomFactor: ( 1 + (plasmoid.configuration.zoomLevel / 20) )
     property real textColorLuma: 0.2126*theme.textColor.r + 0.7152*theme.textColor.g + 0.0722*theme.textColor.b
 
@@ -53,15 +52,31 @@ Item {
     property Item dragSource: null
 
     property color minimizedDotColor: textColorLuma > 0.5 ? Qt.darker(theme.textColor, 1+ (1-textColorLuma)) : Qt.lighter(theme.textColor, 1+(1-textColorLuma))
-  //  property color shownDotColor: backColorLuma < 0.5 ? Qt.lighter(theme.backgroundColor, 1+Math.abs(1-backColorLuma)) : Qt.darker(theme.backgroundColor, 1+backColorLuma/4)
+
+    //BEGIN Now Dock Panel properties
+    property bool forceHidePanel: false
+    property bool disableLeftSpacer: false
+    property bool disableRightSpacer: false
+
+    property alias tasksCount: tasksModel.count
+    property int tasksHeight: mouseHandler.height
+    property int tasksWidth: mouseHandler.width
+    //END Now Dock Panel properties
+
 
     Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
     Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground   
 
-    signal requestLayout
-    signal windowsHovered(variant winIds, bool hovered)
-    signal presentWindows(variant winIds)
+
     signal draggingFinished();
+    signal mouseWasEntered(int delegateIndex, bool value);
+    signal presentWindows(variant winIds)
+    signal requestLayout
+    //trigger updating scaling of neighbour delegates of zoomed delegate
+    signal updateScale(int delegateIndex, real newScale, real step)
+    signal windowsHovered(variant winIds, bool hovered)
+
+
 
     /*Rectangle{
                 anchors.fill: parent
@@ -284,7 +299,7 @@ Item {
             source: "../images/panel-west.png"
             border { left:8; right:8; top:8; bottom:8 }
 
-            opacity: (plasmoid.configuration.showBarLine && !plasmoid.configuration.useThemePanel) ? 1 : 0
+            opacity: (plasmoid.configuration.showBarLine && !plasmoid.configuration.useThemePanel && !panel.forceHidePanel) ? 1 : 0
 
             visible: (opacity == 0) ? false : true
 
@@ -329,7 +344,7 @@ Item {
             imagePath: "translucent/widgets/panel-background"
             prefix:"shadow"
 
-            opacity: (plasmoid.configuration.showBarLine && plasmoid.configuration.useThemePanel) ? 1 : 0
+            opacity: (plasmoid.configuration.showBarLine && plasmoid.configuration.useThemePanel && !panel.forceHidePanel) ? 1 : 0
             visible: (opacity == 0) ? false : true
 
             property int panelSize: ((panel.position === PlasmaCore.Types.BottomPositioned) ||
@@ -372,10 +387,6 @@ Item {
 
         ListView {
             id:icList
-
-            //trigger updating scaling of neighbour delegates of zoomed delegate
-            signal updateScale(int delegateIndex, real newScale, real step)
-            signal mouseWasEntered(int delegateIndex, bool value);
 
             property int currentSpot : -1000
             property int hoveredIndex : -1
