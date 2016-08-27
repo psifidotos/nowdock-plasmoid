@@ -300,8 +300,9 @@ Component {
 
                         //activate messages to update the the neighbour scales
                         panel.updateScale(index+1, rightScale, 0);
-                        panel.updateScale(index-1,leftScale, 0);
-
+                        panel.updateScale(index-1, leftScale, 0);
+                        panel.updateScale(index+2, 1, 0);
+                        panel.updateScale(index-2, 1, 0);
 
                         //Left hiddenSpacer
                         if(((index === 0 )&&(icList.count > 1)) && !panel.disableLeftSpacer){
