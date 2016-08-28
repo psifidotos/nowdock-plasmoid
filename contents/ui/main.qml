@@ -28,6 +28,7 @@ Item {
     property bool showBarLine: plasmoid.configuration.showBarLine
     property bool useThemePanel: plasmoid.configuration.useThemePanel
     property bool taskInAnimation: noTasksInAnimation > 0 ? true : false
+    property bool transparentPanel: plasmoid.configuration.transparentPanel
     property bool vertical: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
                              (panel.position === PlasmaCore.Types.RightPositioned)) ? true : false
 
@@ -36,12 +37,12 @@ Item {
     property int iconSize: Math.max(plasmoid.configuration.iconSize, 16)
     property int iconMargin: 5
     property int newLocationDebugUse: PlasmaCore.Types.BottomPositioned
-    property int newDroppedPosition: -1;
-    property int noInitCreatedBuffers: 0;
+    property int newDroppedPosition: -1
+    property int noInitCreatedBuffers: 0
     property int noTasksInAnimation: 0
     property int themePanelSize: plasmoid.configuration.panelSize
     property int position : PlasmaCore.Types.BottomPositioned
-    property int tasksStarting: 0;
+    property int tasksStarting: 0
     property int realSize: iconSize + iconMargin
     property int statesLineSize: Math.ceil( panel.iconSize/13 )
 
