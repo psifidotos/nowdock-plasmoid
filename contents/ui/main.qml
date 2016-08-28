@@ -61,13 +61,16 @@ Item {
     property alias tasksCount: tasksModel.count
     property int tasksHeight: mouseHandler.height
     property int tasksWidth: mouseHandler.width
+
+    property Item nowDockPanel: null
     //END Now Dock Panel properties
 
 
     Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
-    Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground   
+    Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground
 
 
+    signal clearZoomSignal();
     signal draggingFinished();
     signal mouseWasEntered(int delegateIndex, bool value);
     signal presentWindows(variant winIds)
@@ -220,31 +223,13 @@ Item {
     Timer{
         id:checkListHovered
         repeat:false;
-        interval:60;
+        interval: 120;
 
         onTriggered: {
-            var tasks = icList.contentItem.children;
-            var lostMouse = true;
+            if (!panel.containsMouse())
+                panel.clearZoom();
 
-            //  console.debug("---------");
-            for(var i=0; i<tasks.length; ++i){
-                var task = tasks[i];
-                //    console.debug(task.containsMouse);
-                if(task){
-                    if (task.containsMouse){
-                        lostMouse = false;
-                        break;
-                    }
-                }
-            }
-
-            if(lostMouse){
-                //  console.log("Restore state....");
-                icList.currentSpot = -1000;
-                icList.hoveredIndex = -1;
-            }
-
-            interval = 60;
+            interval = 120;
         }
 
         function startDuration( duration){
@@ -403,8 +388,8 @@ Item {
             anchors.horizontalCenter: !panel.vertical ? parent.horizontalCenter : undefined
             anchors.verticalCenter: panel.vertical ? parent.verticalCenter : undefined
 
-            width: contentWidth + 2
-            height: contentHeight + 2
+            width: contentWidth
+            height: contentHeight
 
             orientation: Qt.Horizontal
 
@@ -619,6 +604,41 @@ Item {
             icList.orientation = Qt.Horizontal;
 
         panel.position = newPosition;
+    }
+
+    function outsideContainsMouse(){
+        var tasks = icList.contentItem.children;
+
+        for(var i=0; i<tasks.length; ++i){
+            var task = tasks[i];
+            if(task && task.containsMouse){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    function containsMouse(){
+        var result = panel.outsideContainsMouse();
+
+        if (result)
+            return true;
+
+        if (!result && nowDockPanel && nowDockPanel.outsideContainsMouse())
+            return true;
+
+        if (nowDockPanel)
+            nowDockPanel.clearZoom();
+
+        return false;
+    }
+
+    function clearZoom(){
+        //console.log("Plasmoid clear...");
+        icList.currentSpot = -1000;
+        icList.hoveredIndex = -1;
+        panel.clearZoomSignal();
     }
 
     function hasLauncher(url) {

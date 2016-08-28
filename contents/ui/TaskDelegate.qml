@@ -92,7 +92,7 @@ Component {
             }
         }*/
 
-        /*Rectangle{
+       /*  Rectangle{
             anchors.fill: parent
             border.width: 1
             border.color: "red"
@@ -625,6 +625,10 @@ Component {
             inAnimation = false;
         }
 
+        function clearZoom(){
+            wrapper.scale = 1;
+        }
+
         function handlerDraggingFinished(){
             isDragged = false;
         }
@@ -644,6 +648,7 @@ Component {
         Component.onCompleted: {
             panel.mouseWasEntered.connect(signalMouseWasEntered);
             panel.draggingFinished.connect(handlerDraggingFinished);
+            panel.clearZoomSignal.connect(clearZoom);
 
             showWindowAnimation.showWindow();
         }
