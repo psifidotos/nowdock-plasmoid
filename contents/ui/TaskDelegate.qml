@@ -626,7 +626,8 @@ Component {
         }
 
         function clearZoom(){
-            wrapper.scale = 1.0;
+            if (wrapper)
+                wrapper.scale=1;
         }
 
         function handlerDraggingFinished(){
