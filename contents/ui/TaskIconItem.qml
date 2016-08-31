@@ -22,6 +22,7 @@ import QtGraphicalEffects 1.0
 
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
+import org.kde.plasma.private.taskmanager 0.1 as TaskManagerApplet
 
 import org.kde.kquickcontrolsaddons 2.0 as KQuickControlAddons
 
@@ -49,6 +50,9 @@ Item{
     property int firstDrawedInterval: panel.initializationStep ? 2000 : 1000
     property int shadowInterval: firstDrawed ? firstDrawedInterval : 250
     property int shadowSize : Math.ceil(panel.iconSize / 20)
+
+    readonly property bool smartLauncherEnabled: mainItemContainer.isStartup === false
+    property QtObject smartLauncherItem: null
 
 
     Connections{
@@ -194,6 +198,13 @@ Item{
         active: mainItemContainer.isStartup ? false : true
     }
 
+    Loader {
+        anchors.fill: iconImageBuffer
+        asynchronous: true
+        source: "TaskProgressOverlay.qml"
+        active: (centralItem.smartLauncherEnabled && centralItem.smartLauncherItem && centralItem.smartLauncherItem.progressVisible)
+    }
+
     ///////Activate animation/////
     SequentialAnimation{
         id: clickedAnimation
@@ -244,9 +255,18 @@ Item{
     }
 
 
-    /*Component.onCompleted: {
-        wrapper.runActivateAnimation.connect(startAnimation);
-    }*/
+    Component.onCompleted: {
+        if (smartLauncherEnabled && !smartLauncherItem) {
+            var smartLauncher = Qt.createQmlObject("
+    import org.kde.plasma.private.taskmanager 0.1 as TaskManagerApplet;
+    TaskManagerApplet.SmartLauncherItem { }", centralItem);
+
+            smartLauncher.launcherUrl = Qt.binding(function() { return model.LauncherUrlWithoutIcon; });
+
+            smartLauncherItem = smartLauncher;
+        }
+    }
+
     Component.onDestruction: {
         centralItem.toBeDestroyed = true;
         if(normalImage.source)
