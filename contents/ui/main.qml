@@ -554,8 +554,8 @@ Item {
             var clearSmallAxis = (iconSize+iconMargin);
 
             //  debugging code
-            ncounter++;
-            console.log("Implicits______ "+ncounter+". - "+tasksModel.count);
+       //     ncounter++;
+      //      console.log("Implicits______ "+ncounter+". - "+tasksModel.count);
 
             if (panel.vertical){
                 panel.implicitWidth = smallAxis;
