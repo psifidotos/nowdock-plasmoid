@@ -40,6 +40,7 @@ Item {
     property alias cfg_useThemePanel: useThemePanel.checked
     property alias cfg_panelSize: panelSize.value
     property alias cfg_transparentPanel: transparentPanel.checked
+    property alias cfg_panelPosition: panelPositionCmb.currentIndex
 
     ColumnLayout {
         spacing: 15
@@ -161,6 +162,8 @@ Item {
                 }
 
                 Label{}
+
+
                 GridLayout{
                     Layout.fillWidth: true
                     columns: 3
@@ -172,8 +175,23 @@ Item {
                         Label {
                             text: i18n("Panel")
                             anchors.centerIn: parent
+                            font.bold: true
+                            font.italic: true
                         }
                     }
+                    Label {
+                        text: i18n("Position: ")
+                    }
+
+                    ComboBox {
+                        // 16, 22, 32, 48, 64,128, 256
+                        id: panelPositionCmb
+
+                        Layout.fillWidth: true
+                        model: ["Center", "Left", "Right", "Top", "Bottom"]
+                    }
+                    Label{}
+
 
                     CheckBox {
                         id: showBarLine
@@ -199,7 +217,7 @@ Item {
 
                     Label {
                         id: panelLabel
-                        text: i18n("Panel size: ")
+                        text: i18n("Size: ")
                         enabled: parent.panelConfigEnabled
                     }
 
@@ -229,7 +247,7 @@ Item {
                         }
                     }
 
-                    Label{
+                /*    Label{
                         Layout.columnSpan: 3
                         Layout.fillWidth: false
                         Layout.alignment: Qt.AlignRight
@@ -239,8 +257,9 @@ Item {
                         wrapMode: Text.WordWrap
                         font.italic: true
                         enabled: parent.panelConfigEnabled
-                    }
+                    }*/
 
+                    Label{Layout.columnSpan: 3}
                     Label{Layout.columnSpan: 3}
 
                     Item{
@@ -249,13 +268,15 @@ Item {
                         Label {
                             text: i18n("Zoom")
                             anchors.centerIn: parent
+                            font.bold: true
+                            font.italic: true
                         }
                     }
 
                     //////
 
                     Label {
-                        text: i18n("Zoom Level: ")
+                        text: i18n("Level: ")
                     }
 
                     Slider {

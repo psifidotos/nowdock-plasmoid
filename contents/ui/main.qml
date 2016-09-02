@@ -33,8 +33,18 @@ import "../code/tools.js" as TaskTools
 Item {
     id:panel
 
-    Layout.fillHeight: true
-    Layout.fillWidth: true
+    Layout.fillHeight: userPanelPosition === 0 ? true : false
+    Layout.fillWidth: userPanelPosition === 0 ? true : false
+/*    Layout.minimumWidth: icList.hoveredIndex >= 0 ? implicitWidth : clearWidth
+    Layout.minimumHeight: icList.hoveredIndex >= 0 ? implicitHeight : clearHeight
+    Layout.preferredWidth: icList.hoveredIndex >= 0 ? implicitWidth : clearWidth
+    Layout.preferredHeight: icList.hoveredIndex >= 0 ? implicitHeight : clearHeight*/
+
+    Layout.minimumWidth: tasksWidth
+    Layout.minimumHeight: tasksHeight
+    Layout.preferredWidth:  tasksWidth
+    Layout.preferredHeight: tasksHeight
+
 
     property bool debugLocation: false
 
@@ -60,6 +70,7 @@ Item {
     property int noInitCreatedBuffers: 0
     property int noTasksInAnimation: 0
     property int themePanelSize: plasmoid.configuration.panelSize
+    property int userPanelPosition: plasmoid.configuration.panelPosition
     property int position : PlasmaCore.Types.BottomPositioned
     property int tasksStarting: 0
     property int realSize: iconSize + iconMargin
@@ -101,12 +112,12 @@ Item {
 
 
 
-    /*Rectangle{
+   /* Rectangle{
                 anchors.fill: parent
                 border.width: 1
                 border.color: "red"
                 color: "white"
-            }*/
+            } */
 
     Connections {
         target: plasmoid
@@ -160,6 +171,10 @@ Item {
         onActivityChanged: {
             //panel.updateImplicits();
             //panelGeometryTimer.start();
+        }
+
+        onCountChanged: {
+        //    updateImplicits();
         }
 
         onLauncherListChanged: {
@@ -280,13 +295,13 @@ Item {
 
         opacity: (tasksModel.count > 0) && panel.initializatedBuffers ? 1 : 0
 
-        anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
+    /*    anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
         anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
         anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
         anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
 
         anchors.horizontalCenter: !parent.vertical ? parent.horizontalCenter : undefined
-        anchors.verticalCenter: parent.vertical ? parent.verticalCenter : undefined
+        anchors.verticalCenter: parent.vertical ? parent.verticalCenter : undefined */
 
         width: ( icList.orientation === Qt.Horizontal ) ? icList.width + spacing : smallSize
         height: ( icList.orientation === Qt.Vertical ) ? icList.height + spacing : smallSize
@@ -400,13 +415,13 @@ Item {
             property bool delayingRemoval: false
 
             //  property int count: children ? children.length : 0
-            anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
+         /*   anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
             anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
             anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
             anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
 
             anchors.horizontalCenter: !panel.vertical ? parent.horizontalCenter : undefined
-            anchors.verticalCenter: panel.vertical ? parent.verticalCenter : undefined
+            anchors.verticalCenter: panel.vertical ? parent.verticalCenter : undefined  */
 
             width: contentWidth
             height: contentHeight
@@ -528,19 +543,19 @@ Item {
     property int ncounter:0
 
     function updateImplicits(){
-        /*    if(icList.previousCount !== icList.count){
+        if(icList.previousCount !== icList.count){
             icList.previousCount = icList.count;
 
             var zoomedLength = Math.floor( 1.7 * (iconSize+iconMargin) * (panel.zoomFactor));
             var bigAxis = (tasksModel.count-1) * (iconSize+iconMargin) + zoomedLength
             var smallAxis = zoomedLength + 1
 
-            var clearBigAxis = tasksModel.count * (iconSize+iconMargin);
+            var clearBigAxis = tasksModel.count * (iconSize+iconMargin) + (barLine.spacing/2);
             var clearSmallAxis = (iconSize+iconMargin);
 
             //  debugging code
-                 ncounter++;
-                console.log("Implicits______ "+ncounter+". - "+tasksModel.count);
+            ncounter++;
+            console.log("Implicits______ "+ncounter+". - "+tasksModel.count);
 
             if (panel.vertical){
                 panel.implicitWidth = smallAxis;
@@ -556,7 +571,7 @@ Item {
             }
 
             iconGeometryTimer.restart();
-        }*/
+        }
     }
 
     PlasmaComponents.Button{
@@ -681,5 +696,174 @@ Item {
         dragHelper.dropped.connect(resetDragSource);
         //    iconGeometryTimer.start();
     }
+
+    //BEGIN states
+    //user set Panel Positions
+    // 0-Center, 1-Left, 2-Right, 3-Top, 4-Bottom
+    states: [
+
+        ///Bottom Edge
+        State {
+            name: "bottomCenter"
+            when: (panel.position === PlasmaCore.Types.BottomPosition && userPanelPosition===0 )
+
+            AnchorChanges {
+                target: barLine
+                anchors{ top:undefined; bottom:parent.bottom; left:undefined; right:undefined; horizontalCenter:parent.horizontalCenter; verticalCenter:undefined}
+            }
+            AnchorChanges {
+                target: icList
+                anchors{ top:undefined; bottom:parent.bottom; left:undefined; right:undefined; horizontalCenter:parent.horizontalCenter; verticalCenter:undefined}
+            }
+        },
+        State {
+            name: "bottomLeft"
+            when: (panel.position === PlasmaCore.Types.BottomPosition && userPanelPosition===1 )
+
+            AnchorChanges {
+                target: barLine
+                anchors{ top:undefined; bottom:parent.bottom; left:parent.left; right:undefined; horizontalCenter:undefined; verticalCenter:undefined}
+            }
+            AnchorChanges {
+                target: icList
+                anchors{ top:undefined; bottom:parent.bottom; left:parent.left; right:undefined; horizontalCenter:undefined; verticalCenter:undefined}
+            }
+        },
+        State {
+            name: "bottomRight"
+            when: (panel.position === PlasmaCore.Types.BottomPosition && userPanelPosition===2 )
+
+            AnchorChanges {
+                target: barLine
+                anchors{ top:undefined; bottom:parent.bottom; left:undefined; right:parent.right; horizontalCenter:undefined; verticalCenter:undefined}
+            }
+            AnchorChanges {
+                target: icList
+                anchors{ top:undefined; bottom:parent.bottom; left:undefined; right:parent.right; horizontalCenter:undefined; verticalCenter:undefined}
+            }
+        },
+        ///Top Edge
+        State {
+            name: "topCenter"
+            when: (panel.position === PlasmaCore.Types.TopPosition && userPanelPosition===0 )
+
+            AnchorChanges {
+                target: barLine
+                anchors{ top:parent.top; bottom:undefined; left:undefined; right:undefined; horizontalCenter:parent.horizontalCenter; verticalCenter:undefined}
+            }
+            AnchorChanges {
+                target: icList
+                anchors{ top:parent.top; bottom:undefined; left:undefined; right:undefined; horizontalCenter:parent.horizontalCenter; verticalCenter:undefined}
+            }
+        },
+        State {
+            name: "topLeft"
+            when: (panel.position === PlasmaCore.Types.TopPosition && userPanelPosition===1 )
+
+            AnchorChanges {
+                target: barLine
+                anchors{ top:parent.top; bottom:undefined; left:parent.left; right:undefined; horizontalCenter:undefined; verticalCenter:undefined}
+            }
+            AnchorChanges {
+                target: icList
+                anchors{ top:parent.top; bottom:undefined; left:parent.left; right:undefined; horizontalCenter:undefined; verticalCenter:undefined}
+            }
+        },
+        State {
+            name: "topRight"
+            when: (panel.position === PlasmaCore.Types.TopPosition && userPanelPosition===2 )
+
+            AnchorChanges {
+                target: barLine
+                anchors{ top:parent.top; bottom:undefined; left:undefined; right:parent.right; horizontalCenter:undefined; verticalCenter:undefined}
+            }
+            AnchorChanges {
+                target: icList
+                anchors{ top:parent.top; bottom:undefined; left:undefined; right:parent.right; horizontalCenter:undefined; verticalCenter:undefined}
+            }
+        },
+        ////Left Edge
+        State {
+            name: "leftCenter"
+            when: (panel.position === PlasmaCore.Types.LeftPosition && userPanelPosition===0 )
+
+            AnchorChanges {
+                target: barLine
+                anchors{ top:undefined; bottom:undefined; left:parent.left; right:undefined; horizontalCenter:undefined; verticalCenter:parent.verticalCenter}
+            }
+            AnchorChanges {
+                target: icList
+                anchors{ top:undefined; bottom:undefined; left:parent.left; right:undefined; horizontalCenter:undefined; verticalCenter:parent.verticalCenter}
+            }
+        },
+        State {
+            name: "leftTop"
+            when: (panel.position === PlasmaCore.Types.LeftPosition && userPanelPosition===3 )
+
+            AnchorChanges {
+                target: barLine
+                anchors{ top:parent.top; bottom:undefined; left:parent.left; right:undefined; horizontalCenter:undefined; verticalCenter:undefined}
+            }
+            AnchorChanges {
+                target: icList
+                anchors{ top:parent.top; bottom:undefined; left:parent.left; right:undefined; horizontalCenter:undefined; verticalCenter:undefined}
+            }
+        },
+        State {
+            name: "leftBottom"
+            when: (panel.position === PlasmaCore.Types.LeftPosition && userPanelPosition===4 )
+
+            AnchorChanges {
+                target: barLine
+                anchors{ top:undefined; bottom:parent.bottom; left:parent.left; right:undefined; horizontalCenter:undefined; verticalCenter:undefined}
+            }
+            AnchorChanges {
+                target: icList
+                anchors{ top:undefined; bottom:parent.bottom; left:parent.left; right:undefined; horizontalCenter:undefined; verticalCenter:undefined}
+            }
+        },
+        ///Right Edge
+        State {
+            name: "rightCenter"
+            when: (panel.position === PlasmaCore.Types.RightPosition && userPanelPosition===0 )
+
+            AnchorChanges {
+                target: barLine
+                anchors{ top:undefined; bottom:undefined; left:undefined; right:parent.right; horizontalCenter:undefined; verticalCenter:parent.verticalCenter}
+            }
+            AnchorChanges {
+                target: icList
+                anchors{ top:undefined; bottom:undefined; left:undefined; right:parent.right; horizontalCenter:undefined; verticalCenter:parent.verticalCenter}
+            }
+        },
+        State {
+            name: "rightTop"
+            when: (panel.position === PlasmaCore.Types.RightPosition && userPanelPosition===3 )
+
+            AnchorChanges {
+                target: barLine
+                anchors{ top:parent.top; bottom:undefined; left:undefined; right:parent.right; horizontalCenter:undefined; verticalCenter:undefined}
+            }
+            AnchorChanges {
+                target: icList
+                anchors{ top:parent.top; bottom:undefined; left:undefined; right:parent.right; horizontalCenter:undefined; verticalCenter:undefined}
+            }
+        },
+        State {
+            name: "rightBottom"
+            when: (panel.position === PlasmaCore.Types.RightPosition && userPanelPosition===4 )
+
+            AnchorChanges {
+                target: barLine
+                anchors{ top:undefined; bottom:parent.bottom; left:undefined; right:parent.right; horizontalCenter:undefined; verticalCenter:undefined}
+            }
+            AnchorChanges {
+                target: icList
+                anchors{ top:undefined; bottom:parent.bottom; left:undefined; right:parent.right; horizontalCenter:undefined; verticalCenter:undefined}
+            }
+        }
+
+    ]
+    //END states
 
 }
