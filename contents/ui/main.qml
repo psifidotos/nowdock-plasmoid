@@ -35,11 +35,10 @@ Item {
 
     Layout.fillHeight: userPanelPosition === 0 ? true : false
     Layout.fillWidth: userPanelPosition === 0 ? true : false
-/*    Layout.minimumWidth: icList.hoveredIndex >= 0 ? implicitWidth : clearWidth
-    Layout.minimumHeight: icList.hoveredIndex >= 0 ? implicitHeight : clearHeight
-    Layout.preferredWidth: icList.hoveredIndex >= 0 ? implicitWidth : clearWidth
-    Layout.preferredHeight: icList.hoveredIndex >= 0 ? implicitHeight : clearHeight*/
 
+    ///IMPORTANT: These values must be tested when the Now Dock Panel support
+    ///also the four new anchors. A small issue is shown between the animation
+    /// of the now dock plasmoid and the neighbour widgets...
     Layout.minimumWidth: userPanelPosition !== 0 ? clearWidth : -1
     Layout.minimumHeight: userPanelPosition !== 0 ? clearHeight : -1
     Layout.preferredWidth: userPanelPosition !== 0 ? tasksWidth : -1
