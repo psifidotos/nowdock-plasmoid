@@ -40,10 +40,10 @@ Item {
     Layout.preferredWidth: icList.hoveredIndex >= 0 ? implicitWidth : clearWidth
     Layout.preferredHeight: icList.hoveredIndex >= 0 ? implicitHeight : clearHeight*/
 
-    Layout.minimumWidth: tasksWidth
-    Layout.minimumHeight: tasksHeight
-    Layout.preferredWidth:  tasksWidth
-    Layout.preferredHeight: tasksHeight
+    Layout.minimumWidth: userPanelPosition !== 0 ? clearWidth : -1
+    Layout.minimumHeight: userPanelPosition !== 0 ? clearHeight : -1
+    Layout.preferredWidth: userPanelPosition !== 0 ? tasksWidth : -1
+    Layout.preferredHeight: userPanelPosition !== 0 ?tasksHeight : -1
 
 
     property bool debugLocation: false
@@ -174,7 +174,7 @@ Item {
         }
 
         onCountChanged: {
-        //    updateImplicits();
+            updateImplicits();
         }
 
         onLauncherListChanged: {
