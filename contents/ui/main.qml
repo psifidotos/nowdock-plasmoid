@@ -40,7 +40,7 @@ Item {
     ///also the four new anchors. A small issue is shown between the animation
     /// of the now dock plasmoid and the neighbour widgets...
     Layout.minimumWidth: (userPanelPosition !== 0)&&(!nowDockPanel) ? clearWidth : -1
-    Layout.minimumHeight: (userPanelPosition !== 0&&(!nowDockPanel)) ? clearHeight : -1
+    Layout.minimumHeight: (userPanelPosition !== 0)&&(!nowDockPanel) ? clearHeight : -1
     Layout.preferredWidth: (userPanelPosition !== 0)&&(!nowDockPanel) ? tasksWidth : -1
     Layout.preferredHeight: (userPanelPosition !== 0)&&(!nowDockPanel) ? tasksHeight : -1
 
