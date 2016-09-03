@@ -15,14 +15,13 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  2.010-1301, USA.
  */
-
-
 import QtQuick 2.0
 
 import org.kde.plasma.plasmoid 2.0
 
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
+import org.kde.activities 0.1 as Activities
 
 PlasmaComponents.ContextMenu {
     id: menu
@@ -173,8 +172,8 @@ PlasmaComponents.ContextMenu {
         }
     }
 
-   // function activitiesInfo.runningActivities() can not be found
-   // must be debugged
+    // function activitiesInfo.runningActivities() can not be found
+    // must be debugged
 /*
     PlasmaComponents.MenuItem {
         id: activitiesDesktopsMenuItem
@@ -192,6 +191,42 @@ PlasmaComponents.ContextMenu {
 
             onNumberOfRunningActivitiesChanged: activitiesDesktopsMenu.refresh()
         }
+
+
+        Item{
+            id: activityModelInstance
+            property int count: activityModelRepeater.count
+
+            Repeater {
+                id:activityModelRepeater
+                model: Activities.ActivityModel {
+                    id: activityModel
+                    shownStates: "Running"
+                }
+                delegate: Item {
+                    visible: false
+                    property string activityId: model.id
+                    property string activityName: model.name
+                }
+            }
+
+            function get(index){
+               if(index>=0 && index<children.length)
+                   return children[index];
+            }
+
+            function runningActivities(){
+                var activitiesResult = [];
+
+                for(var i=0; i<activityModelInstance.count; ++i){
+                    console.log(get(i).activityId);
+                    activitiesResult.push(get(i).activityId);
+                }
+
+                return activitiesResult;
+            }
+        }
+
 
         PlasmaComponents.ContextMenu {
             id: activitiesDesktopsMenu
@@ -232,7 +267,8 @@ PlasmaComponents.ContextMenu {
 
                 menu.newSeparator(activitiesDesktopsMenu);
 
-                var runningActivities = activityInfo.runningActivities();
+               // var runningActivities = activityInfo.runningActivities();
+                var runningActivities = activityModelInstance.runningActivities();
 
                 for (var i = 0; i < runningActivities.length; ++i) {
                     var activityId = runningActivities[i];
@@ -268,8 +304,8 @@ PlasmaComponents.ContextMenu {
 
             Component.onCompleted: refresh()
         }
-    }
-*/
+    }*/
+
 
     /*
     PlasmaComponents.MenuItem {
