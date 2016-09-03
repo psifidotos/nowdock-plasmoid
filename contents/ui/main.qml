@@ -39,10 +39,10 @@ Item {
     ///IMPORTANT: These values must be tested when the Now Dock Panel support
     ///also the four new anchors. A small issue is shown between the animation
     /// of the now dock plasmoid and the neighbour widgets...
-    Layout.minimumWidth: userPanelPosition !== 0 ? clearWidth : -1
-    Layout.minimumHeight: userPanelPosition !== 0 ? clearHeight : -1
-    Layout.preferredWidth: userPanelPosition !== 0 ? tasksWidth : -1
-    Layout.preferredHeight: userPanelPosition !== 0 ?tasksHeight : -1
+    Layout.minimumWidth: (userPanelPosition !== 0)&&(!nowDockPanel) ? clearWidth : -1
+    Layout.minimumHeight: (userPanelPosition !== 0&&(!nowDockPanel)) ? clearHeight : -1
+    Layout.preferredWidth: (userPanelPosition !== 0)&&(!nowDockPanel) ? tasksWidth : -1
+    Layout.preferredHeight: (userPanelPosition !== 0)&&(!nowDockPanel) ? tasksHeight : -1
 
 
     property bool debugLocation: false
@@ -69,7 +69,7 @@ Item {
     property int noInitCreatedBuffers: 0
     property int noTasksInAnimation: 0
     property int themePanelSize: plasmoid.configuration.panelSize
-    property int userPanelPosition: plasmoid.configuration.panelPosition
+    property int userPanelPosition: plasmoid.configuration.plasmoidPosition
     property int position : PlasmaCore.Types.BottomPositioned
     property int tasksStarting: 0
     property int realSize: iconSize + iconMargin

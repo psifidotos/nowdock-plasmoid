@@ -40,7 +40,7 @@ Item {
     property alias cfg_useThemePanel: useThemePanel.checked
     property alias cfg_panelSize: panelSize.value
     property alias cfg_transparentPanel: transparentPanel.checked
-    property alias cfg_panelPosition: panelPositionCmb.currentIndex
+    property alias cfg_plasmoidPosition: panelPositionCmb.currentIndex
 
     ColumnLayout {
         spacing: 15
