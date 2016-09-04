@@ -23,6 +23,8 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
 import org.kde.activities 0.1 as Activities
 
+import "../code/activitiesTools.js" as ActivitiesTools
+
 PlasmaComponents.ContextMenu {
     id: menu
 
@@ -38,9 +40,12 @@ PlasmaComponents.ContextMenu {
 
     minimumWidth: visualParent ? visualParent.width : 1
 
+    property bool isOnAllActivitiesLauncher: true
+
     onStatusChanged: {
         if (visualParent && visualParent.m.LauncherUrlWithoutIcon != null && status == PlasmaComponents.DialogStatus.Open) {
             launcherToggleAction.checked = (tasksModel.launcherPosition(visualParent.m.LauncherUrlWithoutIcon) != -1);
+            updateOnAllActivitiesLauncher();
         } else if (status == PlasmaComponents.DialogStatus.Closed) {
             checkListHovered.start();
             menu.destroy();
@@ -92,6 +97,19 @@ PlasmaComponents.ContextMenu {
             menu.addMenuItem(newSeparator(menu), virtualDesktopsMenuItem);
         }
     }
+
+    function updateOnAllActivitiesLauncher(){
+        isOnAllActivitiesLauncher = ActivitiesTools.isOnAllActivities(visualParent.m.LauncherUrlWithoutIcon);
+    }
+
+    Component.onCompleted: {
+        ActivitiesTools.launchersOnActivities = panel.launchersOnActivities
+        ActivitiesTools.currentActivity = activityInfo.currentActivity;
+        ActivitiesTools.plasmoid = plasmoid;
+      //  updateOnAllActivitiesLauncher();
+    }
+
+    /// Sub Items
 
     PlasmaComponents.MenuItem {
         id: virtualDesktopsMenuItem
@@ -174,7 +192,7 @@ PlasmaComponents.ContextMenu {
 
     // function activitiesInfo.runningActivities() can not be found
     // must be debugged
-/*
+    /*
     PlasmaComponents.MenuItem {
         id: activitiesDesktopsMenuItem
 
@@ -346,6 +364,21 @@ PlasmaComponents.ContextMenu {
     }
 
     PlasmaComponents.MenuItem {
+        id: launcherToggleOnAllActivitiesAction
+        visible: launcherToggleAction.visible && launcherToggleAction.checked
+        enabled: visualParent && visualParent.m.LauncherUrlWithoutIcon != null
+
+        checkable: true
+        checked: isOnAllActivitiesLauncher
+        text: i18n("Show Launcher On All Activities")
+
+        onClicked:{
+            ActivitiesTools.toggleLauncherState(visualParent.m.LauncherUrlWithoutIcon);
+            updateOnAllActivitiesLauncher();
+        }
+    }
+
+    PlasmaComponents.MenuItem {
         id: launcherToggleAction
 
         visible: (visualParent && visualParent.m.IsLauncher !== true && visualParent.m.IsStartup !== true)
@@ -362,6 +395,19 @@ PlasmaComponents.ContextMenu {
             } else {
                 tasksModel.requestAddLauncher(visualParent.m.LauncherUrl);
             }
+        }
+    }
+
+    PlasmaComponents.MenuItem {
+        visible: (visualParent && visualParent.m.IsLauncher === true)
+
+        checkable: true
+        checked: isOnAllActivitiesLauncher
+        text: i18n("Show Launcher On All Activities")
+
+        onClicked:{
+            ActivitiesTools.toggleLauncherState(visualParent.m.LauncherUrlWithoutIcon);
+            updateOnAllActivitiesLauncher();
         }
     }
 

@@ -28,7 +28,10 @@ import org.kde.plasma.plasmoid 2.0
 import org.kde.taskmanager 0.1 as TaskManager
 import org.kde.plasma.private.taskmanager 0.1 as TaskManagerApplet
 
+import org.kde.activities 0.1 as Activities
+
 import "../code/tools.js" as TaskTools
+import "../code/activitiesTools.js" as ActivitiesTools
 
 Item {
     id:panel
@@ -77,6 +80,8 @@ Item {
 
     property real zoomFactor: ( 1 + (plasmoid.configuration.zoomLevel / 20) )
     property real textColorLuma: 0.2126*theme.textColor.r + 0.7152*theme.textColor.g + 0.0722*theme.textColor.b
+
+    property variant launchersOnActivities: []
 
     property QtObject contextMenuComponent: Qt.createComponent("ContextMenu.qml");
     property Item dragSource: null
@@ -129,7 +134,7 @@ Item {
     Connections {
         target: plasmoid.configuration
 
-        onLaunchersChanged: tasksModel.launcherList = plasmoid.configuration.launchers
+       // onLaunchersChanged: tasksModel.launcherList = plasmoid.configuration.launchers
         onGroupingAppIdBlacklistChanged: tasksModel.groupingAppIdBlacklist = plasmoid.configuration.groupingAppIdBlacklist;
         onGroupingLauncherUrlBlacklistChanged: tasksModel.groupingLauncherUrlBlacklist = plasmoid.configuration.groupingLauncherUrlBlacklist;
     }
@@ -168,6 +173,10 @@ Item {
         sortMode: TaskManager.TasksModel.SortManual
 
         onActivityChanged: {
+            ActivitiesTools.currentActivity = activity;
+            console.log("Updated :"+activity);
+
+            launcherList = ActivitiesTools.restoreLaunchers();
             //panel.updateImplicits();
             //panelGeometryTimer.start();
         }
@@ -177,7 +186,8 @@ Item {
         }
 
         onLauncherListChanged: {
-            plasmoid.configuration.launchers = launcherList;
+           // plasmoid.configuration.launchers = launcherList;
+            ActivitiesTools.updateLaunchers(launcherList);
         }
 
         onGroupingAppIdBlacklistChanged: {
@@ -195,13 +205,18 @@ Item {
             }
         }
 
+
         Component.onCompleted: {
-            launcherList = plasmoid.configuration.launchers;
+            console.log("ACTIVITY:"+activityInfo.currentActivity);
+            ActivitiesTools.launchersOnActivities = panel.launchersOnActivities
+            ActivitiesTools.currentActivity = activityInfo.currentActivity;
+            ActivitiesTools.plasmoid = plasmoid;
+
+            launcherList = ActivitiesTools.restoreLaunchers();
             groupingAppIdBlacklist = plasmoid.configuration.groupingAppIdBlacklist;
             groupingLauncherUrlBlacklist = plasmoid.configuration.groupingLauncherUrlBlacklist;
 
             icList.model = tasksModel;
-
             tasksStarting = count;
         }
     }
@@ -502,7 +517,47 @@ Item {
             TaskTools.publishIconGeometries(icList.contentItem.children);
         }
     }
+    ////Activities List
+    Item{
+        id: activityModelInstance
+        property int count: activityModelRepeater.count
 
+        Repeater {
+            id:activityModelRepeater
+            model: Activities.ActivityModel {
+                id: activityModel
+                shownStates: "Running"
+            }
+            delegate: Item {
+                visible: false
+                property string activityId: model.id
+                property string activityName: model.name
+            }
+        }
+
+        function get(index){
+           if(index>=0 && index<children.length)
+               return children[index];
+        }
+
+        function activities(){
+            var activitiesResult = [];
+
+            for(var i=0; i<activityModelInstance.count; ++i){
+                console.log(get(i).activityId);
+                activitiesResult.push(get(i).activityId);
+            }
+
+            return activitiesResult;
+        }
+
+        Component.onCompleted:{
+            activities();
+        }
+    }
+    /////
+
+    //// functions
     function movePanel(obj, newPosition){
         var bLine = obj;
         if (newPosition === PlasmaCore.Types.BottomPositioned){

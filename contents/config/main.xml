@@ -27,7 +27,7 @@
     <entry name="wheelEnabled" type="Bool">
       <default>true</default>
     </entry>
-    <entry name="launchers" type="StringList">
+    <entry name="launchers" type="String">
       <default></default>
     </entry>
     <entry name="middleClickAction" type="Enum">
