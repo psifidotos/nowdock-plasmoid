@@ -42,6 +42,8 @@ PlasmaComponents.ContextMenu {
 
     property bool isOnAllActivitiesLauncher: true
 
+    property int activitiesCount: 0
+
     onStatusChanged: {
         if (visualParent && visualParent.m.LauncherUrlWithoutIcon != null && status == PlasmaComponents.DialogStatus.Open) {
             launcherToggleAction.checked = (tasksModel.launcherPosition(visualParent.m.LauncherUrlWithoutIcon) != -1);
@@ -365,7 +367,7 @@ PlasmaComponents.ContextMenu {
 
     PlasmaComponents.MenuItem {
         id: launcherToggleOnAllActivitiesAction
-        visible: launcherToggleAction.visible && launcherToggleAction.checked
+        visible: launcherToggleAction.visible && launcherToggleAction.checked && activitiesCount > 1
         enabled: visualParent && visualParent.m.LauncherUrlWithoutIcon != null
 
         checkable: true
@@ -399,7 +401,7 @@ PlasmaComponents.ContextMenu {
     }
 
     PlasmaComponents.MenuItem {
-        visible: (visualParent && visualParent.m.IsLauncher === true)
+        visible: (visualParent && visualParent.m.IsLauncher === true) && activitiesCount > 1
 
         checkable: true
         checked: isOnAllActivitiesLauncher

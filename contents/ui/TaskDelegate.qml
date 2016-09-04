@@ -564,6 +564,7 @@ Component {
             }
             else if (mouse.button == Qt.RightButton){
                 mainItemContainer.contextMenu = panel.contextMenuComponent.createObject(mainItemContainer);
+                mainItemContainer.contextMenu.activitiesCount = activityModelInstance.count;
                 mainItemContainer.contextMenu.visualParent = mainItemContainer;
                 mainItemContainer.contextMenu.show();
             }

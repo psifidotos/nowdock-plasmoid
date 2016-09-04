@@ -116,7 +116,7 @@ Item {
 
 
 
-   /* Rectangle{
+    /* Rectangle{
                 anchors.fill: parent
                 border.width: 1
                 border.color: "red"
@@ -134,7 +134,7 @@ Item {
     Connections {
         target: plasmoid.configuration
 
-       // onLaunchersChanged: tasksModel.launcherList = plasmoid.configuration.launchers
+        // onLaunchersChanged: tasksModel.launcherList = plasmoid.configuration.launchers
         onGroupingAppIdBlacklistChanged: tasksModel.groupingAppIdBlacklist = plasmoid.configuration.groupingAppIdBlacklist;
         onGroupingLauncherUrlBlacklistChanged: tasksModel.groupingLauncherUrlBlacklist = plasmoid.configuration.groupingLauncherUrlBlacklist;
     }
@@ -174,7 +174,7 @@ Item {
 
         onActivityChanged: {
             ActivitiesTools.currentActivity = activity;
-            console.log("Updated :"+activity);
+            //  console.log("Updated :"+activity);
 
             launcherList = ActivitiesTools.restoreLaunchers();
             //panel.updateImplicits();
@@ -186,7 +186,7 @@ Item {
         }
 
         onLauncherListChanged: {
-           // plasmoid.configuration.launchers = launcherList;
+            // plasmoid.configuration.launchers = launcherList;
             ActivitiesTools.updateLaunchers(launcherList);
         }
 
@@ -207,7 +207,6 @@ Item {
 
 
         Component.onCompleted: {
-            console.log("ACTIVITY:"+activityInfo.currentActivity);
             ActivitiesTools.launchersOnActivities = panel.launchersOnActivities
             ActivitiesTools.currentActivity = activityInfo.currentActivity;
             ActivitiesTools.plasmoid = plasmoid;
@@ -309,7 +308,7 @@ Item {
 
         opacity: (tasksModel.count > 0) && panel.initializatedBuffers ? 1 : 0
 
-    /*    anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
+        /*    anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
         anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
         anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
         anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
@@ -429,7 +428,7 @@ Item {
             property bool delayingRemoval: false
 
             //  property int count: children ? children.length : 0
-         /*   anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
+            /*   anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
             anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
             anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
             anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
@@ -517,7 +516,9 @@ Item {
             TaskTools.publishIconGeometries(icList.contentItem.children);
         }
     }
+
     ////Activities List
+    ////it can be used to cleanup the launchers from garbage-deleted activities....
     Item{
         id: activityModelInstance
         property int count: activityModelRepeater.count
@@ -526,7 +527,7 @@ Item {
             id:activityModelRepeater
             model: Activities.ActivityModel {
                 id: activityModel
-                shownStates: "Running"
+                //  shownStates: "Running"
             }
             delegate: Item {
                 visible: false
@@ -535,27 +536,28 @@ Item {
             }
         }
 
-        function get(index){
-           if(index>=0 && index<children.length)
-               return children[index];
-        }
-
         function activities(){
             var activitiesResult = [];
 
             for(var i=0; i<activityModelInstance.count; ++i){
-                console.log(get(i).activityId);
-                activitiesResult.push(get(i).activityId);
+                console.log(children[i].activityId);
+                activitiesResult.push(children[i].activityId);
             }
 
             return activitiesResult;
         }
 
-        Component.onCompleted:{
-            activities();
+        onCountChanged: {
+            if(activityInfo.currentActivity != "00000000-0000-0000-0000-000000000000"){
+                console.log("----------- Now Dock Signal: Activities number was changed ---------");
+                var allActivities = activities();
+                ActivitiesTools.cleanupRecords(allActivities);
+                console.log("----------- Now Dock Signal End ---------");
+            }
         }
     }
-    /////
+
+    /////////
 
     //// functions
     function movePanel(obj, newPosition){
@@ -608,8 +610,8 @@ Item {
             var clearSmallAxis = (iconSize+iconMargin);
 
             //  debugging code
-       //     ncounter++;
-      //      console.log("Implicits______ "+ncounter+". - "+tasksModel.count);
+            //     ncounter++;
+            //      console.log("Implicits______ "+ncounter+". - "+tasksModel.count);
 
             if (panel.vertical){
                 panel.implicitWidth = smallAxis;

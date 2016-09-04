@@ -19,7 +19,7 @@
 var currentActivity;
 var launchersOnActivities;
 //it is used as the first item in the stringList in order to check the list is ok
-var indicator = 'multi2';
+var indicator = 'multi';
 var plasmoid;
 
 function restoreLaunchers(){
@@ -29,44 +29,35 @@ function restoreLaunchers(){
         values = values.split(";");
         var returnedStringList = [];
 
-     //   console.log("----------------------- Restoring ---------------------");
-       // console.log("Full Restoration:"+values);
+    //    console.log("----------------------- Restoring ---------------------");
+     //   console.log("Full Restoration:"+values);
         var type = values.splice(0,1);
 
-      //  console.log("Pass 1 - " +type);
+        //  console.log("Pass 1 - " +type);
         if (type == indicator){
-          //  console.log("Pass 2");
+            //  console.log("Pass 2");
             while (values.length > 2){
-             //   console.log("Pass 3 - "+values);
+                //   console.log("Pass 3 - "+values);
                 var actId = values[0];
                 var subLaunchers = values.splice(2,values[1]);
-             //   console.log("To Be Restored launchers, "+actId+ ", "+subLaunchers.length+", "+subLaunchers);
+            //  console.log("To Be Restored launchers, "+actId+ ", "+subLaunchers.length+", "+subLaunchers);
 
                 var activityRecord = get(actId);
                 if(activityRecord){
-              //      console.log("Activity item found...");
+                    //      console.log("Activity item found...");
                     if(activityRecord.launchers)
                         activityRecord.launchers.splice(0,activityRecord.launchers.length);
 
                     activityRecord.launchers = subLaunchers;
                 }
                 else{
-              //      console.log("Activity item is added...");
+                    //      console.log("Activity item is added...");
                     var res = {id:values[0], launchers:subLaunchers};
                     launchersOnActivities.push(res);
                 }
 
                 values.splice(0,2);
 
-           /*     if (get(actId)){
-                    if(get(actId).launchers)
-                        console.log("Restored launchers, "+actId+ ", "+get(actId).launchers.length+", "+get(actId).launchers);
-                    else
-                        console.log("Broken Item No Activities: "+actId);
-                }
-                else{
-                    console.log("Broken Item No Array Item: "+actId);
-                }*/
             }
         }
 
@@ -80,7 +71,7 @@ function restoreLaunchers(){
         if (get(currentActivity))
             returnedStringList = returnedStringList.concat(get(currentActivity).launchers);
 
-   //     console.log("Restored Strings:"+returnedStringList);
+        //     console.log("Restored Strings:"+returnedStringList);
 
         return returnedStringList;
     }
@@ -91,62 +82,92 @@ function restoreLaunchers(){
 function saveLaunchers(){
   //  console.log("----------------------- Saving ---------------------");
 
-    var returnedStringList = [indicator];
-  //  console.log("Array Size:"+launchersOnActivities.length);
-    for(var i=launchersOnActivities.length-1; i>=0; --i){
+    var returnedStringList = [];
+    returnedStringList.push(indicator);
+
+    //  console.log("Array Size:"+launchersOnActivities.length);
+    var size = launchersOnActivities.length;
+    for(var i=size-1; i>=0; --i){
         var activitySaving = get(launchersOnActivities[i].id);
      //   console.log("Saving, "+activitySaving.id + " - "+activitySaving.launchers.length+" - "+activitySaving.launchers);
         if(activitySaving.launchers.length>0){
-            returnedStringList = returnedStringList.concat(activitySaving.id);
-            returnedStringList = returnedStringList.concat(activitySaving.launchers.length);
-            returnedStringList = returnedStringList.concat(activitySaving.launchers);
+        /*    console.log("------- "+activitySaving.id+" ----------");
+            for(var j=0; j<activitySaving.launchers.length; ++j){
+                console.log(activitySaving.launchers[j]);
+            }*/
+
+            returnedStringList = returnedStringList.concat(String(activitySaving.id));
+            returnedStringList = returnedStringList.concat(String(activitySaving.launchers.length));
+            // this creates segmentation faults in some cases!!!!
+          //  returnedStringList = returnedStringList.concat(activitySaving.launchers);
+
+            //this fixes the segmentation fault of previous command....
+            for(var j=0; j<activitySaving.launchers.length; ++j){
+                returnedStringList.push(String(activitySaving.launchers[j]));
+            }
+
+            ///check returnedStringList integrity
+     /*       for(var j=0; j<returnedStringList.length; ++j){
+                console.log("--- "+j+". "+returnedStringList[j]);
+            }*/
         }
     }
 
-   // console.log("IMPORTANT SAVED LIST: "+returnedStringList);
+  /*  console.log("I am out..... "+returnedStringList.length);
+    for(var i=0; i<returnedStringList.length; ++i){
+        console.log(i+". "+returnedStringList[i]);
+    }*/
+
+    // console.log("IMPORTANT SAVED LIST: "+returnedStringList);
 
     plasmoid.configuration.launchers = returnedStringList.join(";");
 }
 
 function updateLaunchers(launcherList){
-  //  console.log("----------------------- Updating ---------------------");
+   // console.log("----------------------- Updating ---------------------");
+  //  console.log("---- Full Launchers ------");
+   /* for(var j=0; j<launcherList.length; ++j){
+        console.log(launcherList[j]);
+    } */
+
+
     var tempList;
     if(launcherList.length > 0){
-        tempList= launcherList.concat();
-        tempList = String(tempList).split(",");
+        tempList = launcherList.slice(0);
     }
     else{
         tempList =[];
-        resultedCurrent = [];
     }
 
-   // console.log("IMPORTANT SENT LIST: "+tempList.length+" - "+launcherList.length+" - "+tempList);
+    // console.log("IMPORTANT SENT LIST: "+tempList.length+" - "+launcherList.length+" - "+tempList);
     //
-  //  console.log("In memory Defaults:" + get('*').launchers);
-  //  if(get(currentActivity))
+    //  console.log("In memory Defaults:" + get('*').launchers);
+    //  if(get(currentActivity))
     //    console.log("In memory Current: "+get(currentActivity).launchers.length+ ' - ' + get(currentActivity).launchers);
 
     var currentList = get(currentActivity);
 
     var resultedCurrent = [];
-    console.log("-------------");
+    // console.log("-------------");
 
     for(var i=tempList.length-1; i>=0; --i){
         var index=-1;
         if(currentList){
             index = getIndex(String(tempList[i]), currentList.launchers);
-    //        console.log("Searching in activity: "+i+", "+String(tempList[i]+" - "+currentList.launchers.length+", "+currentList.launchers));
         }
-  //      else
-    //        console.log("Searching in empty activity: "+i+", "+tempList[i]);
 
-        if(index >=0 || isInSpecificActivity(String(tempList[i]))){
-     //       console.log("found something in index... "+index);
-            resultedCurrent.unshift(tempList.splice(i,1));
+        if(index >=0 || isInSpecificActivity(tempList[i])){
+            var result = tempList.splice(i,1);
+            resultedCurrent.unshift(String(result));
         }
     }
 
-  //  console.log("Resulted Current: "+resultedCurrent);
+   // console.log("Resulted Current: "+resultedCurrent);
+
+ /*   console.log("---- To Be Set List ------");
+    for(var j=0; j<resultedCurrent.length; ++j){
+        console.log(resultedCurrent[j]);
+    }*/
 
     setActivityLaunchers(resultedCurrent, currentActivity);
     setDefaultLaunchers(tempList);
@@ -155,6 +176,20 @@ function updateLaunchers(launcherList){
 }
 
 /////////////
+function cleanupRecords(activities){
+    for(var i=0; i<launchersOnActivities.length; ++i){
+        if(launchersOnActivities[i].id != '*'){
+            var index = getIndex(launchersOnActivities[i].id, activities);
+            if(index < 0){
+                console.log("Orphaned Activity Settings removed:"+launchersOnActivities[i].id);
+                launchersOnActivities.splice(index,1);
+            }
+        }
+    }
+    saveLaunchers();
+}
+
+
 function getIndex(id, list){
     if(list){
         for(var i=0; i<list.length; ++i){
@@ -201,6 +236,7 @@ function isInSpecificActivity(id){
 
 
 function setDefaultLaunchers(launchersList){
+  //  console.log("Set Default Launchers");
     if(!get('*')){
         var result = {id:'*', launchers:launchersList};
         launchersOnActivities.push(result);
@@ -211,25 +247,31 @@ function setDefaultLaunchers(launchersList){
         get('*').launchers=launchersList;
     }
 
-   // console.log("Default:::: "+get('*').launchers);
+    // console.log("Default:::: "+get('*').launchers);
 }
 
 function setActivityLaunchers(launchersList, actId){
+   // console.log("Set Activity Launchers");
     var currentList = get(actId);
-  //  console.log("-------------");
-  //  console.log("ResultedForMemory: "+launchersList);
+    //  console.log("-------------");
+    //  console.log("ResultedForMemory: "+launchersList);
     if(currentList){
         if(currentList.launchers)
             currentList.launchers.splice(0,currentList.launchers.length);
 
+      //  console.log("list exists");
         currentList.launchers=launchersList;
     }
     else{
+    //    console.log("new list");
         var res = {id:actId, launchers:launchersList};
         launchersOnActivities.push(res);
     }
- //   console.log("New Memory List: "+get(actId).launchers);
 
+ /*   console.log("New Memory List: "+get(actId).launchers);
+    for(var j=0; j<get(actId).launchers.length; ++j){
+        console.log(get(actId).launchers[j]);
+    } */
 }
 
 ///from launcher to All Activities to the current only and vice versa
@@ -270,27 +312,24 @@ function removeFromList(id, activityId){
         var index = getIndex(String(id),activityList);
 
         if(index >= 0){
-            console.log("ok removed... "+index);
             activityList.splice(index, 1);
         }
     }
 }
 
 function addToList(id, activityId){
-    var list = get(activityId);
-    if(!list){
-        var newLaunchers = [id];
-        var res = {id:activityId, launchers:newLaunchers};
+    var activity = get(activityId);
+    if(!activity){
+        var res = {id:activityId, launchers:[]};
+        res.launchers.push(id);
         launchersOnActivities.push(res);
     }
     else{
-        var activityList = list.launchers;
-        var index = getIndex(id,activityList);
+        var launcherList = activity.launchers;
+        var index = getIndex(id,launcherList);
         if(index<0){
-            list.launchers.push(id);
+            launcherList.push(id);
         }
+
     }
 }
-
-
-
