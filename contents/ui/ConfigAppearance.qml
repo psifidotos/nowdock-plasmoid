@@ -24,6 +24,8 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
 
 Item {
+    id: mainItem
+
     width: childrenRect.width
     height: childrenRect.height
 
@@ -41,6 +43,9 @@ Item {
     property alias cfg_panelSize: panelSize.value
     property alias cfg_transparentPanel: transparentPanel.checked
     property alias cfg_plasmoidPosition: panelPositionCmb.currentIndex
+    property alias cfg_isInNowDockPanel: mainItem.isInNowDockPanel
+
+    property bool isInNowDockPanel
 
     ColumnLayout {
         spacing: 15
@@ -165,6 +170,7 @@ Item {
 
 
                 GridLayout{
+                    enabled: !mainItem.isInNowDockPanel
                     Layout.fillWidth: true
                     columns: 3
                     property bool panelConfigEnabled: showBarLine.checked && useThemePanel.checked

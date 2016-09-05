@@ -65,20 +65,19 @@ Item {
 
     property int clearWidth
     property int clearHeight
-    property int iconSize: Math.max(plasmoid.configuration.iconSize, 16)
+
     property int iconMargin: 5
     property int newLocationDebugUse: PlasmaCore.Types.BottomPositioned
     property int newDroppedPosition: -1
     property int noInitCreatedBuffers: 0
     property int noTasksInAnimation: 0
     property int themePanelSize: plasmoid.configuration.panelSize
-    property int userPanelPosition: plasmoid.configuration.plasmoidPosition
+
     property int position : PlasmaCore.Types.BottomPositioned
     property int tasksStarting: 0
     property int realSize: iconSize + iconMargin
     property int statesLineSize: Math.ceil( panel.iconSize/13 )
 
-    property real zoomFactor: ( 1 + (plasmoid.configuration.zoomLevel / 20) )
     property real textColorLuma: 0.2126*theme.textColor.r + 0.7152*theme.textColor.g + 0.0722*theme.textColor.b
 
     property variant launchersOnActivities: []
@@ -94,8 +93,12 @@ Item {
     property bool disableRightSpacer: false
 
     property alias tasksCount: tasksModel.count
+    property int iconSize: nowDockPanel ? nowDockPanel.iconSize : Math.max(plasmoid.configuration.iconSize, 16)
     property int tasksHeight: mouseHandler.height
     property int tasksWidth: mouseHandler.width
+    property int userPanelPosition: nowDockPanel ? nowDockPanel.userPanelPosition : plasmoid.configuration.plasmoidPosition
+
+    property real zoomFactor: nowDockPanel ? nowDockPanel.zoomFactor : ( 1 + (plasmoid.configuration.zoomLevel / 20) )
 
     property Item nowDockPanel: null
     //END Now Dock Panel properties
@@ -122,6 +125,13 @@ Item {
                 border.color: "red"
                 color: "white"
             } */
+    onNowDockPanelChanged: {
+        if (nowDockPanel)
+            plasmoid.configuration.isInNowDockPanel = true;
+        else
+            plasmoid.configuration.isInNowDockPanel = false;
+    }
+
 
     Connections {
         target: plasmoid
