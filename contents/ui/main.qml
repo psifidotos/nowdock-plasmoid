@@ -191,9 +191,9 @@ Item {
             //panelGeometryTimer.start();
         }
 
-        onCountChanged: {
-            updateImplicits();
-        }
+    //    onCountChanged: {
+         //   updateImplicits();
+      //  }
 
         onLauncherListChanged: {
             // plasmoid.configuration.launchers = launcherList;
@@ -435,7 +435,11 @@ Item {
             property int hoveredIndex : -1
             property int previousCount : 0
 
+            property int tasksCount: contentItem.children.length
+
             property bool delayingRemoval: false
+
+            onTasksCountChanged: updateImplicits();
 
             //  property int count: children ? children.length : 0
             /*   anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
@@ -612,7 +616,7 @@ Item {
         if(icList.previousCount !== icList.count){
             icList.previousCount = icList.count;
 
-            var zoomedLength = Math.floor( 1.7 * (iconSize+iconMargin) * (panel.zoomFactor));
+            var zoomedLength = Math.floor( 1.2 * (iconSize+iconMargin) * (panel.zoomFactor));
             var bigAxis = (tasksModel.count-1) * (iconSize+iconMargin) + zoomedLength
             var smallAxis = zoomedLength + 1
 
