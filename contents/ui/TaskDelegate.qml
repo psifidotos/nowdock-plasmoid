@@ -550,6 +550,10 @@ Component {
                 if(!inAnimation)
                     pressed=false;
             }
+
+            if (isWindow) {
+                panel.windowsHovered(model.LegacyWinIdList, containsMouse);
+            }
         }
 
         onPressed: {

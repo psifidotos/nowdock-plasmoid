@@ -117,8 +117,6 @@ Item {
     signal updateScale(int delegateIndex, real newScale, real step)
     signal windowsHovered(variant winIds, bool hovered)
 
-
-
     /* Rectangle{
                 anchors.fill: parent
                 border.width: 1
@@ -235,7 +233,7 @@ Item {
 
         taskManagerItem: panel
         //toolTipItem: toolTipDelegate
-        //highlightWindows: plasmoid.configuration.highlightWindows
+        highlightWindows: plasmoid.configuration.highlightWindows
 
         onAddLauncher: {
             tasksModel.requestAddLauncher(url);
@@ -760,11 +758,11 @@ Item {
 
     Component.onCompleted:  {
         updatePosition();
-        //   updateImplicits(); // the models items have not been added yet
+
         panel.presentWindows.connect(backend.presentWindows);
+        panel.windowsHovered.connect(backend.windowsHovered);
         mouseHandler.urlDropped.connect(backend.urlDropped);
         dragHelper.dropped.connect(resetDragSource);
-        //    iconGeometryTimer.start();
     }
 
     //BEGIN states

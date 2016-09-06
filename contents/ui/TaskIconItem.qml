@@ -51,7 +51,7 @@ Item{
     property int shadowInterval: firstDrawed ? firstDrawedInterval : 250
     property int shadowSize : Math.ceil(panel.iconSize / 20)
 
-    readonly property bool smartLauncherEnabled: mainItemContainer.isStartup === false
+    readonly property bool smartLauncherEnabled: ((mainItemContainer.isStartup === false) && (plasmoid.configuration.smartLaunchersEnabled))
     property QtObject smartLauncherItem: null
 
 
@@ -202,7 +202,8 @@ Item{
         anchors.fill: iconImageBuffer
         asynchronous: true
         source: "TaskProgressOverlay.qml"
-        active: (centralItem.smartLauncherEnabled && centralItem.smartLauncherItem && centralItem.smartLauncherItem.progressVisible)
+        active: (centralItem.smartLauncherEnabled && centralItem.smartLauncherItem
+                 && centralItem.smartLauncherItem.progressVisible)
     }
 
     ///////Activate animation/////

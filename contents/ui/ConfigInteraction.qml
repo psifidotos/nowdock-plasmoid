@@ -31,12 +31,14 @@ Item {
     property bool vertical: (plasmoid.formFactor == PlasmaCore.Types.Vertical)
 
     property alias cfg_wheelEnabled: wheelEnabled.checked
-    property alias cfg_smartLaunchersEnabled: smartLaunchers.checked
     property alias cfg_middleClickAction: middleClickAction.currentIndex
 
     property alias cfg_showOnlyCurrentScreen: showOnlyCurrentScreen.checked
     property alias cfg_showOnlyCurrentDesktop: showOnlyCurrentDesktop.checked
     property alias cfg_showOnlyCurrentActivity: showOnlyCurrentActivity.checked
+
+    property alias cfg_highlightWindows: highlightWindowsChk.checked
+    property alias cfg_smartLaunchersEnabled: smartLaunchersChk.checked
 
     ColumnLayout{
         spacing: 15
@@ -56,10 +58,16 @@ Item {
                 }
 
                 CheckBox {
-                    id: smartLaunchers
+                    id: highlightWindowsChk
                     Layout.fillWidth: true
-                    text: i18n("Show progress and status information in task buttons")
-                    enabled: false
+                    text: i18n("Highlight windows on hovering")
+                }
+
+
+                CheckBox {
+                    id: smartLaunchersChk
+                    Layout.fillWidth: true
+                    text: i18n("Show progress information in task buttons")
                 }
 
                 RowLayout {
