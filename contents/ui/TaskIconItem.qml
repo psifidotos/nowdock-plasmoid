@@ -718,20 +718,20 @@ Item{
                 height: width
                 visible:false
 
-           //     KQuickControlAddons.QIconItem{
-                PlasmaCore.IconItem{
+                KQuickControlAddons.QIconItem{
+             //   PlasmaCore.IconItem{
                     id: iconImage2
 
                     width: panel.zoomFactor * panel.iconSize
                     height: width
                     anchors.centerIn: parent
 
-                //   icon: decoration
-                //    state: KQuickControlAddons.QIconItem.DefaultState
-                    active: false
+                    icon: decoration
+                    state: KQuickControlAddons.QIconItem.DefaultState
+                 //   active: false
                     enabled: true
-                    source: decoration
-                    usesPlasmaTheme: false
+                //    source: decoration
+                //    usesPlasmaTheme: false
 
                     visible: true
                 }
@@ -746,26 +746,26 @@ Item{
 
                 visible:false
 
-              //  KQuickControlAddons.QIconItem{
-                PlasmaCore.IconItem{
+                KQuickControlAddons.QIconItem{
+               // PlasmaCore.IconItem{
                     id: iconImage
 
                     width: panel.iconSize
                     height: width
                     anchors.centerIn: parent
 
-                 //   icon: decoration
+                    icon: decoration
                     state: KQuickControlAddons.QIconItem.DefaultState
-                    active: false
+                 //   active: false
                     enabled: true
-                    source: decoration
-                    usesPlasmaTheme: false
+                 //   source: decoration
+                 //   usesPlasmaTheme: false
 
                     visible: true
 
-                    onSourceChanged: {
-                        centralItem.updateImages();
-                    }
+                //    onSourceChanged: {
+                     //   centralItem.updateImages();
+                  //  }
 
                     Component{
                         id:tttTimer
