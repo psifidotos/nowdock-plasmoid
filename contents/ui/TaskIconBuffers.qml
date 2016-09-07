@@ -28,23 +28,41 @@ Component {
             height: width
             visible:false
 
-            //property real middleZoomFactor: (panel.iconSize == 32) ? (panel.zoomFactor > 1.5 ? 2 : 1.5) : panel.zoomFactor
-            property real middleZoomFactor: panel.zoomFactor
+            //trying to return that make sense for small icon sizes
+            property real middleZoomFactor: {
+                if(panel.iconSize == 32){
+                    if(panel.zoomFactor > 1.5)
+                        return 2;
+                    else
+                        return 1.5;
+                }
+                else if(panel.iconSize == 22){
+                    if(panel.zoomFactor > 1.4)
+                        return 2.18;
+                    else
+                        return 1.33;
+                }
+                else{
+                    return panel.zoomFactor;
+                }
 
-            KQuickControlAddons.QIconItem{
-                //    PlasmaCore.IconItem{
+            }
+           // property real middleZoomFactor: panel.zoomFactor
+
+            //  KQuickControlAddons.QIconItem{
+            PlasmaCore.IconItem{
                 id: iconImage2
 
                 width: fixedIcon2.middleZoomFactor * panel.iconSize
                 height: width
                 anchors.centerIn: parent
 
-                icon: decoration
-                state: KQuickControlAddons.QIconItem.DefaultState
-                //     active: false
+                //     icon: decoration
+                //    state: KQuickControlAddons.QIconItem.DefaultState
+                active: false
                 enabled: true
-                //     source: decoration
-                //    usesPlasmaTheme: false
+                source: decoration
+                usesPlasmaTheme: false
 
                 visible: true
             }
@@ -59,20 +77,20 @@ Component {
 
             visible:false
 
-            KQuickControlAddons.QIconItem{
-                //  PlasmaCore.IconItem{
+            //   KQuickControlAddons.QIconItem{
+            PlasmaCore.IconItem{
                 id: iconImage
 
                 width: panel.iconSize
                 height: width
                 anchors.centerIn: parent
 
-                icon: decoration
-                state: KQuickControlAddons.QIconItem.DefaultState
-                //   active: false
+                //   icon: decoration
+                //   state: KQuickControlAddons.QIconItem.DefaultState
+                active: false
                 enabled: true
-                //   source: decoration
-                //  usesPlasmaTheme: false
+                source: decoration
+                usesPlasmaTheme: false
 
                 visible: true
 

@@ -95,7 +95,7 @@ Item{
         width: newTempSize + 2*centralItem.shadowSize
         height: width
 
-        source: (wrapper.scale>internalLimit && (zoomedSize>=32 && panel.zoomFactor>1.3)) ?
+        source: (wrapper.scale>internalLimit && panel.iconSize>=32) ?
                     zoomedImage.source : normalImage.source
     //    source: (wrapper.scale>internalLimit) ?
            //              zoomedImage.source : normalImage.source
