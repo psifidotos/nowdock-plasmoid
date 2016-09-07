@@ -52,7 +52,10 @@ Item{
     property int shadowSize : Math.ceil(panel.iconSize / 20)
 
     readonly property bool smartLauncherEnabled: ((mainItemContainer.isStartup === false) && (plasmoid.configuration.smartLaunchersEnabled))
+    readonly property variant iconDecoration: decoration
+    property QtObject buffers: null
     property QtObject smartLauncherItem: null
+
 
 
     Connections{
@@ -62,6 +65,9 @@ Item{
         onEnableShadowsChanged: updateImages()
     }
 
+    onIconDecorationChanged: {
+      //  updateImages();
+    }
 
     Rectangle{
         id: draggedRectangle
@@ -89,8 +95,10 @@ Item{
         width: newTempSize + 2*centralItem.shadowSize
         height: width
 
-        source: (wrapper.scale>internalLimit && (zoomedSize>=64)) ?
+        source: (wrapper.scale>internalLimit && (zoomedSize>=32 && panel.zoomFactor>1.3)) ?
                     zoomedImage.source : normalImage.source
+    //    source: (wrapper.scale>internalLimit) ?
+           //              zoomedImage.source : normalImage.source
 
         property int zoomedSize: panel.zoomFactor * panel.iconSize
 
@@ -194,7 +202,8 @@ Item{
 
     Loader{
         id:defaultWithShadow
-        sourceComponent: component
+        //sourceComponent: imageBufferingComponent
+        sourceComponent: TaskIconBuffers{}
         active: mainItemContainer.isStartup ? false : true
     }
 
@@ -266,6 +275,10 @@ Item{
 
             smartLauncherItem = smartLauncher;
         }
+
+        //if(!mainItemContainer.isStartup)
+        //   updateBuffers();
+
     }
 
     Component.onDestruction: {
@@ -690,220 +703,16 @@ Item{
 
     function updateImages(){
         if(panel){
-            if(defaultWithShadow.item){
-                defaultWithShadow.item.updateImage();
-            }
+             if(defaultWithShadow.item){
+                    defaultWithShadow.item.updateImage();
+              }
         }
     }
-
 
     ///////////////Buffering
-
-    Component {
-        id: component
-        Item {
-            id: yourImageWithLoadedIconContainer
-            anchors.fill: parent
-
-            visible: false
-
-            function updateImage(){
-                tttTimer.createObject(iconImage);
-            }
-
-            Item{
-                id:fixedIcon2
-
-                width: panel.zoomFactor * (panel.iconSize + 2*shadowImageNoActive.radius)
-                height: width
-                visible:false
-
-                KQuickControlAddons.QIconItem{
-             //   PlasmaCore.IconItem{
-                    id: iconImage2
-
-                    width: panel.zoomFactor * panel.iconSize
-                    height: width
-                    anchors.centerIn: parent
-
-                    icon: decoration
-                    state: KQuickControlAddons.QIconItem.DefaultState
-                 //   active: false
-                    enabled: true
-                //    source: decoration
-                //    usesPlasmaTheme: false
-
-                    visible: true
-                }
-            }
-
-
-            Item{
-                id:fixedIcon
-
-                width: panel.iconSize + 2*shadowImageNoActive.radius
-                height: width
-
-                visible:false
-
-                KQuickControlAddons.QIconItem{
-               // PlasmaCore.IconItem{
-                    id: iconImage
-
-                    width: panel.iconSize
-                    height: width
-                    anchors.centerIn: parent
-
-                    icon: decoration
-                    state: KQuickControlAddons.QIconItem.DefaultState
-                 //   active: false
-                    enabled: true
-                 //   source: decoration
-                 //   usesPlasmaTheme: false
-
-                    visible: true
-
-                //    onSourceChanged: {
-                     //   centralItem.updateImages();
-                  //  }
-
-                    Component{
-                        id:tttTimer
-
-                        Timer{
-                            id:ttt
-                            repeat:false
-                            interval: centralItem.shadowInterval
-
-                            //   property int counter2: 0;
-
-                            onTriggered: {
-                                if((index !== -1) &&(!centralItem.toBeDestroyed) &&(!mainItemContainer.delayingRemove)){
-                                    if(panel.initializationStep){
-                                        panel.initializationStep = false;
-                                    }
-
-                                    centralItem.firstDrawed = true;
-                                    if(normalImage.source)
-                                        normalImage.source.destroy();
-                                    if(zoomedImage.source)
-                                        zoomedImage.source.destroy();
-                                    if(iconImageBuffer.source)
-                                        iconImageBuffer.source.destroy();
-                                    //           if(iconHoveredBuffer.source)
-                                    //    iconHoveredBuffer.source.destroy();
-
-                                    if(panel.enableShadows == true){
-                                        shadowImageNoActive.grabToImage(function(result) {
-                                            normalImage.source = result.url;
-                                            result.destroy();
-                                        }, Qt.size(fixedIcon.width,fixedIcon.height) );
-
-                                        shadowImageNoActive2.grabToImage(function(result) {
-                                            zoomedImage.source = result.url;
-                                            result.destroy();
-                                        }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
-                                    }
-                                    else{
-                                        fixedIcon.grabToImage(function(result) {
-                                            normalImage.source = result.url;
-                                            result.destroy();
-                                        }, Qt.size(fixedIcon.width,fixedIcon.height) );
-
-                                        fixedIcon2.grabToImage(function(result) {
-                                            zoomedImage.source = result.url;
-                                            result.destroy();
-                                        }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
-                                    }
-
-                                    /*         hoveredImage.grabToImage(function(result) {
-                                        iconHoveredBuffer.source = result.url;
-                                        result.destroy();
-                                    }, Qt.size(fixedIcon2.width,fixedIcon2.height) );*/
-
-
-                                    mainItemContainer.buffersAreReady = true;
-                                    if(!panel.initializatedBuffers)
-                                        panel.noInitCreatedBuffers++;
-
-                                    iconImageBuffer.opacity = 1;
-                                }
-
-                                ttt.destroy(300);
-                            }
-
-                            Component.onCompleted: ttt.start();
-
-                            Component.onDestruction: {
-                                if(normalImage.source)
-                                    normalImage.source.destroy();
-                                if(zoomedImage.source)
-                                    zoomedImage.source.destroy();
-                                if(iconImageBuffer.source)
-                                    iconImageBuffer.source.destroy();
-                                //      if(iconHoveredBuffer.source)
-                                //     iconHoveredBuffer.source.destroy();
-
-                                if(removingAnimation.removingItem)
-                                    removingAnimation.removingItem.destroy();
-
-                                gc();
-                            }
-                        }// end of timer
-
-                    }//end of component of timer
-
-                    Component.onCompleted: {
-                        tttTimer.createObject(iconImage);
-                    }
-                }
-            }
-
-            DropShadow {
-                id:shadowImageNoActive
-                visible: false
-                width: fixedIcon.width
-                height: fixedIcon.height
-                anchors.centerIn: fixedIcon
-
-                radius: centralItem.shadowSize
-                samples: 2 * radius
-                color: "#cc080808"
-                source: fixedIcon
-
-                verticalOffset: 2
-            }
-
-            DropShadow {
-                id:shadowImageNoActive2
-                visible: false
-                width: fixedIcon2.width
-                height: fixedIcon2.height
-                anchors.centerIn: fixedIcon2
-
-                radius: Math.ceil(panel.zoomFactor*centralItem.shadowSize)
-                samples: 2 * radius
-                color: "#cc080808"
-                source: fixedIcon2
-
-                verticalOffset: 2
-            }
-
-            /*        BrightnessContrast{
-                id:hoveredImage
-                visible: false
-                width: fixedIcon2.width
-                height: fixedIcon2.height
-                anchors.centerIn: fixedIcon2
-
-                brightness: 0.25
-                source: fixedIcon2
-            }*/
-        }
-    }
-
-
     ///////////// Component for animating removing window from group
+
+
 
     Component {
         id: removeTaskComponent
