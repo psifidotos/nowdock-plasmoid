@@ -113,11 +113,6 @@ Component {
                             panel.initializationStep = false;
                         }
 
-                        if(!centralItem.firstDrawed && secondUpdateDuration === 0){
-                            secondUpdateDuration = 5000;
-                            tttTimer.createObject(iconImage);
-                        }
-
                         centralItem.firstDrawed = true;
 
                         if(normalImage.source)
@@ -164,8 +159,9 @@ Component {
 
                     Timer{
                         id:ttt
-                        repeat:false
-                        interval: iconImage.secondUpdateDuration > 0 ? iconImage.secondUpdateDuration : centralItem.shadowInterval
+                        repeat: false
+                        interval: (!centralItem.firstDrawed && iconImage.secondUpdateDuration > 0) ?
+                                      iconImage.secondUpdateDuration : centralItem.shadowInterval
 
                         //   property int counter2: 0;
 
