@@ -308,7 +308,7 @@ Item {
         y: (panel.position === PlasmaCore.Types.TopPositioned) ? neededSpace : parent.height - neededSpace
         visible: plasmoid.configuration.zoomHelper
 
-        property int neededSpace: (zoomFactor+0.1)*iconSize + statesLineSize + 2
+        property int neededSpace: zoomFactor*iconSize + statesLineSize
     }
 
     Item{
