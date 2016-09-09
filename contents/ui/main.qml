@@ -92,13 +92,15 @@ Item {
     property bool disableLeftSpacer: false
     property bool disableRightSpacer: false
 
-    property alias tasksCount: tasksModel.count
     property int iconSize: nowDockPanel ? nowDockPanel.iconSize : Math.max(plasmoid.configuration.iconSize, 16)
     property int tasksHeight: mouseHandler.height
     property int tasksWidth: mouseHandler.width
     property int userPanelPosition: nowDockPanel ? nowDockPanel.userPanelPosition : plasmoid.configuration.plasmoidPosition
 
     property real zoomFactor: nowDockPanel ? nowDockPanel.zoomFactor : ( 1 + (plasmoid.configuration.zoomLevel / 20) )
+
+    property alias tasksCount: tasksModel.count
+    property alias hoveredIndex: icList.hoveredIndex
 
     property Item nowDockPanel: null
     //END Now Dock Panel properties
