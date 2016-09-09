@@ -160,8 +160,7 @@ Component {
                     Timer{
                         id:ttt
                         repeat: false
-                        interval: (!centralItem.firstDrawed && iconImage.secondUpdateDuration > 0) ?
-                                      iconImage.secondUpdateDuration : centralItem.shadowInterval
+                        interval: centralItem.shadowInterval
 
                         //   property int counter2: 0;
 
