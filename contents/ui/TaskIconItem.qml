@@ -56,8 +56,6 @@ Item{
     property QtObject buffers: null
     property QtObject smartLauncherItem: null
 
-
-
     Connections{
         target: panel
         onZoomFactorChanged: updateImages()

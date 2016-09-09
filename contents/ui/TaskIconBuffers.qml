@@ -19,6 +19,8 @@ Component {
         function updateImage(){
             if(!imageTimer)
                 imageTimer = tttTimer.createObject(iconImage);
+            else
+                imageTimer.restart();
         }
 
         Item{
@@ -47,7 +49,7 @@ Component {
                 }
 
             }
-           // property real middleZoomFactor: panel.zoomFactor
+            // property real middleZoomFactor: panel.zoomFactor
 
             //  KQuickControlAddons.QIconItem{
             PlasmaCore.IconItem{
@@ -94,9 +96,9 @@ Component {
 
                 visible: true
 
-                //    onSourceChanged: {
-                //   centralItem.updateImages();
-                //  }
+                onSourceChanged: {
+                    centralItem.updateImages();
+                }
                 /*  onIconChanged: {
                          centralItem.updateImages();
                     }*/
