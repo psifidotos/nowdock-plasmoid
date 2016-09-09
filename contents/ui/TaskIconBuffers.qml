@@ -96,6 +96,10 @@ Component {
 
                 visible: true
 
+                // after the first creation lets create a second timer
+                // in case we solve the issue with blank icons in rare cases
+                property int secondUpdateDuration: 0
+
                 onSourceChanged: {
                     centralItem.updateImages();
                 }
@@ -103,61 +107,70 @@ Component {
                          centralItem.updateImages();
                     }*/
 
+                function updateBuffers(){
+                    if((index !== -1) &&(!centralItem.toBeDestroyed) &&(!mainItemContainer.delayingRemove)){
+                        if(panel.initializationStep){
+                            panel.initializationStep = false;
+                        }
+
+                        if(!centralItem.firstDrawed && secondUpdateDuration === 0){
+                            secondUpdateDuration = 5000;
+                            tttTimer.createObject(iconImage);
+                        }
+
+                        centralItem.firstDrawed = true;
+
+                        if(normalImage.source)
+                            normalImage.source.destroy();
+                        if(zoomedImage.source)
+                            zoomedImage.source.destroy();
+                        if(iconImageBuffer.source)
+                            iconImageBuffer.source.destroy();
+
+                        if(panel.enableShadows == true){
+                            shadowImageNoActive.grabToImage(function(result) {
+                                normalImage.source = result.url;
+                                result.destroy();
+                            }, Qt.size(fixedIcon.width,fixedIcon.height) );
+
+                            shadowImageNoActive2.grabToImage(function(result) {
+                                zoomedImage.source = result.url;
+                                result.destroy();
+                            }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
+                        }
+                        else{
+                            fixedIcon.grabToImage(function(result) {
+                                normalImage.source = result.url;
+                                result.destroy();
+                            }, Qt.size(fixedIcon.width,fixedIcon.height) );
+
+                            fixedIcon2.grabToImage(function(result) {
+                                zoomedImage.source = result.url;
+                                result.destroy();
+                            }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
+                        }
+
+
+                        mainItemContainer.buffersAreReady = true;
+                        if(!panel.initializatedBuffers)
+                            panel.noInitCreatedBuffers++;
+
+                        iconImageBuffer.opacity = 1;
+                    }
+                }
+
                 Component{
                     id:tttTimer
 
                     Timer{
                         id:ttt
                         repeat:false
-                        interval: centralItem.shadowInterval
+                        interval: iconImage.secondUpdateDuration > 0 ? iconImage.secondUpdateDuration : centralItem.shadowInterval
 
                         //   property int counter2: 0;
 
                         onTriggered: {
-                            if((index !== -1) &&(!centralItem.toBeDestroyed) &&(!mainItemContainer.delayingRemove)){
-                                if(panel.initializationStep){
-                                    panel.initializationStep = false;
-                                }
-
-                                centralItem.firstDrawed = true;
-                                if(normalImage.source)
-                                    normalImage.source.destroy();
-                                if(zoomedImage.source)
-                                    zoomedImage.source.destroy();
-                                if(iconImageBuffer.source)
-                                    iconImageBuffer.source.destroy();
-
-                                if(panel.enableShadows == true){
-                                    shadowImageNoActive.grabToImage(function(result) {
-                                        normalImage.source = result.url;
-                                        result.destroy();
-                                    }, Qt.size(fixedIcon.width,fixedIcon.height) );
-
-                                    shadowImageNoActive2.grabToImage(function(result) {
-                                        zoomedImage.source = result.url;
-                                        result.destroy();
-                                    }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
-                                }
-                                else{
-                                    fixedIcon.grabToImage(function(result) {
-                                        normalImage.source = result.url;
-                                        result.destroy();
-                                    }, Qt.size(fixedIcon.width,fixedIcon.height) );
-
-                                    fixedIcon2.grabToImage(function(result) {
-                                        zoomedImage.source = result.url;
-                                        result.destroy();
-                                    }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
-                                }
-
-
-                                mainItemContainer.buffersAreReady = true;
-                                if(!panel.initializatedBuffers)
-                                    panel.noInitCreatedBuffers++;
-
-                                iconImageBuffer.opacity = 1;
-                            }
-
+                            iconImage.updateBuffers();
                             ttt.destroy(300);
                         }
 
@@ -176,7 +189,7 @@ Component {
 
                             gc();
 
-                            //                                yourImageWithLoadedIconContainer.destroy();
+                            //yourImageWithLoadedIconContainer.destroy();
                         }
                     }// end of timer
 
