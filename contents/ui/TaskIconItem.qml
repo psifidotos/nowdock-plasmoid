@@ -47,8 +47,10 @@ Item{
     // for simple updates.
     // This is done before especially on initialization stage some visuals
     // are not ready and empty buffers are created
-    property int firstDrawedInterval: panel.initializationStep ? 2000 : 1000
-    property int shadowInterval: firstDrawed ? firstDrawedInterval : 250
+
+    //property int firstDrawedInterval: panel.initializationStep ? 2000 : 1000
+   // property int shadowInterval: firstDrawed ? firstDrawedInterval : 250
+    property int shadowInterval: firstDrawed ? 1000 : 250
     property int shadowSize : Math.ceil(panel.iconSize / 20)
 
     readonly property bool smartLauncherEnabled: ((mainItemContainer.isStartup === false) && (plasmoid.configuration.smartLaunchersEnabled))
@@ -64,7 +66,7 @@ Item{
     }
 
     onIconDecorationChanged: {
-      //  updateImages();
+        //  updateImages();
     }
 
     Rectangle{
@@ -83,16 +85,23 @@ Item{
     }
 
     //temporary buffers containing the normal Image icon and the zoomed Image icon
-   // Image{id:zoomedImage; visible:false}
-  //  Image{id:normalImage; visible:false}
-    Image{id:shadowedImage
+    // Image{id:zoomedImage; visible:false}
+    //  Image{id:normalImage; visible:false}
+    Image{
+        id:shadowedImage
+        anchors.centerIn:iconImageBuffer
+
         width:iconImageBuffer.width+2*shadowSize-2
         height:iconImageBuffer.height+2*shadowSize-2
-        anchors.centerIn:iconImageBuffer
+
+        states: State {
+            name: "reparented"
+            ParentChange { target: shadowedImage; parent: panel; }
+        }
     }
 
 
-  /*  Image {
+    /*  Image {
         id: iconImageBuffer
         anchors.centerIn: parent
 
@@ -116,10 +125,10 @@ Item{
         property real internalLimit: 1 + ((panel.zoomFactor-1)/2)
     }*/
 
-   // PlasmaCore.SvgItem{
-     //   anchors.fill: iconImageBuffer
-     //   elementId: decoration.url
-      //  onElementIdChanged: console.log(decoration.url())
+    // PlasmaCore.SvgItem{
+    //   anchors.fill: iconImageBuffer
+    //   elementId: decoration.url
+    //  onElementIdChanged: console.log(decoration.url())
     //}
     KQuickControlAddons.QIconItem{
         id: iconImageBuffer
@@ -297,15 +306,16 @@ Item{
 
     Component.onDestruction: {
         centralItem.toBeDestroyed = true;
-     /*   if(normalImage.source)
+        /*   if(normalImage.source)
             normalImage.source.destroy();
         if(zoomedImage.source)
             zoomedImage.source.destroy();
         if(iconImageBuffer.source)
             iconImageBuffer.source.destroy();*/
 
-        if(shadowedImage.source)
+        if(shadowedImage && shadowedImage.source)
             shadowedImage.source.destroy();
+
         //  if(iconHoveredBuffer.source)
         // iconHoveredBuffer.source.destroy();
 
@@ -517,10 +527,12 @@ Item{
         }
 
         function init(){
-            var relavantPoint = icList.mapFromItem(shadowedImage,0,0);
-            removingItem = removeTaskComponent.createObject(icList);
-            removingItem.x = relavantPoint.x;
-            removingItem.y = relavantPoint.y;
+            var relavantPoint = panel.mapFromItem(shadowedImage,0,0);
+            shadowedImage.x = relavantPoint.x;
+            shadowedImage.y = relavantPoint.y;
+            shadowedImage.state = "reparented";
+
+            removingItem = shadowedImage;
 
             var tempPoint = 0;
 
@@ -720,45 +732,11 @@ Item{
 
     function updateImages(){
         if(panel){
-             if(defaultWithShadow.item){
-                    defaultWithShadow.item.updateImage();
-              }
-        }
-    }
-
-    ///////////////Buffering
-    ///////////// Component for animating removing window from group
-
-
-
-    Component {
-        id: removeTaskComponent
-        Item{
-            width: shadowedImage.width
-            height: shadowedImage.height
-
-            visible: false
-
-            Image {
-                id: tempRemoveIcon
-                source: shadowedImage.source
-                anchors.fill: parent
-
-                Component.onDestruction: {
-                    source.destroy();
-                    gc();
-                }
-            }
-
-            Colorize{
-                source: tempRemoveIcon
-                anchors.fill: tempRemoveIcon
-
-                hue: 0
-                saturation: 0
-                lightness: 0
+            if(defaultWithShadow.item){
+                defaultWithShadow.item.updateImage();
             }
         }
     }
+
 
 }// Icon Item
