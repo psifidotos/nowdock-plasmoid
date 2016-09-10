@@ -55,7 +55,7 @@ Component {
 
                         centralItem.firstDrawed = true;
 
-                        if(shadowedImage.source)
+                        if(shadowedImage && shadowedImage.source)
                             shadowedImage.source.destroy();
 
 

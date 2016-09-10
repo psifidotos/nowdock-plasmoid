@@ -110,13 +110,13 @@ Component {
             }
         }*/
 
-      /*   Rectangle{
+       /*  Rectangle{
             anchors.fill: parent
             border.width: 1
             border.color: "blue"
             color: "transparent"
            // visible: IsStartup ? true : false
-        }  */
+        } */
 
         Behavior on opacity {
             // NumberAnimation { duration: (IsStartup || (IsLauncher) ) ? 0 : 400 }

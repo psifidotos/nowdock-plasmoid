@@ -66,7 +66,9 @@ Item {
     property int clearWidth
     property int clearHeight
 
-    property int iconMargin: 5
+    //property int iconMargin: 5
+    property int iconMargin: 0.2*iconSize
+
     property int newLocationDebugUse: PlasmaCore.Types.BottomPositioned
     property int newDroppedPosition: -1
     property int noInitCreatedBuffers: 0
