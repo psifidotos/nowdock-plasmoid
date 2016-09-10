@@ -23,7 +23,7 @@ Component {
                 imageTimer.restart();
         }
 
-        Item{
+     /*   Item{
             id:fixedIcon2
 
             width: middleZoomFactor * (panel.iconSize + 2*shadowImageNoActive.radius)
@@ -68,7 +68,7 @@ Component {
 
                 visible: true
             }
-        }
+        }*/
 
 
         Item{
@@ -79,20 +79,20 @@ Component {
 
             visible:false
 
-            //   KQuickControlAddons.QIconItem{
-            PlasmaCore.IconItem{
+            KQuickControlAddons.QIconItem{
+          //  PlasmaCore.IconItem{
                 id: iconImage
 
                 width: panel.iconSize
                 height: width
                 anchors.centerIn: parent
 
-                //   icon: decoration
-                //   state: KQuickControlAddons.QIconItem.DefaultState
-                active: false
+                   icon: decoration
+                   state: KQuickControlAddons.QIconItem.DefaultState
+            //    active: false
                 enabled: true
-                source: decoration
-                usesPlasmaTheme: false
+              //  source: decoration
+             //   usesPlasmaTheme: false
 
                 visible: true
 
@@ -100,9 +100,9 @@ Component {
                 // in case we solve the issue with blank icons in rare cases
                 property int secondUpdateDuration: 0
 
-                onSourceChanged: {
-                    centralItem.updateImages();
-                }
+              //  onSourceChanged: {
+                  //  centralItem.updateImages();
+             //   }
                 /*  onIconChanged: {
                          centralItem.updateImages();
                     }*/
@@ -115,26 +115,30 @@ Component {
 
                         centralItem.firstDrawed = true;
 
-                        if(normalImage.source)
+                      /*  if(normalImage.source)
                             normalImage.source.destroy();
                         if(zoomedImage.source)
-                            zoomedImage.source.destroy();
+                            zoomedImage.source.destroy();*
                         if(iconImageBuffer.source)
-                            iconImageBuffer.source.destroy();
+                            iconImageBuffer.source.destroy(); */
+                        if(shadowedImage.source)
+                            shadowedImage.source.destroy();
+
 
                         if(panel.enableShadows == true){
                             shadowImageNoActive.grabToImage(function(result) {
-                                normalImage.source = result.url;
+                                shadowedImage.source = result.url
+                           //     normalImage.source = result.url;
                                 result.destroy();
                             }, Qt.size(fixedIcon.width,fixedIcon.height) );
 
-                            shadowImageNoActive2.grabToImage(function(result) {
+                         /*   shadowImageNoActive2.grabToImage(function(result) {
                                 zoomedImage.source = result.url;
                                 result.destroy();
-                            }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
+                            }, Qt.size(fixedIcon2.width,fixedIcon2.height) );*/
                         }
                         else{
-                            fixedIcon.grabToImage(function(result) {
+                           /* fixedIcon.grabToImage(function(result) {
                                 normalImage.source = result.url;
                                 result.destroy();
                             }, Qt.size(fixedIcon.width,fixedIcon.height) );
@@ -142,7 +146,7 @@ Component {
                             fixedIcon2.grabToImage(function(result) {
                                 zoomedImage.source = result.url;
                                 result.destroy();
-                            }, Qt.size(fixedIcon2.width,fixedIcon2.height) );
+                            }, Qt.size(fixedIcon2.width,fixedIcon2.height) );*/
                         }
 
 
@@ -172,12 +176,12 @@ Component {
                         Component.onCompleted: ttt.start();
 
                         Component.onDestruction: {
-                            if(normalImage.source)
+                         /*   if(normalImage.source)
                                 normalImage.source.destroy();
                             if(zoomedImage.source)
                                 zoomedImage.source.destroy();
                             if(iconImageBuffer.source)
-                                iconImageBuffer.source.destroy();
+                                iconImageBuffer.source.destroy();*/
 
                             if(removingAnimation.removingItem)
                                 removingAnimation.removingItem.destroy();
@@ -211,7 +215,7 @@ Component {
             verticalOffset: 2
         }
 
-        DropShadow {
+    /*    DropShadow {
             id:shadowImageNoActive2
             visible: false
             width: fixedIcon2.width
@@ -224,7 +228,7 @@ Component {
             source: fixedIcon2
 
             verticalOffset: 2
-        }
+        }*/
 
     }
 }

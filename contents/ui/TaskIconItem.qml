@@ -83,10 +83,16 @@ Item{
     }
 
     //temporary buffers containing the normal Image icon and the zoomed Image icon
-    Image{id:zoomedImage; visible:false}
-    Image{id:normalImage; visible:false}
+   // Image{id:zoomedImage; visible:false}
+  //  Image{id:normalImage; visible:false}
+    Image{id:shadowedImage
+        width:iconImageBuffer.width+2*shadowSize-2
+        height:iconImageBuffer.height+2*shadowSize-2
+        anchors.centerIn:iconImageBuffer
+    }
 
-    Image {
+
+  /*  Image {
         id: iconImageBuffer
         anchors.centerIn: parent
 
@@ -95,8 +101,6 @@ Item{
 
         source: (wrapper.scale>internalLimit && panel.iconSize>=32) ?
                     zoomedImage.source : normalImage.source
-    //    source: (wrapper.scale>internalLimit) ?
-           //              zoomedImage.source : normalImage.source
 
         property int zoomedSize: panel.zoomFactor * panel.iconSize
 
@@ -110,21 +114,33 @@ Item{
 
         //over which zoom value the high dpi buffer is used instead of the normal size
         property real internalLimit: 1 + ((panel.zoomFactor-1)/2)
+    }*/
+
+   // PlasmaCore.SvgItem{
+     //   anchors.fill: iconImageBuffer
+     //   elementId: decoration.url
+      //  onElementIdChanged: console.log(decoration.url())
+    //}
+    KQuickControlAddons.QIconItem{
+        id: iconImageBuffer
+
+        anchors.centerIn: parent
+
+        width: newTempSize + 2*centralItem.shadowSize
+        height: width
+        icon: decoration
+
+        property int zoomedSize: panel.zoomFactor * panel.iconSize
+
+        property real basicScalingWidth : wrapper.inTempScaling ? (panel.iconSize * wrapper.scaleWidth) :
+                                                                  panel.iconSize * wrapper.scale
+        property real basicScalingHeight : wrapper.inTempScaling ? (panel.iconSize * wrapper.scaleHeight) :
+                                                                   panel.iconSize * wrapper.scale
+
+        property real newTempSize: (wrapper.opacity == 1) ?  Math.min(basicScalingWidth, basicScalingHeight) :
+                                                            Math.max(basicScalingWidth, basicScalingHeight)
     }
 
-    /*   Image{
-        id: iconHoveredBuffer
-        anchors.fill: iconImageBuffer
-
-        opacity: mainItemContainer.containsMouse ? 1 : 0
-
-        visible: ((!clickedAnimation.running) &&
-                  (!launcherAnimation.running) )
-
-        Behavior on opacity {
-            NumberAnimation { duration: 300 }
-        }
-    }*/
     BrightnessContrast{
         id:hoveredImage
         opacity: mainItemContainer.containsMouse ? 1 : 0
@@ -281,12 +297,15 @@ Item{
 
     Component.onDestruction: {
         centralItem.toBeDestroyed = true;
-        if(normalImage.source)
+     /*   if(normalImage.source)
             normalImage.source.destroy();
         if(zoomedImage.source)
             zoomedImage.source.destroy();
         if(iconImageBuffer.source)
-            iconImageBuffer.source.destroy();
+            iconImageBuffer.source.destroy();*/
+
+        if(shadowedImage.source)
+            shadowedImage.source.destroy();
         //  if(iconHoveredBuffer.source)
         // iconHoveredBuffer.source.destroy();
 
@@ -498,7 +517,7 @@ Item{
         }
 
         function init(){
-            var relavantPoint = icList.mapFromItem(iconImageBuffer,0,0);
+            var relavantPoint = icList.mapFromItem(shadowedImage,0,0);
             removingItem = removeTaskComponent.createObject(icList);
             removingItem.x = relavantPoint.x;
             removingItem.y = relavantPoint.y;
@@ -715,15 +734,20 @@ Item{
     Component {
         id: removeTaskComponent
         Item{
-            width: iconImageBuffer.width
-            height: iconImageBuffer.height
+            width: shadowedImage.width
+            height: shadowedImage.height
 
             visible: false
 
             Image {
                 id: tempRemoveIcon
-                source: iconImageBuffer.source
+                source: shadowedImage.source
                 anchors.fill: parent
+
+                Component.onDestruction: {
+                    source.destroy();
+                    gc();
+                }
             }
 
             Colorize{
