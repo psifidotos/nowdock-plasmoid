@@ -44,7 +44,7 @@ Component {
                                  wrapper.height
 
         acceptedButtons: Qt.LeftButton | Qt.MidButton | Qt.RightButton
-        hoverEnabled: (inAnimation !== true)&& (!IsStartup)&&(!panel.taskInAnimation)
+        hoverEnabled: (inAnimation !== true)&& (!IsStartup)&&(!panel.taskInAnimation)&&(plasmoid.immutable || panel.debugLocation)
 
         property bool buffersAreReady: false
         property bool delayingRemove: ListView.delayRemove
