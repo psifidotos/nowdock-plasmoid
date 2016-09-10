@@ -424,7 +424,7 @@ Item {
 
             target: icList.contentItem
 
-            property int maxSize: panel.zoomFactor*panel.realSize + 16
+            property int maxSize: panel.zoomFactor*panel.realSize
         }
 
 
