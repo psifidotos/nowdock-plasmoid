@@ -98,38 +98,21 @@ Item{
             name: "reparented"
             ParentChange { target: shadowedImage; parent: panel; }
         }
+
+        //Corize to use when a window is removed....
+        Colorize{
+            id: removeImageColorizer
+            source: parent
+            anchors.fill: parent
+
+            hue: 0
+            saturation: 0
+            lightness: 0
+        }
     }
 
 
-    /*  Image {
-        id: iconImageBuffer
-        anchors.centerIn: parent
 
-        width: newTempSize + 2*centralItem.shadowSize
-        height: width
-
-        source: (wrapper.scale>internalLimit && panel.iconSize>=32) ?
-                    zoomedImage.source : normalImage.source
-
-        property int zoomedSize: panel.zoomFactor * panel.iconSize
-
-        property real basicScalingWidth : wrapper.inTempScaling ? (panel.iconSize * wrapper.scaleWidth) :
-                                                                  panel.iconSize * wrapper.scale
-        property real basicScalingHeight : wrapper.inTempScaling ? (panel.iconSize * wrapper.scaleHeight) :
-                                                                   panel.iconSize * wrapper.scale
-
-        property real newTempSize: (wrapper.opacity == 1) ?  Math.min(basicScalingWidth, basicScalingHeight) :
-                                                            Math.max(basicScalingWidth, basicScalingHeight)
-
-        //over which zoom value the high dpi buffer is used instead of the normal size
-        property real internalLimit: 1 + ((panel.zoomFactor-1)/2)
-    }*/
-
-    // PlasmaCore.SvgItem{
-    //   anchors.fill: iconImageBuffer
-    //   elementId: decoration.url
-    //  onElementIdChanged: console.log(decoration.url())
-    //}
     KQuickControlAddons.QIconItem{
         id: iconImageBuffer
 
@@ -530,6 +513,7 @@ Item{
             var relavantPoint = panel.mapFromItem(shadowedImage,0,0);
             shadowedImage.x = relavantPoint.x;
             shadowedImage.y = relavantPoint.y;
+            removeImageColorizer.enabled = true;
             shadowedImage.state = "reparented";
 
             removingItem = shadowedImage;
