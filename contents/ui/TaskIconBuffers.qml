@@ -45,7 +45,9 @@ Component {
 
                 visible: true
 
-                onIconChanged: updateBuffers();
+              //  onIconChanged: updateBuffers();
+
+                property int counter: 0
 
                 function updateBuffers(){
                     if((index !== -1) &&(!centralItem.toBeDestroyed) &&(!mainItemContainer.delayingRemove)){
@@ -54,6 +56,8 @@ Component {
                         }
 
                         centralItem.firstDrawed = true;
+                     //   counter++;
+                     //   console.log(counter);
 
                         if(shadowedImage && shadowedImage.source)
                             shadowedImage.source.destroy();
