@@ -123,6 +123,91 @@ Component {
             NumberAnimation { duration: 400 }
         }
 
+
+        PlasmaCore.ToolTipArea {
+             id: toolTip
+
+             anchors.fill: parent
+
+            // active: !inPopup && !groupDialog.visible && plasmoid.configuration.showToolTips
+             active: plasmoid.configuration.showToolTips && mainItemContainer.isWindow
+
+             interactive: false
+             location: plasmoid.location
+
+             mainItem: toolTipDelegate
+
+             onContainsMouseChanged:  {
+                 if (containsMouse) {
+                     toolTipDelegate.parentIndex = itemIndex;
+
+                     toolTipDelegate.windows = Qt.binding(function() {
+                         return model.LegacyWinIdList;
+                     });
+                     toolTipDelegate.mainText = Qt.binding(function() {
+                         return model.display;
+                     });
+                     toolTipDelegate.icon = Qt.binding(function() {
+                         return model.decoration;
+                     });
+                     toolTipDelegate.subText = Qt.binding(function() {
+                         return model.IsLauncher === true ? model.GenericName : toolTip.generateSubText(model);
+                     });
+                     toolTipDelegate.launcherUrl = Qt.binding(function() {
+                         return model.LauncherUrlWithoutIcon;
+                     });
+                 }
+             }
+
+             function generateSubText(task) {
+                 var subTextEntries = new Array();
+
+                 if (!plasmoid.configuration.showOnlyCurrentDesktop
+                     && virtualDesktopInfo.numberOfDesktops > 1
+                     && model.IsOnAllVirtualDesktops !== true
+                     && model.VirtualDesktop != -1
+                     && model.VirtualDesktop != undefined) {
+                     subTextEntries.push(i18n("On %1", virtualDesktopInfo.desktopNames[model.VirtualDesktop - 1]));
+                 }
+
+                 if (model.Activities == undefined) {
+                     return subTextEntries.join("\n");
+                 }
+
+                 if (model.Activities.length == 0 && activityInfo.numberOfRunningActivities > 1) {
+                     subTextEntries.push(i18nc("Which virtual desktop a window is currently on",
+                         "Available on all activities"));
+                 } else if (model.Activities.length > 0) {
+                    var activityNames = new Array();
+
+                     for (var i = 0; i < model.Activities.length; i++) {
+                         var activity = model.Activities[i];
+
+                         if (plasmoid.configuration.showOnlyCurrentActivity) {
+                             if (activity != activityInfo.currentActivity) {
+                                 activityNames.push(activityInfo.activityName(model.Activities[i]));
+                             }
+                         } else if (activity != activityInfo.currentActivity) {
+                             activityNames.push(activityInfo.activityName(model.Activities[i]));
+                         }
+                     }
+
+                     if (plasmoid.configuration.showOnlyCurrentActivity) {
+                         if (activityNames.length > 0) {
+                             subTextEntries.push(i18nc("Activities a window is currently on (apart from the current one)",
+                                 "Also available on %1", activityNames.join(", ")));
+                         }
+                     } else if (activityNames.length > 0) {
+                         subTextEntries.push(i18nc("Which activities a window is currently on",
+                             "Available on %1", activityNames.join(", ")));
+                     }
+                 }
+
+                 return subTextEntries.join("\n");
+             }
+         }
+
+
         TaskWindows{
             id: tasksWindows
 

@@ -166,6 +166,12 @@ Item {
         }
     }
 
+    ToolTipDelegate {
+        id: toolTipDelegate
+
+        visible: false
+    }
+
     TaskManager.TasksModel {
         id: tasksModel
 
@@ -236,7 +242,7 @@ Item {
         id: backend
 
         taskManagerItem: panel
-        //toolTipItem: toolTipDelegate
+        toolTipItem: toolTipDelegate
         highlightWindows: plasmoid.configuration.highlightWindows
 
         onAddLauncher: {
