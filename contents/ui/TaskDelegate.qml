@@ -603,8 +603,6 @@ Component {
                         return model.LauncherUrlWithoutIcon;
                     });
 
-                  //  windowsPreviewDlg.visualParent = mainItemContainer;
-                  //  windowsPreviewDlg.visible = true;
                 }
                 else{
                     if (hoveredTimerObj){
@@ -631,6 +629,13 @@ Component {
                 mainItemContainer.contextMenu.visualParent = mainItemContainer;
                 mainItemContainer.contextMenu.show();
             }
+
+            if (hoveredTimerObj){
+                hoveredTimerObj.stop();
+                hoveredTimerObj.destroy();
+            }
+
+            windowsPreviewDlg.hide();
         }
 
         onReleased: {
