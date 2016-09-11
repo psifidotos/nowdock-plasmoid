@@ -48,7 +48,7 @@ Item {
     Layout.preferredHeight: (userPanelPosition !== 0)&&(!nowDockPanel) ? tasksHeight : -1
 
 
-    property bool debugLocation: false
+    property bool debugLocation: true
 
     property bool dropNewLauncher: false
     property bool enableShadows: plasmoid.configuration.showShadows
@@ -166,11 +166,31 @@ Item {
         }
     }
 
+    /////Winwow previews///////////
+
     ToolTipDelegate {
         id: toolTipDelegate
+        visible: false
+
+        property int currentItem: -1
+    }
+
+    PlasmaCore.Dialog{
+        id: windowsPreviewDlg
+  //      hideOnWindowDeactivate: true
+
+        type: PlasmaCore.Dialog.Tooltip
+//        flags: Qt.WindowStaysOnTopHint
+        location: plasmoid.location
 
         visible: false
+
+        mainItem: toolTipDelegate
     }
+
+
+
+    /////Window Previews/////////
 
     TaskManager.TasksModel {
         id: tasksModel
@@ -722,6 +742,9 @@ Item {
     function outsideContainsMouse(){
         var tasks = icList.contentItem.children;
 
+        if(toolTipDelegate.currentItem != -1)
+            return true;
+
         for(var i=0; i<tasks.length; ++i){
             var task = tasks[i];
             if(task && task.containsMouse){
@@ -734,6 +757,9 @@ Item {
 
     function containsMouse(){
         var result = panel.outsideContainsMouse();
+
+        if (!result || toolTipDelegate.parentIndex != icList.hoveredIndex)
+            windowsPreviewDlg.visible = false;
 
         if (result)
             return true;

@@ -38,6 +38,13 @@ MouseArea {
     }
 
     onContainsMouseChanged: {
+        if(containsMouse)
+            toolTipDelegate.currentItem = parentIndex;
+        else{
+            toolTipDelegate.currentItem = -1;
+            checkListHovered.restart();
+        }
+
         panel.windowsHovered([winId], containsMouse);
     }
 
