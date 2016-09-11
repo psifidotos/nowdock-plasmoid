@@ -177,9 +177,9 @@ Item {
 
     PlasmaCore.Dialog{
         id: windowsPreviewDlg
-  //      hideOnWindowDeactivate: true
+       // hideOnWindowDeactivate: false
 
-        type: PlasmaCore.Dialog.Tooltip
+        type: PlasmaCore.Dialog.Popup
 //        flags: Qt.WindowStaysOnTopHint
         location: plasmoid.location
 

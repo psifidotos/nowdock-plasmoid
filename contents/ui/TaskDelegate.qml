@@ -583,6 +583,7 @@ Component {
             if (isWindow) {
                 if(containsMouse){
                     hoveredTimerObj = hoveredTimerComponent.createObject(mainItemContainer);
+                    windowsPreviewDlg.visualParent = mainItemContainer;
 
                     toolTipDelegate.parentIndex = itemIndex;
 
@@ -872,7 +873,6 @@ Component {
                 onTriggered: {
                     if(mainItemContainer.containsMouse){
                         console.log("Hovered Timer....");
-                        windowsPreviewDlg.visualParent = mainItemContainer;
                         windowsPreviewDlg.visible = true;
                     }
 
