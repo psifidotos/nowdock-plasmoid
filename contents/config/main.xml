@@ -92,7 +92,7 @@
       <default>false</default>
     </entry>
     <entry name="showToolTips" type="Bool">
-      <default>true</default>
+      <default>false</default>
     </entry>
   </group>
 </kcfg>

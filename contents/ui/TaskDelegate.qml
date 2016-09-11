@@ -581,7 +581,7 @@ Component {
 
             ////window previews/////////
             if (isWindow) {
-                if(containsMouse){
+                if(containsMouse && panel.showPreviews){
                     hoveredTimerObj = hoveredTimerComponent.createObject(mainItemContainer);
                     windowsPreviewDlg.visualParent = mainItemContainer;
 
@@ -866,13 +866,13 @@ Component {
             Timer {
                 id: hoveredTimer
 
-                interval: 600
+                interval: 6*units.longDuration
 
                 repeat: false
 
                 onTriggered: {
                     if(mainItemContainer.containsMouse){
-                        console.log("Hovered Timer....");
+                   //     console.log("Hovered Timer....");
                         windowsPreviewDlg.visible = true;
                     }
 

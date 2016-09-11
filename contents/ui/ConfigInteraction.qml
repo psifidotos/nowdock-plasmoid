@@ -39,6 +39,7 @@ Item {
 
     property alias cfg_highlightWindows: highlightWindowsChk.checked
     property alias cfg_smartLaunchersEnabled: smartLaunchersChk.checked
+    property alias cfg_showToolTips: showPreviewsChk.checked
 
     ColumnLayout{
         spacing: 15
@@ -55,6 +56,12 @@ Item {
                     id: wheelEnabled
                     text: i18n("Cycle through tasks with mouse wheel")
                     enabled: false
+                }
+
+                CheckBox {
+                    id: showPreviewsChk
+                    Layout.fillWidth: true
+                    text: i18n("Preview windows on hovering")
                 }
 
                 CheckBox {

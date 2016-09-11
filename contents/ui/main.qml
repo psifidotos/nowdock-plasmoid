@@ -48,7 +48,7 @@ Item {
     Layout.preferredHeight: (userPanelPosition !== 0)&&(!nowDockPanel) ? tasksHeight : -1
 
 
-    property bool debugLocation: true
+    property bool debugLocation: false
 
     property bool dropNewLauncher: false
     property bool enableShadows: plasmoid.configuration.showShadows
@@ -57,6 +57,7 @@ Item {
     property bool initializatedBuffers: noInitCreatedBuffers >= tasksStarting ? true : false
     property bool isHovered: false
     property bool showBarLine: plasmoid.configuration.showBarLine
+    property bool showPreviews: plasmoid.configuration.showToolTips
     property bool useThemePanel: plasmoid.configuration.useThemePanel
     property bool taskInAnimation: noTasksInAnimation > 0 ? true : false
     property bool transparentPanel: plasmoid.configuration.transparentPanel
@@ -179,7 +180,7 @@ Item {
         id: windowsPreviewDlg
        // hideOnWindowDeactivate: false
 
-        type: PlasmaCore.Dialog.Popup
+        type: PlasmaCore.Dialog.Tooltip
 //        flags: Qt.WindowStaysOnTopHint
         location: plasmoid.location
 
