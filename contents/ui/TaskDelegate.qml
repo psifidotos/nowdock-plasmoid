@@ -66,7 +66,7 @@ Component {
         property bool mouseEntered: false
         property bool pressed: false
 
-        property int animationTime: 70
+        property int animationTime: plasmoid.configuration.durationTime*units.shortDuration
         property int hoveredIndex: icList.hoveredIndex
         property int itemIndex: index
         property int lastButtonClicked: -1;
@@ -121,7 +121,7 @@ Component {
 
         Behavior on opacity {
             // NumberAnimation { duration: (IsStartup || (IsLauncher) ) ? 0 : 400 }
-            NumberAnimation { duration: 400 }
+            NumberAnimation { duration: plasmoid.configuration.durationTime*units.longDuration }
         }
 
 
@@ -685,7 +685,7 @@ Component {
             if(!mainItemContainer.isLauncher)
                 pressed = false;
 
-            checkListHovered.startDuration(2000);
+            checkListHovered.startDuration(2*plasmoid.configuration.durationTime*units.longDuration);
         }
 
         ///////////////// End Of Mouse Area Events ///////////////////
@@ -797,8 +797,8 @@ Component {
         ///item's added Animation
         SequentialAnimation{
             id:showWindowAnimation
-            property int speed: 400
-
+            property int speed: plasmoid.configuration.durationTime*units.longDuration
+            
             PropertyAnimation {
                 target: wrapper
                 property: (icList.orientation == Qt.Vertical) ? "tempScaleHeight" : "tempScaleWidth"
@@ -866,7 +866,7 @@ Component {
             Timer {
                 id: hoveredTimer
 
-                interval: 6*units.longDuration
+                interval: 2*plasmoid.configuration.durationTime*units.longDuration
 
                 repeat: false
 
@@ -921,8 +921,8 @@ Component {
         //launchers delay A LOT to reappear, e.g google-chrome
         //I will blacklist google-chrome as I have not found any other case for this bug
         //to appear, but even this way there are cases that still appears...
-        property int mainDelay: (AppId == "google-chrome") ? 0 : 2*showWindowAnimation.speed
-        property int windowDelay: mainItemContainer.isStartup ? 5000 : mainDelay
+        property int mainDelay: (AppId == "google-chrome") ? 0 : 2*plasmoid.configuration.durationTime*showWindowAnimation.speed
+        property int windowDelay: mainItemContainer.isStartup ? 3*plasmoid.configuration.durationTime*units.longDuration : mainDelay
 
         Component {
             id: delayShowWindow

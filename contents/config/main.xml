@@ -94,6 +94,9 @@
     <entry name="showToolTips" type="Bool">
       <default>false</default>
     </entry>
+        <entry name="durationTime" type="Int">
+      <default>2</default>
+    </entry>
   </group>
 </kcfg>
 
