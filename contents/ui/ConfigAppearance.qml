@@ -344,7 +344,7 @@ Item {
                         enabled: true
                         Layout.fillWidth: true
                         minimumValue: 0
-                        maximumValue: 5
+                        maximumValue: 3
                         stepSize: 1
                         tickmarksEnabled: false
                     }
@@ -355,13 +355,8 @@ Item {
                         Layout.alignment: Qt.AlignRight
                         horizontalAlignment: Text.AlignRight
 
-                        text: ( durationTime.value + " ms." )
+                        text: ( durationTime.value )
 
-                        Label{
-                            id:durationTimeMetricsLabel
-                            visible: false
-                            text: durationTime.maximumValue+" ms."
-                        }
                     }
                 }
 
