@@ -105,6 +105,9 @@ Item{
             source: parent
             anchors.fill: parent
 
+            enabled: false
+            visible: false
+
             hue: 0
             saturation: 0
             lightness: 0
@@ -514,9 +517,13 @@ Item{
             shadowedImage.x = relavantPoint.x;
             shadowedImage.y = relavantPoint.y;
             removeImageColorizer.enabled = true;
+            removeImageColorizer.visible = true;
+
+          //  removeImageColorizer.opacity = 1;
+            removingItem = shadowedImage;
             shadowedImage.state = "reparented";
 
-            removingItem = shadowedImage;
+
 
             var tempPoint = 0;
 
