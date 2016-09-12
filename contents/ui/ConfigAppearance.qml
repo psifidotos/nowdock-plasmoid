@@ -19,6 +19,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.0
 import QtQuick.Layouts 1.0
+import QtGraphicalEffects 1.0
 
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
@@ -47,7 +48,42 @@ Item {
 
     property bool isInNowDockPanel
 
+    DropShadow {
+        id:shadowText
+        anchors.fill: inNowDockLabel
+        enabled: isInNowDockPanel
+        radius: 3
+        samples: 5
+        color: "#cc080808"
+        source: inNowDockLabel
+
+        verticalOffset: 2
+        horizontalOffset: -1
+        visible: isInNowDockPanel
+    }
+
+
+    Label {
+        id:inNowDockLabel
+        anchors.horizontalCenter: mainColumn.horizontalCenter
+        anchors.verticalCenter: mainColumn.verticalCenter
+        anchors.verticalCenterOffset:  (mainColumn.height / 4)
+
+        width: 0.85 * mainColumn.width
+        text: i18n("For the disabled settings you should use the Now Dock Panel Configuration Window")
+        visible: mainItem.isInNowDockPanel
+
+        horizontalAlignment: Text.AlignHCenter
+      //  font.bold: true
+        font.italic: true
+        font.pointSize: 1.2 * theme.defaultFont.pointSize
+
+        wrapMode: Text.WordWrap
+    }
+
+
     ColumnLayout {
+        id:mainColumn
         spacing: 15
         Layout.fillWidth: true
 
@@ -67,6 +103,7 @@ Item {
                     ComboBox {
                         // 16, 22, 32, 48, 64,128, 256
                         id: iconSizeCmb
+                        enabled: !mainItem.isInNowDockPanel
 
                         property int realValue
                         property bool startup: true

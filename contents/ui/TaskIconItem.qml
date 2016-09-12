@@ -522,33 +522,35 @@ Item{
         }
 
         function init(){
-            var relavantPoint = panel.mapFromItem(shadowedImage,0,0);
-            shadowedImage.x = relavantPoint.x;
-            shadowedImage.y = relavantPoint.y;
-            removeImageColorizer.enabled = true;
-            removeImageColorizer.visible = true;
+            if(shadowedImage){
+                var relavantPoint = panel.mapFromItem(shadowedImage,0,0);
+                shadowedImage.x = relavantPoint.x;
+                shadowedImage.y = relavantPoint.y;
+                removeImageColorizer.enabled = true;
+                removeImageColorizer.visible = true;
 
-            //  removeImageColorizer.opacity = 1;
-            removingItem = shadowedImage;
-            shadowedImage.state = "reparented";
-            shadowedImage.visible = true;
+                //  removeImageColorizer.opacity = 1;
+                removingItem = shadowedImage;
+                shadowedImage.state = "reparented";
+                shadowedImage.visible = true;
 
-            var tempPoint = 0;
+                var tempPoint = 0;
 
-            if(icList.orientation == Qt.Horizontal)
-                tempPoint = relavantPoint.y;
-            else
-                tempPoint = relavantPoint.x;
+                if(icList.orientation == Qt.Horizontal)
+                    tempPoint = relavantPoint.y;
+                else
+                    tempPoint = relavantPoint.x;
 
-            if( (panel.position === PlasmaCore.Types.BottomPositioned) ||
-                    (panel.position === PlasmaCore.Types.RightPositioned) ){
-                toPoint = tempPoint + panel.iconSize;
+                if( (panel.position === PlasmaCore.Types.BottomPositioned) ||
+                        (panel.position === PlasmaCore.Types.RightPositioned) ){
+                    toPoint = tempPoint + panel.iconSize;
+                }
+                else{
+                    toPoint = tempPoint - panel.iconSize;
+                }
+
+                removingItem.visible = true;
             }
-            else{
-                toPoint = tempPoint - panel.iconSize;
-            }
-
-            removingItem.visible = true;
         }
 
         function removeTask(){
