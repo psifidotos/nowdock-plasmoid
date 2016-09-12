@@ -49,7 +49,7 @@ Item{
     // are not ready and empty buffers are created
 
     //property int firstDrawedInterval: panel.initializationStep ? 2000 : 1000
-   // property int shadowInterval: firstDrawed ? firstDrawedInterval : 250
+    // property int shadowInterval: firstDrawed ? firstDrawedInterval : 250
     property int shadowInterval: firstDrawed ? 1000 : 250
     property int shadowSize : Math.ceil(panel.iconSize / 20)
 
@@ -66,7 +66,7 @@ Item{
     }
 
     onIconDecorationChanged: {
-        //  updateImages();
+        updateImages();
     }
 
     Rectangle{
@@ -91,8 +91,8 @@ Item{
         id:shadowedImage
         anchors.centerIn:iconImageBuffer
 
-        width:iconImageBuffer.width+2*shadowSize-2
-        height:iconImageBuffer.height+2*shadowSize-2
+        width:iconImageBuffer.width+2*shadowSize
+        height:iconImageBuffer.height+2*shadowSize
 
         visible: plasmoid.configuration.showShadows
 
@@ -124,7 +124,6 @@ Item{
         width: newTempSize //+ 2*centralItem.shadowSize
         height: width
         icon: decoration
-        smooth: true
 
         property int zoomedSize: panel.zoomFactor * panel.iconSize
 
@@ -287,7 +286,7 @@ Item{
         }
 
         //start up sequence....
-      /*  if(panel.initializationStep){
+        /*  if(panel.initializationStep){
             panel.initializationStep = false;
         }
 
@@ -529,7 +528,7 @@ Item{
             removeImageColorizer.enabled = true;
             removeImageColorizer.visible = true;
 
-          //  removeImageColorizer.opacity = 1;
+            //  removeImageColorizer.opacity = 1;
             removingItem = shadowedImage;
             shadowedImage.state = "reparented";
             shadowedImage.visible = true;

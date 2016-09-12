@@ -19,8 +19,10 @@ Component {
         function updateImage(){
             if(!imageTimer)
                 imageTimer = tttTimer.createObject(iconImage);
-            else
+            else{
+                imageTimer.loop = 1;
                 imageTimer.restart();
+            }
         }
 
         Item{
@@ -56,8 +58,8 @@ Component {
                         }
 
                         centralItem.firstDrawed = true;
-                     //   counter++;
-                     //   console.log(counter);
+                  //      counter++;
+                  //      console.log(counter);
 
                         if(shadowedImage && shadowedImage.source)
                             shadowedImage.source.destroy();
@@ -90,7 +92,7 @@ Component {
                     Timer{
                         id:ttt
                         repeat: true
-                        interval: (loop<=1) ? centralItem.shadowInterval : 2500
+                        interval: loop <= 1 ? centralItem.shadowInterval : 2500
 
                         property int loop: 0;
 
@@ -100,8 +102,8 @@ Component {
                             loop++;
 
                            // console.log(loop+' - '+interval);
-                            if(loop >= 3)
-                                ttt.destroy(300);
+                            if(loop > 2)
+                              ttt.destroy(300);
                         }
 
                         Component.onCompleted: ttt.start();
