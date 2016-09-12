@@ -38,12 +38,7 @@ MouseArea {
     }
 
     onContainsMouseChanged: {
-        if(containsMouse)
-            toolTipDelegate.currentItem = parentIndex;
-        else{
-            toolTipDelegate.currentItem = -1;
-            checkListHovered.restart();
-        }
+        tooltipContentItem.checkMouseInside();
 
         panel.windowsHovered([winId], containsMouse);
     }

@@ -71,7 +71,7 @@ Item {
 
                         property int realValue
                         property bool startup: true
-                        model: ["16px.", "22px.", "32px.", "48px.", "64px.", "92px", "128px.", "256px."]
+                        model: ["16px.", "22px.", "32px.", "48px.", "64px.", "96px", "128px.", "256px."]
 
                         onCurrentIndexChanged: {
                             switch(currentIndex){
@@ -91,7 +91,7 @@ Item {
                                 realValue = 64;
                                 break;
                             case 5:
-                                realValue = 92;
+                                realValue = 96;
                                 break;
                             case 6:
                                 realValue = 128;
@@ -123,7 +123,7 @@ Item {
                                 case 64:
                                     currentIndex = 4;
                                     break;
-                                case 92:
+                                case 96:
                                     currentIndex = 5;
                                     break;
                                 case 128:

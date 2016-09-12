@@ -28,8 +28,10 @@ import org.kde.plasma.components 2.0 as PlasmaComponents
 import org.kde.plasma.extras 2.0 as PlasmaExtras
 import org.kde.kquickcontrolsaddons 2.0 as KQuickControlsAddons
 
-Column {
+//Column {
+MouseArea{
     id: tooltipContentItem
+    hoverEnabled: true
 
     property Item toolTip
     property var parentIndex
@@ -51,7 +53,20 @@ Column {
     Layout.maximumWidth: Layout.minimumWidth
     Layout.maximumHeight: Layout.minimumHeight
 
-    spacing: _s
+    onContainsMouseChanged: {
+        checkMouseInside();
+    }
+
+    function checkMouseInside(){
+        var isInside = containsMouse || windowRow.containsMouse();
+        if (isInside){
+            toolTipDelegate.currentItem = parentIndex;
+        }
+        else{
+            toolTipDelegate.currentItem = -1;
+            checkListHovered.restart();
+        }
+    }
 
     states: State {
         when: mpris2Source.hasPlayer
@@ -145,246 +160,262 @@ Column {
         connectedSources: sources
     }
 
-    Item {
-        id: thumbnailContainer
-        width: Math.max(parent.width, windowRow.width)
-        height: albumArtImage.available ? albumArtImage.height :
-                raisePlayerArea.visible ? raisePlayerArea.height :
-                                          windowRow.height
+    Column{
+        spacing: _s
 
         Item {
-            id: thumbnailSourceItem
-            anchors.fill: parent
+            id: thumbnailContainer
+            width: Math.max(parent.width, windowRow.width)
+            height: albumArtImage.available ? albumArtImage.height :
+                                              raisePlayerArea.visible ? raisePlayerArea.height :
+                                                                        windowRow.height
 
-            PlasmaExtras.ScrollArea {
-                id: scrollArea
-                anchors.horizontalCenter: parent.horizontalCenter
-                width: Math.max(windowRow.width, thumbnailWidth)
-                height: parent.height
+            Item {
+                id: thumbnailSourceItem
+                anchors.fill: parent
 
-                visible: !albumArtImage.available
+                PlasmaExtras.ScrollArea {
+                    id: scrollArea
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    width: Math.max(windowRow.width, thumbnailWidth)
+                    height: parent.height
 
-                verticalScrollBarPolicy: Qt.ScrollBarAlwaysOff
-                horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
+                    visible: !albumArtImage.available
 
-                Component.onCompleted: {
-                    flickableItem.interactive = Qt.binding(function() {
-                        return contentItem.width > viewport.width;
-                    });
-                }
+                    verticalScrollBarPolicy: Qt.ScrollBarAlwaysOff
+                    horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
 
-                Row {
-                    id: windowRow
-                    width: childrenRect.width
-                    height: childrenRect.height
-                    spacing: units.largeSpacing
+                    Component.onCompleted: {
+                        flickableItem.interactive = Qt.binding(function() {
+                            return contentItem.width > viewport.width;
+                        });
+                    }
 
-                    Repeater {
-                        model: plasmoid.configuration.showToolTips && !albumArtImage.available ? windows : null
+                    Row {
+                        id: windowRow
+                        width: childrenRect.width
+                        height: childrenRect.height
+                        spacing: units.largeSpacing
 
-                        PlasmaCore.WindowThumbnail {
-                            id: windowThumbnail
+                        Repeater {
+                            model: plasmoid.configuration.showToolTips && !albumArtImage.available ? windows : null
 
-                            width: thumbnailWidth
-                            height: thumbnailHeight
+                            PlasmaCore.WindowThumbnail {
+                                id: windowThumbnail
 
-                            winId: modelData
+                                width: thumbnailWidth
+                                height: thumbnailHeight
 
-                            ToolTipWindowMouseArea {
-                                anchors.fill: parent
-                                modelIndex: tasksModel.makeModelIndex(parentIndex, group ? index : -1)
                                 winId: modelData
-                                thumbnailItem: parent
+
+                                ToolTipWindowMouseArea {
+                                    anchors.fill: parent
+                                    modelIndex: tasksModel.makeModelIndex(parentIndex, group ? index : -1)
+                                    winId: modelData
+                                    thumbnailItem: parent
+                                }
                             }
                         }
+
+                        function containsMouse(){
+                            for(var i=0; i<children.length-1; ++i){
+                                if(children[i].children[0].containsMouse)
+                                    return true;
+                            }
+
+                            return false;
+                        }
+                    }
+                }
+
+                Image {
+                    id: albumArtImage
+                    // also Image.Loading to prevent loading thumbnails just because the album art takes a split second to load
+                    readonly property bool available: status === Image.Ready || status === Image.Loading
+
+                    anchors.centerIn: parent
+                    width: parent.width
+                    height: thumbnailHeight
+                    sourceSize: Qt.size(thumbnailWidth, thumbnailHeight)
+                    asynchronous: true
+                    source: mpris2Source.albumArt
+                    fillMode: Image.PreserveAspectCrop
+                    visible: available
+
+                    ToolTipWindowMouseArea {
+                        id: albumMouseArea
+
+                        anchors.fill: parent
+                        modelIndex: tasksModel.makeModelIndex(parentIndex, group ? index : -1)
+                        winId: windows != undefined ? (windows[0] || 0) : 0
+                    }
+                }
+
+                MouseArea {
+                    id: raisePlayerArea
+                    anchors.centerIn: parent
+                    width: thumbnailWidth
+                    height: thumbnailHeight
+
+                    // if there's no window associated with this task, we might still be able to raise the player
+                    visible: windows == undefined || !windows[0] && mpris2Source.canRaise
+                    onClicked: mpris2Source.raise()
+
+                    PlasmaCore.IconItem {
+                        anchors.fill: parent
+                        source: icon
+                        animated: false
+                        usesPlasmaTheme: false
+                        visible: !albumArtImage.available
                     }
                 }
             }
 
-            Image {
-                id: albumArtImage
-                // also Image.Loading to prevent loading thumbnails just because the album art takes a split second to load
-                readonly property bool available: status === Image.Ready || status === Image.Loading
+            Item {
+                id: playerControlsShadowMask
+                anchors.fill: thumbnailSourceItem
+                visible: false // OpacityMask would render it
 
-                anchors.centerIn: parent
-                width: parent.width
-                height: thumbnailHeight
-                sourceSize: Qt.size(thumbnailWidth, thumbnailHeight)
-                asynchronous: true
-                source: mpris2Source.albumArt
-                fillMode: Image.PreserveAspectCrop
-                visible: available
+                Rectangle {
+                    width: parent.width
+                    height: parent.height - playerControlsRow.height
+                }
 
-                ToolTipWindowMouseArea {
-                    anchors.fill: parent
-                    modelIndex: tasksModel.makeModelIndex(parentIndex, group ? index : -1)
-                    winId: windows != undefined ? (windows[0] || 0) : 0
+                Rectangle {
+                    anchors.bottom: parent.bottom
+                    width: parent.width
+                    height: playerControlsRow.height
+                    opacity: 0.2
                 }
             }
 
-            MouseArea {
-                id: raisePlayerArea
-                anchors.centerIn: parent
-                width: thumbnailWidth
-                height: thumbnailHeight
+            OpacityMask {
+                id: playerControlsOpacityMask
+                anchors.fill: thumbnailSourceItem
+                visible: false
+            }
 
-                // if there's no window associated with this task, we might still be able to raise the player
-                visible: windows == undefined || !windows[0] && mpris2Source.canRaise
-                onClicked: mpris2Source.raise()
+            // prevent accidental click-through when a control is disabled
+            MouseArea {
+                anchors.fill: playerControlsRow
+                enabled: playerControlsRow.visible
+            }
+
+            RowLayout {
+                id: playerControlsRow
+                anchors {
+                    horizontalCenter: parent.horizontalCenter
+                    bottom: thumbnailSourceItem.bottom
+                }
+                width: thumbnailWidth
+                spacing: 0
+                enabled: mpris2Source.canControl
+                visible: false
+
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    spacing: 0
+
+                    PlasmaExtras.Heading {
+                        Layout.fillWidth: true
+                        level: 4
+                        wrapMode: Text.NoWrap
+                        elide: Text.ElideRight
+                        text: mpris2Source.track || ""
+                    }
+
+                    PlasmaExtras.Heading {
+                        Layout.fillWidth: true
+                        level: 5
+                        wrapMode: Text.NoWrap
+                        elide: Text.ElideRight
+                        text: mpris2Source.artist || ""
+                    }
+                }
+
+                PlasmaComponents.ToolButton {
+                    enabled: mpris2Source.canGoBack
+                    iconName: "media-skip-backward"
+                    tooltip: i18nc("Go to previous song", "Previous")
+                    Accessible.name: tooltip
+                    onClicked: mpris2Source.goPrevious()
+                }
+
+                PlasmaComponents.ToolButton {
+                    Layout.fillHeight: true
+                    Layout.preferredWidth: height // make this button bigger
+                    iconName: mpris2Source.playing ? "media-playback-pause" : "media-playback-start"
+                    tooltip: mpris2Source.playing ? i18nc("Pause player", "Pause") : i18nc("Start player", "Play")
+                    Accessible.name: tooltip
+                    onClicked: mpris2Source.playPause()
+                }
+
+                PlasmaComponents.ToolButton {
+                    enabled: mpris2Source.canGoNext
+                    iconName: "media-skip-forward"
+                    tooltip: i18nc("Go to next song", "Next")
+                    Accessible.name: tooltip
+                    onClicked: mpris2Source.goNext()
+                }
+            }
+        }
+
+        Row {
+            id: appLabelRow
+            width: childrenRect.width + _s
+            height: childrenRect.height + units.largeSpacing
+            spacing: units.largeSpacing
+
+            Item {
+                id: imageContainer
+                width: tooltipIcon.width
+                height: tooltipIcon.height
+                y: _s
 
                 PlasmaCore.IconItem {
-                    anchors.fill: parent
-                    source: icon
+                    id: tooltipIcon
+                    x: _s
+                    width: units.iconSizes.desktop
+                    height: width
                     animated: false
                     usesPlasmaTheme: false
-                    visible: !albumArtImage.available
+                    source: icon
                 }
             }
-        }
 
-        Item {
-            id: playerControlsShadowMask
-            anchors.fill: thumbnailSourceItem
-            visible: false // OpacityMask would render it
+            Column {
+                id: mainColumn
+                y: _s
 
-            Rectangle {
-                width: parent.width
-                height: parent.height - playerControlsRow.height
-            }
-
-            Rectangle {
-                anchors.bottom: parent.bottom
-                width: parent.width
-                height: playerControlsRow.height
-                opacity: 0.2
-            }
-        }
-
-        OpacityMask {
-            id: playerControlsOpacityMask
-            anchors.fill: thumbnailSourceItem
-            visible: false
-        }
-
-        // prevent accidental click-through when a control is disabled
-        MouseArea {
-            anchors.fill: playerControlsRow
-            enabled: playerControlsRow.visible
-        }
-
-        RowLayout {
-            id: playerControlsRow
-            anchors {
-                horizontalCenter: parent.horizontalCenter
-                bottom: thumbnailSourceItem.bottom
-            }
-            width: thumbnailWidth
-            spacing: 0
-            enabled: mpris2Source.canControl
-            visible: false
-
-            ColumnLayout {
-                Layout.fillWidth: true
-                spacing: 0
-
+                //This instance is purely for metrics
                 PlasmaExtras.Heading {
-                    Layout.fillWidth: true
-                    level: 4
-                    wrapMode: Text.NoWrap
-                    elide: Text.ElideRight
-                    text: mpris2Source.track || ""
+                    id: tooltipMaintextPlaceholder
+                    visible: false
+                    level: 3
+                    text: mainText
+                    textFormat: Text.PlainText
                 }
-
                 PlasmaExtras.Heading {
-                    Layout.fillWidth: true
-                    level: 5
-                    wrapMode: Text.NoWrap
+                    id: tooltipMaintext
+                    level: 3
+                    width: Math.min(tooltipMaintextPlaceholder.width, preferredTextWidth)
+                    //width: 400
                     elide: Text.ElideRight
-                    text: mpris2Source.artist || ""
+                    text: mainText
+                    textFormat: Text.PlainText
+                }
+                PlasmaComponents.Label {
+                    id: tooltipSubtext
+                    width: tooltipContentItem.preferredTextWidth
+                    height: Math.min(theme.mSize(theme.defaultFont), contentHeight)
+                    wrapMode: Text.WordWrap
+                    text: subText
+                    textFormat: Text.PlainText
+                    opacity: 0.5
+                    visible: text !== ""
                 }
             }
-
-            PlasmaComponents.ToolButton {
-                enabled: mpris2Source.canGoBack
-                iconName: "media-skip-backward"
-                tooltip: i18nc("Go to previous song", "Previous")
-                Accessible.name: tooltip
-                onClicked: mpris2Source.goPrevious()
-            }
-
-            PlasmaComponents.ToolButton {
-                Layout.fillHeight: true
-                Layout.preferredWidth: height // make this button bigger
-                iconName: mpris2Source.playing ? "media-playback-pause" : "media-playback-start"
-                tooltip: mpris2Source.playing ? i18nc("Pause player", "Pause") : i18nc("Start player", "Play")
-                Accessible.name: tooltip
-                onClicked: mpris2Source.playPause()
-            }
-
-            PlasmaComponents.ToolButton {
-                enabled: mpris2Source.canGoNext
-                iconName: "media-skip-forward"
-                tooltip: i18nc("Go to next song", "Next")
-                Accessible.name: tooltip
-                onClicked: mpris2Source.goNext()
-            }
-        }
-    }
-
-    Row {
-        id: appLabelRow
-        width: childrenRect.width + _s
-        height: childrenRect.height + units.largeSpacing
-        spacing: units.largeSpacing
-
-        Item {
-            id: imageContainer
-            width: tooltipIcon.width
-            height: tooltipIcon.height
-            y: _s
-
-            PlasmaCore.IconItem {
-                id: tooltipIcon
-                x: _s
-                width: units.iconSizes.desktop
-                height: width
-                animated: false
-                usesPlasmaTheme: false
-                source: icon
-            }
         }
 
-        Column {
-            id: mainColumn
-            y: _s
-
-            //This instance is purely for metrics
-            PlasmaExtras.Heading {
-                id: tooltipMaintextPlaceholder
-                visible: false
-                level: 3
-                text: mainText
-                textFormat: Text.PlainText
-            }
-            PlasmaExtras.Heading {
-                id: tooltipMaintext
-                level: 3
-                width: Math.min(tooltipMaintextPlaceholder.width, preferredTextWidth)
-                //width: 400
-                elide: Text.ElideRight
-                text: mainText
-                textFormat: Text.PlainText
-            }
-            PlasmaComponents.Label {
-                id: tooltipSubtext
-                width: tooltipContentItem.preferredTextWidth
-                height: Math.min(theme.mSize(theme.defaultFont), contentHeight)
-                wrapMode: Text.WordWrap
-                text: subText
-                textFormat: Text.PlainText
-                opacity: 0.5
-                visible: text !== ""
-            }
-        }
     }
 }

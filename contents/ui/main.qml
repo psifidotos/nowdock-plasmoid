@@ -187,6 +187,10 @@ Item {
         visible: false
 
         mainItem: toolTipDelegate
+
+        function hide(){
+            visible = false;
+        }
     }
 
 
