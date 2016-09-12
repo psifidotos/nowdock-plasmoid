@@ -89,12 +89,19 @@ Component {
 
                     Timer{
                         id:ttt
-                        repeat: false
-                        interval: centralItem.shadowInterval
+                        repeat: true
+                        interval: (loop<=1) ? centralItem.shadowInterval : 2500
+
+                        property int loop: 0;
 
                         onTriggered: {
                             iconImage.updateBuffers();
-                            ttt.destroy(300);
+
+                            loop++;
+
+                           // console.log(loop+' - '+interval);
+                            if(loop >= 3)
+                                ttt.destroy(300);
                         }
 
                         Component.onCompleted: ttt.start();
@@ -104,6 +111,11 @@ Component {
 
                 Component.onCompleted: {
                     yourImageWithLoadedIconContainer.updateImage();
+                }
+
+                Component.onDestruction: {
+                    if(yourImageWithLoadedIconContainer.imageTimer)
+                        yourImageWithLoadedIconContainer.imageTimer.destroy();
                 }
             }
         }
@@ -123,6 +135,10 @@ Component {
             verticalOffset: 2
         }
 
+        Component.onDestruction: {
+            if(yourImageWithLoadedIconContainer.imageTimer)
+                yourImageWithLoadedIconContainer.imageTimer.destroy();
+        }
     }
 }
 
