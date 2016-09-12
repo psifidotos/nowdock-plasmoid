@@ -94,6 +94,8 @@ Item{
         width:iconImageBuffer.width+2*shadowSize-2
         height:iconImageBuffer.height+2*shadowSize-2
 
+        visible: plasmoid.configuration.showShadows
+
         states: State {
             name: "reparented"
             ParentChange { target: shadowedImage; parent: panel; }
@@ -522,8 +524,7 @@ Item{
           //  removeImageColorizer.opacity = 1;
             removingItem = shadowedImage;
             shadowedImage.state = "reparented";
-
-
+            shadowedImage.visible = true;
 
             var tempPoint = 0;
 
