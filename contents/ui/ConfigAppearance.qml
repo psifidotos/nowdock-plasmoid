@@ -254,7 +254,7 @@ Item {
                         }
                     }
 
-                /*    Label{
+                    /*    Label{
                         Layout.columnSpan: 3
                         Layout.fillWidth: false
                         Layout.alignment: Qt.AlignRight
@@ -327,6 +327,12 @@ Item {
                         Layout.columnSpan: 3
                     }
                     
+
+                }
+
+                Label {}
+                RowLayout{
+
                     Label {
                         id: durationTimeLabel
                         text: i18n("Duration: ")
@@ -342,7 +348,6 @@ Item {
                         stepSize: 0.5
                         tickmarksEnabled: false
                     }
-
                     Label {
                         enabled: true
                         Layout.minimumWidth: durationTimeMetricsLabel.width
@@ -358,7 +363,6 @@ Item {
                             text: durationTime.maximumValue+" ms."
                         }
                     }
-                    
                 }
 
             }
