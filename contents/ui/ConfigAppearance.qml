@@ -345,7 +345,7 @@ Item {
                         Layout.fillWidth: true
                         minimumValue: 0
                         maximumValue: 5
-                        stepSize: 0.5
+                        stepSize: 1
                         tickmarksEnabled: false
                     }
                     Label {
