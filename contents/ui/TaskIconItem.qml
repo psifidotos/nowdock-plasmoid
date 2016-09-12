@@ -116,8 +116,6 @@ Item{
         }
     }
 
-
-
     KQuickControlAddons.QIconItem{
         id: iconImageBuffer
 
@@ -287,9 +285,18 @@ Item{
             smartLauncherItem = smartLauncher;
         }
 
-        //if(!mainItemContainer.isStartup)
-        //   updateBuffers();
+        //start up sequence....
+      /*  if(panel.initializationStep){
+            panel.initializationStep = false;
+        }
 
+        centralItem.firstDrawed = true;
+
+        mainItemContainer.buffersAreReady = true;
+        if(!panel.initializatedBuffers)
+            panel.noInitCreatedBuffers++;
+
+        iconImageBuffer.opacity = 1;*/
     }
 
     Component.onDestruction: {
