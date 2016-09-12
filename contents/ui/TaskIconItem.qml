@@ -121,9 +121,10 @@ Item{
 
         anchors.centerIn: parent
 
-        width: newTempSize + 2*centralItem.shadowSize
+        width: newTempSize //+ 2*centralItem.shadowSize
         height: width
         icon: decoration
+        smooth: true
 
         property int zoomedSize: panel.zoomFactor * panel.iconSize
 

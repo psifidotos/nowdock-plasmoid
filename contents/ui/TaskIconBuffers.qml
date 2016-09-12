@@ -42,9 +42,9 @@ Component {
                 state: KQuickControlAddons.QIconItem.DefaultState
 
                 enabled: true
-
                 visible: true
 
+                smooth: true
               //  onIconChanged: updateBuffers();
 
                 property int counter: 0
