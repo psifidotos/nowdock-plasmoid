@@ -50,7 +50,7 @@ Item{
 
     //property int firstDrawedInterval: panel.initializationStep ? 2000 : 1000
    // property int shadowInterval: firstDrawed ? firstDrawedInterval : 250
-    property int shadowInterval: firstDrawed ? 1000 : 250
+    property int shadowInterval: firstDrawed ? plasmoid.configuration.durationTime*units.longDuration : plasmoid.configuration.durationTime*units.shortDuration
     property int shadowSize : Math.ceil(panel.iconSize / 20)
 
     readonly property bool smartLauncherEnabled: ((mainItemContainer.isStartup === false) && (plasmoid.configuration.smartLaunchersEnabled))
