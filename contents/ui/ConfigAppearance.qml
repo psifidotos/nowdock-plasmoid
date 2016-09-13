@@ -32,27 +32,24 @@ Item {
 
     property bool vertical: (plasmoid.formFactor == PlasmaCore.Types.Vertical)
 
+    property alias cfg_zoomHelper: zoomHelper.checked
+    property alias cfg_zoomLevel: zoomLevel.value
     property alias cfg_showShadows: showShadows.checked
     property alias cfg_showGlow: showGlow.checked
-    property alias cfg_zoomLevel: zoomLevel.value
     property alias cfg_iconSize: iconSizeCmb.realValue
-    property alias cfg_zoomHelper: zoomHelper.checked
     property alias cfg_threeColorsWindows: threeColorsWindows.checked
     property alias cfg_dotsOnActive: dotsOnActive.checked
-    property alias cfg_showBarLine: showBarLine.checked
-    property alias cfg_useThemePanel: useThemePanel.checked
-    property alias cfg_panelSize: panelSize.value
-    property alias cfg_transparentPanel: transparentPanel.checked
-    property alias cfg_plasmoidPosition: panelPositionCmb.currentIndex
-    property alias cfg_isInNowDockPanel: mainItem.isInNowDockPanel
     property alias cfg_durationTime : durationTime.value
+
+    property alias cfg_isInNowDockPanel: mainItem.isInNowDockPanel
 
     property bool isInNowDockPanel
 
     ColumnLayout {
         id:mainColumn
         spacing: 15
-        Layout.fillWidth: true
+        width: parent.width-40
+        //Layout.fillWidth: true
 
         GroupBox {
             title: ""
@@ -169,200 +166,110 @@ Item {
                     text: i18n("Dots on active window")
                     enabled: true
                 }
+            }
+        }
 
-                RowLayout{
+        GridLayout{
+            Layout.fillWidth: true
+            columns: 3
 
-                    Label {
-                        id: durationTimeLabel
-                        text: i18n("Animations: ")
-                        enabled: true
-                    }
 
-                    Slider {
-                        id: durationTime
-                        enabled: true
-                        Layout.fillWidth: true
-                        minimumValue: 0
-                        maximumValue: 3
-                        stepSize: 1
-                        tickmarksEnabled: true
-                    }
-                    Label {
-                        enabled: true
-                        Layout.alignment: Qt.AlignRight
-                        horizontalAlignment: Text.AlignRight
+            Label {
+                id: durationTimeLabel
 
-                        text: (durationTime.value > 0 ? ("x" + durationTime.value) : "no" )
-                    }
+                Layout.alignment: Qt.AlignHCenter
+                horizontalAlignment: Text.AlignHCenter
+
+                text: i18n("Animations: ")
+            }
+
+            Slider {
+                id: durationTime
+                enabled: true
+                Layout.fillWidth: true
+                minimumValue: 0
+                maximumValue: 3
+                stepSize: 1
+                tickmarksEnabled: true
+            }
+            Label {
+                enabled: durationTime.value > 0
+                Layout.alignment: Qt.AlignHCenter
+                horizontalAlignment: Text.AlignHCenter
+                font.italic: durationTime.value > 0 ? false : true
+
+
+                text: (durationTime.value > 0 ? ("x" + durationTime.value) +" duration" : "disabled" )
+            }
+
+            Label{Layout.columnSpan: 3}
+
+            Item{
+                enabled: !mainItem.isInNowDockPanel
+                Layout.columnSpan: 3
+                Layout.fillWidth: true
+                Label {
+                    text: i18n("Zoom")
+                    anchors.centerIn: parent
+                    font.bold: true
+                    font.italic: true
                 }
+            }
 
-                Label{}
-                Label{}
+            //////
 
-                GridLayout{
-                    enabled: !mainItem.isInNowDockPanel
-                    Layout.fillWidth: true
-                    columns: 3
-                    property bool panelConfigEnabled: showBarLine.checked && useThemePanel.checked
+            Label {
+                enabled: !mainItem.isInNowDockPanel
+                Layout.alignment: Qt.AlignHCenter
+                horizontalAlignment: Text.AlignHCenter
 
-                    Item{
-                        Layout.columnSpan: 3
-                        Layout.fillWidth: true
-                        Label {
-                            text: i18n("Panel")
-                            anchors.centerIn: parent
-                            font.bold: true
-                            font.italic: true
-                        }
-                    }
+                text: i18n("Level: ")
+            }
 
-                    Label{Layout.columnSpan: 3}
+            Slider {
+                id: zoomLevel
+                enabled: !mainItem.isInNowDockPanel
+                Layout.fillWidth: true
+                minimumValue: 0
+                maximumValue: 20
+                stepSize: 1
+                tickmarksEnabled: true
+            }
 
-                    Label {
-                        text: i18n("Position: ")
-                    }
-
-                    ComboBox {
-                        // 16, 22, 32, 48, 64,128, 256
-                        id: panelPositionCmb
-
-                        Layout.fillWidth: true
-                        model: ["Center", "Left", "Right", "Top", "Bottom"]
-                    }
-                    Label{}
+            Label {
+                id:zoomLevelText
+                enabled: !mainItem.isInNowDockPanel
+                Layout.minimumWidth: metricsLabel2.width
+                Layout.maximumWidth: metricsLabel2.width
+                Layout.alignment: Qt.AlignHCenter
+                horizontalAlignment: Text.AlignHCenter
+                //Layout.alignment: Qt.AlignRight
 
 
-                    CheckBox {
-                        id: showBarLine
-                        Layout.columnSpan: 3
-                        text: i18n("Show bar line for tasks")
-                        enabled: true
-                    }
+                property real fixedZoom: (1 + (zoomLevel.value / 20))
+                text:  "x"+ fixedZoom.toFixed(2)
 
-                    CheckBox {
-                        id: useThemePanel
-                        Layout.columnSpan: 3
-                        text: i18n("Use plasma theme panel")
-                        enabled: showBarLine.checked
-                    }
-
-                    CheckBox {
-                        id: transparentPanel
-                        Layout.columnSpan: 3
-                        text: i18n("Use transparency in the panel")
-                        enabled: parent.panelConfigEnabled
-                    }
-
-
-                    Label {
-                        id: panelLabel
-                        text: i18n("Size: ")
-                        enabled: parent.panelConfigEnabled
-                    }
-
-                    Slider {
-                        id: panelSize
-                        enabled: parent.panelConfigEnabled
-                        Layout.fillWidth: true
-                        minimumValue: 0
-                        maximumValue: 256
-                        stepSize: 2
-                        tickmarksEnabled: false
-                    }
-
-                    Label {
-                        enabled: parent.panelConfigEnabled
-                        Layout.minimumWidth: metricsLabel.width
-                        Layout.maximumWidth: metricsLabel.width
-                        Layout.alignment: Qt.AlignRight
-                        horizontalAlignment: Text.AlignRight
-
-                        text: ( panelSize.value + " px." )
-
-                        Label{
-                            id:metricsLabel
-                            visible: false
-                            text: panelSize.maximumValue+" px."
-                        }
-                    }
-
-                    /*    Label{
-                        Layout.columnSpan: 3
-                        Layout.fillWidth: false
-                        Layout.alignment: Qt.AlignRight
-                        Layout.maximumWidth: zoomLevel.width + zoomLevelText.width + panelLabel.width
-                        horizontalAlignment: Text.AlignRight
-                        text: i18n("in panel placement, themes that have set a <b>specific</b> panel transparent work better")
-                        wrapMode: Text.WordWrap
-                        font.italic: true
-                        enabled: parent.panelConfigEnabled
-                    }*/
-
-                    Label{Layout.columnSpan: 3}
-                    Label{Layout.columnSpan: 3}
-
-                    Item{
-                        Layout.columnSpan: 3
-                        Layout.fillWidth: true
-                        Label {
-                            text: i18n("Zoom")
-                            anchors.centerIn: parent
-                            font.bold: true
-                            font.italic: true
-                        }
-                    }
-
-                    //////
-
-                    Label {
-                        text: i18n("Level: ")
-                    }
-
-                    Slider {
-                        id: zoomLevel
-                        Layout.fillWidth: true
-                        minimumValue: 0
-                        maximumValue: 20
-                        stepSize: 1
-                        tickmarksEnabled: true
-                    }
-
-                    Label {
-                        id:zoomLevelText
-                        Layout.minimumWidth: metricsLabel2.width
-                        Layout.maximumWidth: metricsLabel2.width
-                        Layout.alignment: Qt.AlignRight
-
-
-                        property real fixedZoom: (1 + (zoomLevel.value / 20))
-                        text:  "x"+ fixedZoom.toFixed(2)
-
-                        Label{
-                            id:metricsLabel2
-                            visible: false
-                            text: "x1.50"
-                        }
-                    }
-                    /////
-                    //spacer to set a minimumWidth for sliders
-                    //Layout.minimumWidth didnt work
-                    Label{}
-                    Label{Layout.minimumWidth: 275}
-                    Label{}
-
-                    ////////
-
-                    CheckBox {
-                        id: zoomHelper
-                        text: i18n("Show a red line on the limit needed for animations")
-                        enabled: true
-                        Layout.columnSpan: 3
-                    }
-                    
-
+                Label{
+                    id:metricsLabel2
+                    visible: false
+                    text: "x1.50"
                 }
+            }
+            /////
+            //spacer to set a minimumWidth for sliders
+            //Layout.minimumWidth didnt work
+            Label{}
+            //  Label{Layout.maximumWidth: 275}
+            Label{}
 
-                Label {}
+            ////////
+
+            CheckBox {
+                id: zoomHelper
+                enabled: !mainItem.isInNowDockPanel
+                text: i18n("Show a red line on the limit needed for animations")
+
+                Layout.columnSpan: 3
             }
         }
     }
@@ -384,16 +291,17 @@ Item {
 
     Label {
         id:inNowDockLabel
-        anchors.horizontalCenter: mainColumn.horizontalCenter
-        anchors.verticalCenter: mainColumn.verticalCenter
-        anchors.verticalCenterOffset:  (mainColumn.height / 4)
+        anchors.horizontalCenter: mainItem.horizontalCenter
+        anchors.bottom: mainColumn.bottom
+        anchors.bottomMargin: mainColumn.height / 12
+      //  anchors.verticalCenterOffset:  (mainColumn.height / 4)
 
-        width: 0.85 * mainColumn.width
+        width: 0.85 * mainItem.width
         text: i18n("For the disabled settings you should use the Now Dock Panel Configuration Window")
         visible: mainItem.isInNowDockPanel
 
         horizontalAlignment: Text.AlignHCenter
-      //  font.bold: true
+        //  font.bold: true
         font.italic: true
         font.pointSize: 1.2 * theme.defaultFont.pointSize
 

@@ -28,6 +28,11 @@ ConfigModel {
          source: "ConfigAppearance.qml"
     }
     ConfigCategory {
+         name: i18n("Panel")
+         icon: "preferences-system-windows"
+         source: "ConfigPanel.qml"
+    }
+    ConfigCategory {
          name: i18n("Interaction")
          icon: "preferences-system-windows"
          source: "ConfigInteraction.qml"
