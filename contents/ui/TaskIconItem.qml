@@ -327,7 +327,7 @@ Item{
     SequentialAnimation{
         id:launcherAnimation
 
-        property int speed: plasmoid.configuration.durationTime*units.longDuration
+        property int speed: plasmoid.configuration.durationTime * 0.8 * units.longDuration
 
         SequentialAnimation{
             ParallelAnimation{

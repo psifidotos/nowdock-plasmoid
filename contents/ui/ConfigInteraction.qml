@@ -92,31 +92,36 @@ Item {
         }
 
 
-        GroupBox {
+        ColumnLayout {
             Layout.fillWidth: true
 
-            title: i18n("Filters")
-            flat: true
 
-            ColumnLayout {
-                Layout.fillWidth: true
+            Label {
+                text: i18n("Filters")
+               // Layout.fillWidth: true
+                anchors.horizontalCenter: parent.horizontalCenter
+               // anchors.centerIn: parent
+                font.bold: true
+                font.italic: true
+            }
 
-                CheckBox {
-                    id: showOnlyCurrentScreen
-                    text: i18n("Show only tasks from the current screen")
-                }
 
-                CheckBox {
-                    id: showOnlyCurrentDesktop
-                    text: i18n("Show only tasks from the current desktop")
-                }
+            CheckBox {
+                id: showOnlyCurrentScreen
+                text: i18n("Show only tasks from the current screen")
+            }
 
-                CheckBox {
-                    id: showOnlyCurrentActivity
-                    text: i18n("Show only tasks from the current activity")
-                }
+            CheckBox {
+                id: showOnlyCurrentDesktop
+                text: i18n("Show only tasks from the current desktop")
+            }
+
+            CheckBox {
+                id: showOnlyCurrentActivity
+                text: i18n("Show only tasks from the current activity")
             }
         }
+
     }
 
 }

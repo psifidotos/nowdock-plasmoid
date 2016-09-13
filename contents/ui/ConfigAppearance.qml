@@ -49,40 +49,6 @@ Item {
 
     property bool isInNowDockPanel
 
-    DropShadow {
-        id:shadowText
-        anchors.fill: inNowDockLabel
-        enabled: isInNowDockPanel
-        radius: 3
-        samples: 5
-        color: "#cc080808"
-        source: inNowDockLabel
-
-        verticalOffset: 2
-        horizontalOffset: -1
-        visible: isInNowDockPanel
-    }
-
-
-    Label {
-        id:inNowDockLabel
-        anchors.horizontalCenter: mainColumn.horizontalCenter
-        anchors.verticalCenter: mainColumn.verticalCenter
-        anchors.verticalCenterOffset:  (mainColumn.height / 4)
-
-        width: 0.85 * mainColumn.width
-        text: i18n("For the disabled settings you should use the Now Dock Panel Configuration Window")
-        visible: mainItem.isInNowDockPanel
-
-        horizontalAlignment: Text.AlignHCenter
-      //  font.bold: true
-        font.italic: true
-        font.pointSize: 1.2 * theme.defaultFont.pointSize
-
-        wrapMode: Text.WordWrap
-    }
-
-
     ColumnLayout {
         id:mainColumn
         spacing: 15
@@ -204,8 +170,34 @@ Item {
                     enabled: true
                 }
 
-                Label{}
+                RowLayout{
 
+                    Label {
+                        id: durationTimeLabel
+                        text: i18n("Animations: ")
+                        enabled: true
+                    }
+
+                    Slider {
+                        id: durationTime
+                        enabled: true
+                        Layout.fillWidth: true
+                        minimumValue: 0
+                        maximumValue: 3
+                        stepSize: 1
+                        tickmarksEnabled: true
+                    }
+                    Label {
+                        enabled: true
+                        Layout.alignment: Qt.AlignRight
+                        horizontalAlignment: Text.AlignRight
+
+                        text: (durationTime.value > 0 ? ("x" + durationTime.value) : "no" )
+                    }
+                }
+
+                Label{}
+                Label{}
 
                 GridLayout{
                     enabled: !mainItem.isInNowDockPanel
@@ -223,6 +215,9 @@ Item {
                             font.italic: true
                         }
                     }
+
+                    Label{Layout.columnSpan: 3}
+
                     Label {
                         text: i18n("Position: ")
                     }
@@ -368,36 +363,40 @@ Item {
                 }
 
                 Label {}
-                RowLayout{
-
-                    Label {
-                        id: durationTimeLabel
-                        text: i18n("Duration: ")
-                        enabled: true
-                    }
-
-                    Slider {
-                        id: durationTime
-                        enabled: true
-                        Layout.fillWidth: true
-                        minimumValue: 0
-                        maximumValue: 3
-                        stepSize: 1
-                        tickmarksEnabled: false
-                    }
-                    Label {
-                        enabled: true
-                        Layout.minimumWidth: durationTimeMetricsLabel.width
-                        Layout.maximumWidth: durationTimeMetricsLabel.width
-                        Layout.alignment: Qt.AlignRight
-                        horizontalAlignment: Text.AlignRight
-
-                        text: ( durationTime.value )
-
-                    }
-                }
-
             }
         }
+    }
+
+    DropShadow {
+        id:shadowText
+        anchors.fill: inNowDockLabel
+        enabled: isInNowDockPanel
+        radius: 3
+        samples: 5
+        color: "#cc080808"
+        source: inNowDockLabel
+
+        verticalOffset: 2
+        horizontalOffset: -1
+        visible: isInNowDockPanel
+    }
+
+
+    Label {
+        id:inNowDockLabel
+        anchors.horizontalCenter: mainColumn.horizontalCenter
+        anchors.verticalCenter: mainColumn.verticalCenter
+        anchors.verticalCenterOffset:  (mainColumn.height / 4)
+
+        width: 0.85 * mainColumn.width
+        text: i18n("For the disabled settings you should use the Now Dock Panel Configuration Window")
+        visible: mainItem.isInNowDockPanel
+
+        horizontalAlignment: Text.AlignHCenter
+      //  font.bold: true
+        font.italic: true
+        font.pointSize: 1.2 * theme.defaultFont.pointSize
+
+        wrapMode: Text.WordWrap
     }
 }

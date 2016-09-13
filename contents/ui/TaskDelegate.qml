@@ -66,7 +66,7 @@ Component {
         property bool mouseEntered: false
         property bool pressed: false
 
-        property int animationTime: plasmoid.configuration.durationTime*units.shortDuration
+        property int animationTime: plasmoid.configuration.durationTime* (0.7*units.shortDuration)
         property int hoveredIndex: icList.hoveredIndex
         property int itemIndex: index
         property int lastButtonClicked: -1;
@@ -802,7 +802,7 @@ Component {
         ///item's added Animation
         SequentialAnimation{
             id:showWindowAnimation
-            property int speed: plasmoid.configuration.durationTime*units.longDuration
+            property int speed: plasmoid.configuration.durationTime* (1.2*units.longDuration)
             
             PropertyAnimation {
                 target: wrapper
