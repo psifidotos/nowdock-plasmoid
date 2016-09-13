@@ -51,6 +51,7 @@ Item{
     //property int firstDrawedInterval: panel.initializationStep ? 2000 : 1000
     // property int shadowInterval: firstDrawed ? firstDrawedInterval : 250
     property int shadowInterval: firstDrawed ? 1000 : 250
+
     property int shadowSize : Math.ceil(panel.iconSize / 20)
 
     readonly property bool smartLauncherEnabled: ((mainItemContainer.isStartup === false) && (plasmoid.configuration.smartLaunchersEnabled))
@@ -145,7 +146,7 @@ Item{
         source: iconImageBuffer
 
         Behavior on opacity {
-            NumberAnimation { duration: 300 }
+            NumberAnimation { duration: plasmoid.configuration.durationTime*units.longDuration }
         }
     }
 
@@ -228,7 +229,7 @@ Item{
     SequentialAnimation{
         id: clickedAnimation
         property bool pressed: mainItemContainer.pressed
-        property int speed: 120
+        property int speed: plasmoid.configuration.durationTime*units.longDuration
 
         ParallelAnimation{
             PropertyAnimation {
@@ -326,7 +327,7 @@ Item{
     SequentialAnimation{
         id:launcherAnimation
 
-        property int speed: 300
+        property int speed: plasmoid.configuration.durationTime*units.longDuration
 
         SequentialAnimation{
             ParallelAnimation{
@@ -351,7 +352,7 @@ Item{
                 target: wrapper
                 property: (icList.orientation == Qt.Vertical) ? "tempScaleWidth" : "tempScaleHeight"
                 to: 1
-                duration: 3 * launcherAnimation.speed
+                duration: 3*plasmoid.configuration.durationTime*launcherAnimation.speed
                 easing.type: Easing.OutBounce
             }
 
@@ -408,7 +409,7 @@ Item{
     SequentialAnimation{
         id:newWindowAnimation
 
-        property int speed: 300
+        property int speed: plasmoid.configuration.durationTime*units.longDuration
         property bool isDemandingAttention: (IsDemandingAttention === true) ? true : false
         property bool entered: mainItemContainer.mouseEntered
 
@@ -435,7 +436,7 @@ Item{
                 target: wrapper
                 property: (icList.orientation == Qt.Vertical) ? "tempScaleWidth" : "tempScaleHeight"
                 to: 1
-                duration: 3 * newWindowAnimation.speed
+                duration: 3*plasmoid.configuration.durationTime*newWindowAnimation.speed
                 easing.type: Easing.OutBounce
             }
         }
@@ -501,7 +502,7 @@ Item{
     ParallelAnimation{
         id:removingAnimation
 
-        property int speed: 600
+        property int speed: 2*plasmoid.configuration.durationTime*units.longDuration
         property Item removingItem
         property int toPoint: 0
 
@@ -581,7 +582,7 @@ Item{
 
         property bool inHalf: false
 
-        property int speed: 300
+        property int speed: plasmoid.configuration.durationTime*units.longDuration
 
         SequentialAnimation{
 
@@ -667,7 +668,7 @@ Item{
         Transition{
             id: isDraggedTransition
             to: "isDragged"
-            property int speed: 300
+            property int speed: plasmoid.configuration.durationTime*units.longDuration
 
             ParallelAnimation{
                 PropertyAnimation {
@@ -698,7 +699,7 @@ Item{
         Transition{
             id: defaultTransition
             to: "*"
-            property int speed: 300
+            property int speed: plasmoid.configuration.durationTime*units.longDuration
 
             ParallelAnimation{
                 PropertyAnimation {

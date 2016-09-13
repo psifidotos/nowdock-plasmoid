@@ -48,7 +48,7 @@ Item {
     Layout.preferredHeight: (userPanelPosition !== 0)&&(!nowDockPanel) ? tasksHeight : -1
 
 
-    property bool debugLocation: false
+    property bool debugLocation: true
 
     property bool dropNewLauncher: false
     property bool enableShadows: plasmoid.configuration.showShadows
@@ -366,7 +366,7 @@ Item {
         property int smallSize: Math.max(3.7*panel.statesLineSize, 16)
 
         Behavior on opacity{
-            NumberAnimation { duration: 150 }
+            NumberAnimation { duration: plasmoid.configuration.durationTime*units.longDuration }
         }
 
         /// plasmoid's default panel
@@ -383,7 +383,7 @@ Item {
             verticalTileMode: BorderImage.Stretch
 
             Behavior on opacity{
-                NumberAnimation { duration: 200 }
+                NumberAnimation { duration: plasmoid.configuration.durationTime*units.longDuration }
             }
         }
 
@@ -429,7 +429,7 @@ Item {
                                         plasmoid.configuration.panelSize + belower.width
 
             Behavior on opacity{
-                NumberAnimation { duration: 200 }
+                NumberAnimation { duration: plasmoid.configuration.durationTime*units.longDuration }
             }
 
 
@@ -504,13 +504,13 @@ Item {
 
             //more of a trouble
             moveDisplaced: Transition {
-                NumberAnimation { properties: "x,y"; duration: 60; easing.type: Easing.Linear }
+                NumberAnimation { properties: "x,y"; duration: plasmoid.configuration.durationTime*units.shortDuration; easing.type: Easing.Linear }
             }
 
             ///this transition can not be used with dragging !!!! I breaks
             ///the lists indexes !!!!!
             /*  move:  Transition {
-                NumberAnimation { properties: "x,y"; duration: 100; easing.type: Easing.Linear }
+                NumberAnimation { properties: "x,y"; duration: units.longDuration; easing.type: Easing.Linear }
             } */
         }
 
@@ -524,7 +524,7 @@ Item {
             opacity: panel.dropNewLauncher && (panel.dragSource == null) ? 1 : 0
 
             Behavior on opacity{
-                NumberAnimation { duration: 200; }
+                NumberAnimation { duration: plasmoid.configuration.durationTime*units.longDuration; }
             }
 
             Rectangle{

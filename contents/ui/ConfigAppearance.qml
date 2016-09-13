@@ -45,6 +45,7 @@ Item {
     property alias cfg_transparentPanel: transparentPanel.checked
     property alias cfg_plasmoidPosition: panelPositionCmb.currentIndex
     property alias cfg_isInNowDockPanel: mainItem.isInNowDockPanel
+    property alias cfg_durationTime : durationTime.value
 
     property bool isInNowDockPanel
 
@@ -290,7 +291,7 @@ Item {
                         }
                     }
 
-                /*    Label{
+                    /*    Label{
                         Layout.columnSpan: 3
                         Layout.fillWidth: false
                         Layout.alignment: Qt.AlignRight
@@ -362,7 +363,38 @@ Item {
                         enabled: true
                         Layout.columnSpan: 3
                     }
+                    
 
+                }
+
+                Label {}
+                RowLayout{
+
+                    Label {
+                        id: durationTimeLabel
+                        text: i18n("Duration: ")
+                        enabled: true
+                    }
+
+                    Slider {
+                        id: durationTime
+                        enabled: true
+                        Layout.fillWidth: true
+                        minimumValue: 0
+                        maximumValue: 3
+                        stepSize: 1
+                        tickmarksEnabled: false
+                    }
+                    Label {
+                        enabled: true
+                        Layout.minimumWidth: durationTimeMetricsLabel.width
+                        Layout.maximumWidth: durationTimeMetricsLabel.width
+                        Layout.alignment: Qt.AlignRight
+                        horizontalAlignment: Text.AlignRight
+
+                        text: ( durationTime.value )
+
+                    }
                 }
 
             }
