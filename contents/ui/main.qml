@@ -95,6 +95,7 @@ Item {
     property bool disableLeftSpacer: false
     property bool disableRightSpacer: false
 
+    property int durationTime: plasmoid.configuration.durationTime
     property int iconSize: nowDockPanel ? nowDockPanel.iconSize : Math.max(plasmoid.configuration.iconSize, 16)
     property int tasksHeight: mouseHandler.height
     property int tasksWidth: mouseHandler.width
