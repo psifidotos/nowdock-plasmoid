@@ -202,7 +202,8 @@ Item {
         id: tasksModel
 
         virtualDesktop: virtualDesktopInfo.currentDesktop
-        screen: plasmoid.screen
+       // comment in order to support LTS Plasma 5.8
+       // screen: plasmoid.screen
         activity: activityInfo.currentActivity
 
         filterByVirtualDesktop: plasmoid.configuration.showOnlyCurrentDesktop
