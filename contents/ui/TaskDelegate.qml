@@ -76,6 +76,8 @@ Component {
 
         property real animationStep: panel.iconSize / 8
 
+        property string activity: tasksModel.activity
+
         readonly property var m: model
 
         property QtObject contextMenu: null
@@ -426,8 +428,8 @@ Component {
         ////// Values Changes /////
         //restore scales when there is no zoom factor for that item or
         //the mouse is out of the ListView
-        onItemIndexChanged: {
-        }
+        // onItemIndexChanged: {
+        //  }
 
         onHoveredIndexChanged: {
             var distanceFromHovered = Math.abs(index - icList.hoveredIndex);
@@ -781,20 +783,51 @@ Component {
             return tasksModel.makeModelIndex(index);
         }
 
-        ///// End of Helper functions ////
+        //fix wrong positioning of launchers....
+        onActivityChanged:{
+            if(isLauncher){
+                for(var i=0; i<tasksModel.launcherList.length; ++i){
+                    if ((tasksModel.launcherList[i] == LauncherUrlWithoutIcon) && (i != index)){
+                        updatePosition.restart();
+                    }
+                }
+            }
+        }
 
+        ///// End of Helper functions ////
 
         Component.onCompleted: {
             panel.mouseWasEntered.connect(signalMouseWasEntered);
             panel.draggingFinished.connect(handlerDraggingFinished);
             panel.clearZoomSignal.connect(clearZoom);
 
+            //fix wrong positioning of launchers....
+           for(var i=0; i<tasksModel.launcherList.length; ++i){
+                if ((tasksModel.launcherList[i] == LauncherUrlWithoutIcon) && (i != index)){
+                    updatePosition.restart();
+                }
+            }
 
             showWindowAnimation.showWindow();
         }
 
         Component.onDestruction: {
             //    console.log("Destroying... "+index);
+        }
+
+        Timer{
+            id:updatePosition
+            interval: 800;
+
+            onTriggered: {
+                for(var i=0; i<tasksModel.launcherList.length; ++i){
+                    if ((tasksModel.launcherList[i] == LauncherUrlWithoutIcon) && (i != index)){
+               //         console.log("Launch List:"+tasksModel.launcherList);
+               //         console.log("Move from timer "+AppId+" - "+ i + " - " + index + " - "+tasksModel.count);
+                        tasksModel.move(index, i);
+                    }
+                }
+            }
         }
 
 
@@ -804,7 +837,7 @@ Component {
         SequentialAnimation{
             id:showWindowAnimation
             property int speed: plasmoid.configuration.durationTime* (1.2*units.longDuration)
-            
+
             PropertyAnimation {
                 target: wrapper
                 property: (icList.orientation == Qt.Vertical) ? "tempScaleHeight" : "tempScaleWidth"
@@ -848,13 +881,7 @@ Component {
                 wrapper.tempScaleWidth = 0;
                 wrapper.tempScaleHeight = 0;
 
-                //fix wrong positioning of launchers....
-                for(var i=0; i<tasksModel.launcherList.length; ++i){
-                   if ((tasksModel.launcherList[i] == LauncherUrlWithoutIcon) && (i != index)){
-                     //   console.log("ASDFSDFASDFASDF "+i + " - " + index + " - "+tasksModel.count);
-                        tasksModel.move(index, i);
-                    }
-                }
+
             }
 
             function showWindow(){
@@ -886,7 +913,7 @@ Component {
 
                 onTriggered: {
                     if(mainItemContainer.containsMouse){
-                   //     console.log("Hovered Timer....");
+                        //     console.log("Hovered Timer....");
                         windowsPreviewDlg.visible = true;
                     }
 
