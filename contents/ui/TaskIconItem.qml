@@ -72,7 +72,9 @@ Item{
 
     Rectangle{
         id: draggedRectangle
-        anchors.fill: iconImageBuffer
+        width: iconImageBuffer.width+1
+        height: iconImageBuffer.height+1
+        anchors.centerIn: iconImageBuffer
         opacity: 0
         radius: 3
         anchors.margins: 5
@@ -589,7 +591,7 @@ Item{
             PropertyAnimation {
                 target: wrapper
                 property: "scale"
-                to: 0.6
+                to: 0.6;
                 duration: releaseDraggedAnimation.speed
                 easing.type: Easing.OutQuad
             }
@@ -659,6 +661,7 @@ Item{
             when: ( (mainItemContainer.isDragged)&&(panel.dragSource!=null)
                    && (plasmoid.immutable) )
             PropertyChanges { target: stateColorizer; visible:true }
+            PropertyChanges { target: wrapper; scale:1 + ((panel.zoomFactor - 1) / 2)}
         }
     ]
 
