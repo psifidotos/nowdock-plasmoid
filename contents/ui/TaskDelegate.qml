@@ -785,11 +785,9 @@ Component {
 
         //fix wrong positioning of launchers....
         onActivityChanged:{
-            if(isLauncher){
-                for(var i=0; i<tasksModel.launcherList.length; ++i){
-                    if ((tasksModel.launcherList[i] == LauncherUrlWithoutIcon) && (i != index)){
-                        updatePosition.restart();
-                    }
+            for(var i=0; i<tasksModel.launcherList.length; ++i){
+                if ((tasksModel.launcherList[i] == LauncherUrlWithoutIcon) && (i != index)){
+                    updatePosition.restart();
                 }
             }
         }
@@ -802,7 +800,7 @@ Component {
             panel.clearZoomSignal.connect(clearZoom);
 
             //fix wrong positioning of launchers....
-           for(var i=0; i<tasksModel.launcherList.length; ++i){
+            for(var i=0; i<tasksModel.launcherList.length; ++i){
                 if ((tasksModel.launcherList[i] == LauncherUrlWithoutIcon) && (i != index)){
                     updatePosition.restart();
                 }
@@ -822,8 +820,8 @@ Component {
             onTriggered: {
                 for(var i=0; i<tasksModel.launcherList.length; ++i){
                     if ((tasksModel.launcherList[i] == LauncherUrlWithoutIcon) && (i != index)){
-               //         console.log("Launch List:"+tasksModel.launcherList);
-               //         console.log("Move from timer "+AppId+" - "+ i + " - " + index + " - "+tasksModel.count);
+                        //         console.log("Launch List:"+tasksModel.launcherList);
+                        //         console.log("Move from timer "+AppId+" - "+ i + " - " + index + " - "+tasksModel.count);
                         tasksModel.move(index, i);
                     }
                 }
