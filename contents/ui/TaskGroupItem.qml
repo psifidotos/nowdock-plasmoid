@@ -63,12 +63,14 @@ Item{
                 property int stateWidth: mainItemContainer.isGroupParent ? (wrapper.regulatorWidth - secondPoint.width) : wrapper.regulatorWidth - spacer.width
                 property int stateHeight: mainItemContainer.isGroupParent ? wrapper.regulatorHeight - secondPoint.height : wrapper.regulatorHeight - spacer.height
 
-               /*Behavior on width{
-                    NumberAnimation{duration: (wrapper.scale != 1) ? 20:160; easing.type: Easing.InQuad}
+                property int animationTime: plasmoid.configuration.durationTime* (units.longDuration)
+
+                Behavior on width{
+                    NumberAnimation{duration: (wrapper.scale!=1)||(panel.vertical) ? 0:160; easing.type: Easing.InQuad}
                 }
                 Behavior on height{
-                    NumberAnimation{duration: (wrapper.scale != 1) ? 20:160; easing.type: Easing.InQuad}
-                }*/
+                    NumberAnimation{duration: (wrapper.scale!=1)||(!panel.vertical) ? 0:160; easing.type: Easing.InQuad}
+                }
             }
 
             Item{
