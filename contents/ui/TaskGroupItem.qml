@@ -50,12 +50,10 @@ Item{
 
             GlowPoint{
                 id:firstPoint
-                width: (mainItemContainer.hasActive && (!panel.vertical)) ? stateWidth : glowFrame.size
-                height: (mainItemContainer.hasActive && (panel.vertical)) ? stateHeight : glowFrame.size
                 visible: ( !IsLauncher ) ? true: false
 
                 basicColor: (mainItemContainer.hasActive) ?
-                                 glowFrame.isActiveColor : glowFrame.notActiveColor
+                                glowFrame.isActiveColor : glowFrame.notActiveColor
 
                 roundCorners: true
                 showAttention: model.IsDemandingAttention ? true : false
@@ -65,11 +63,63 @@ Item{
 
                 property int animationTime: plasmoid.configuration.durationTime* (0.7*units.longDuration)
 
-                Behavior on width{
-                    NumberAnimation{duration: (wrapper.scale!=1)||(panel.vertical) ? 0:160; easing.type: Easing.InQuad}
+                property bool isActive: mainItemContainer.hasActive
+                property bool vertical: panel.vertical
+
+                property real scaleFactor: wrapper.scale
+
+                function updateInitialSizes(){
+                    if(panel.vertical)
+                        width = glowFrame.size;
+                    else
+                        height = glowFrame.size;
+
+                    if(vertical && isActive)
+                        height = stateHeight;
+                    else
+                        height = glowFrame.size;
+
+                    if(!vertical && isActive)
+                        width = stateWidth;
+                    else
+                        width = glowFrame.size;
                 }
-                Behavior on height{
-                    NumberAnimation{duration: (wrapper.scale!=1)||(!panel.vertical) ? 0:160; easing.type: Easing.InQuad}
+
+
+                onIsActiveChanged: activeAndReverseAnimation.start();
+
+                onScaleFactorChanged: {
+                    if(!activeAndReverseAnimation.running && !panel.vertical && isActive){
+                        width = stateWidth;
+                    }
+                    else if (!activeAndReverseAnimation.running && panel.vertical && isActive){
+                        height = stateHeight;
+                    }
+                }
+
+                onStateWidthChanged:{
+                    if(!activeAndReverseAnimation.running && !vertical && isActive)
+                        width = stateWidth;
+                }
+
+                onStateHeightChanged:{
+                    if(!activeAndReverseAnimation.running && vertical && isActive)
+                        height = stateHeight;
+                }
+
+                onVerticalChanged: updateInitialSizes(false);
+
+                Component.onCompleted: {
+                    updateInitialSizes(true);
+                }
+
+                NumberAnimation{
+                    id: activeAndReverseAnimation
+                    target: firstPoint
+                    property: panel.vertical ? "height" : "width"
+                    to: mainItemContainer.hasActive ? (panel.vertical ? firstPoint.stateHeight : firstPoint.stateWidth) : glowFrame.size
+                    duration: firstPoint.animationTime
+                    easing.type: Easing.InQuad
                 }
             }
 
@@ -87,7 +137,7 @@ Item{
                 basicColor: ((mainItemContainer.hasActive)&&(!(mainItemContainer.hasMinimized))) ? state2Color : state1Color
                 roundCorners: true
                 visible:  ( mainItemContainer.isGroupParent && plasmoid.configuration.dotsOnActive )
-                         || (mainItemContainer.isGroupParent && !mainItemContainer.hasActive)? true: false
+                          || (mainItemContainer.isGroupParent && !mainItemContainer.hasActive)? true: false
 
                 //when there is no active window
                 property color state1Color: mainItemContainer.hasShown ? glowFrame.isShownColor : glowFrame.minimizedColor
@@ -97,3 +147,4 @@ Item{
         }
     }
 }// number of windows indicator
+
