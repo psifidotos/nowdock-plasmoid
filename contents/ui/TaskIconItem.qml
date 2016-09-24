@@ -244,7 +244,7 @@ Item{
             PropertyAnimation {
                 target: wrapper
                 property: "scale"
-                to: panel.taskInAnimation ? 0.9 : wrapper.scale - 0.3
+                to: panel.taskInAnimation ? 0.9 : wrapper.scale - (panel.zoomFactor - 1) / 2
                 duration: clickedAnimation.speed
                 easing.type: Easing.OutQuad
             }
