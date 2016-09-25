@@ -168,7 +168,8 @@ PlasmaComponents.ContextMenu {
 
                 for (var i = 0; i < virtualDesktopInfo.desktopNames.length; ++i) {
                     menuItem = menu.newMenuItem(virtualDesktopsMenu);
-                    menuItem.text = i18nc("1 = number of desktop, 2 = desktop name", "%1 Desktop %2", i + 1, virtualDesktopInfo.desktopNames[i]);
+                    //menuItem.text = i18nc("1 = number of desktop, 2 = desktop name", "%1 Desktop %2", i + 1, virtualDesktopInfo.desktopNames[i]);
+                    menuItem.text = (i + 1) + ". " + virtualDesktopInfo.desktopNames[i];
                     menuItem.checkable = true;
                     menuItem.checked = Qt.binding((function(i) {
                         return function() { return menu.visualParent && menu.visualParent.m.VirtualDesktop == (i + 1) };
@@ -389,7 +390,7 @@ PlasmaComponents.ContextMenu {
 
         checkable: true
 
-        text: i18n("Show A Launcher When Not Running")
+        text: i18n("Show Launcher When Not Running")
 
         onClicked: {
             if (tasksModel.launcherPosition(visualParent.m.LauncherUrlWithoutIcon) != -1) {

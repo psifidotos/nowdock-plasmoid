@@ -198,8 +198,9 @@ Item {
                 horizontalAlignment: Text.AlignHCenter
                 font.italic: durationTime.value > 0 ? false : true
 
+                property string textUsed: durationTime.value > 0 ? i18n("duration") : i18n("disabled")
 
-                text: (durationTime.value > 0 ? ("x" + durationTime.value) +" duration" : "disabled" )
+                text: (durationTime.value > 0 ? ("x" + durationTime.value) + " " + textUsed : textUsed )
             }
 
             Label{Layout.columnSpan: 3}

@@ -63,7 +63,7 @@ Item {
                 id: panelPositionCmb
 
                 Layout.fillWidth: true
-                model: ["Center", "Left", "Right", "Top", "Bottom"]
+                model: [i18n("Center"), i18n("Left"), i18n("Right"), i18n("Top"), i18n("Bottom")]
             }
             Label{}
 
