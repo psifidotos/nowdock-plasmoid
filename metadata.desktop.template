@@ -1,8 +1,8 @@
 [Desktop Entry]
-Name=Now Dock
-Name[el]=Now Dock
-Comment=Switch between running applications
-Comment[el]=Εναλλαγή μεταξύ εκτελούμενων εφαρμογών
+_Name=Now Dock
+_Comment=Switch between running applications
+
+
 Type=Service
 Icon=preferences-system-windows
 X-KDE-ServiceTypes=Plasma/Applet

@@ -279,9 +279,9 @@ Item{
 
     Component.onCompleted: {
         if (smartLauncherEnabled && !smartLauncherItem) {
-            var smartLauncher = Qt.createQmlObject("
-    import org.kde.plasma.private.taskmanager 0.1 as TaskManagerApplet;
-    TaskManagerApplet.SmartLauncherItem { }", centralItem);
+            var smartLauncher = Qt.createQmlObject(
+                        " import org.kde.plasma.private.taskmanager 0.1 as TaskManagerApplet; TaskManagerApplet.SmartLauncherItem { }",
+                        centralItem);
 
             smartLauncher.launcherUrl = Qt.binding(function() { return model.LauncherUrlWithoutIcon; });
 

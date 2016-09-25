@@ -1,0 +1,266 @@
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Michail Vοurlakos <mvourlakos@gmail.com>, 2016.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: https://github.com/psifidotos/nowdock-plasmoid/\n"
+"POT-Creation-Date: 2016-09-25 11:34+0300\n"
+"PO-Revision-Date: 2016-09-25 11:37+0200\n"
+"Last-Translator: Michail Vοurlakos <mvourlakos@gmail.com>\n"
+"Language-Team: Greek <kde-i18n-doc@kde.org>\n"
+"Language: el_GR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#: ../nowdockplasmoid/contents/config/config.qml:26
+msgid "Appearance"
+msgstr "Εμφάνιση"
+
+#: ../nowdockplasmoid/contents/config/config.qml:31
+msgid "Panel"
+msgstr "Πίνακας"
+
+#: ../nowdockplasmoid/contents/config/config.qml:36
+msgid "Interaction"
+msgstr "Αλληλεπίδραση"
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:64
+msgid "Icon size: "
+msgstr "Μέγεθος: "
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:148
+msgid "Enable shadows for icons"
+msgstr "Σκιές στα εικονίδια"
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:154
+msgid "Show glow around windows points"
+msgstr "Λάμψη στα σημεία κατάστασης των παραθύρων"
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:160
+msgid "Different color for minimized windows"
+msgstr "Διαφορετικό χρώμα για ελαχιστοποιημένα παράθυρα"
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:166
+msgid "Dots on active window"
+msgstr "Τελείες στο ενεργό παράθυρο"
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:183
+msgid "Animations: "
+msgstr "Εφέ: "
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:201
+msgid "duration"
+msgstr "διάρκεια"
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:201
+msgid "disabled"
+msgstr "ανενεργό"
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:213
+msgid "Zoom"
+msgstr "Εστίαση"
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:227
+msgid "Level: "
+msgstr "Επίπεδο:"
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:271
+msgid "Show a red line on the limit needed for animations"
+msgstr "Εμφάνιση κόκκινης γραμμής στο όριο των εφέ"
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:301
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:169
+msgid ""
+"For the disabled settings you should use the Now Dock Panel Configuration "
+"Window"
+msgstr ""
+"Για τις ανενεργές ρυθμίσεις πρέπει να χρησιμοποιήσετε το Παράθυρο Ρυθμίσεων "
+"του Πίνακα Now Dock"
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:57
+msgid "Cycle through tasks with mouse wheel"
+msgstr "Περιήγηση στις εργασίες με τη ροδέλα του ποντικιού"
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:64
+msgid "Preview windows on hovering"
+msgstr "Προεπισκοπήσεις παραθύρων"
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:70
+msgid "Highlight windows on hovering"
+msgstr "Τονισμός παραθύρων"
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:77
+msgid "Show progress information in task buttons"
+msgstr "Εμφάνιση προόδου εργασιών"
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:82
+msgid "On middle-click:"
+msgstr "Στο μεσαίο κλικ:"
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:88
+msgctxt "The click action"
+msgid "None"
+msgstr "Καμία"
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:88
+msgid "Close Window or Group"
+msgstr "Κλείσιμο παραθύρου ή ομάδας"
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:88
+msgid "New Instance"
+msgstr "Νέο στιγμιότυπο"
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:88
+msgid "Minimize/Restore Window or Group"
+msgstr "Ελαχιστοποίηση/Επαναφορά παραθύρου ή ομάδας"
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:100
+msgid "Filters"
+msgstr "Φίλτρα"
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:111
+msgid "Show only tasks from the current screen"
+msgstr "Εμφάνιση εργασιών μόνο της τρέχουσας οθόνης"
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:116
+msgid "Show only tasks from the current desktop"
+msgstr "Εμφάνιση εργασιών μόνο της τρέχουσας επιφάνειας εργασίας"
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:121
+msgid "Show only tasks from the current activity"
+msgstr "Εμφάνιση εργασιών μόνο της τρέχουσας δραστηριότητας"
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:58
+msgid "Position: "
+msgstr "Θέση: "
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:66
+msgid "Center"
+msgstr "Κέντρο"
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:66
+msgid "Left"
+msgstr "Αριστερά"
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:66
+msgid "Right"
+msgstr "Δεξιά"
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:66
+msgid "Top"
+msgstr "Πάνω"
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:66
+msgid "Bottom"
+msgstr "Κάτω"
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:74
+msgid "Show bar line for tasks"
+msgstr "Εμφάνιση υποβάθρου για τις εργασίες"
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:81
+msgid "Use plasma theme panel"
+msgstr "Πίνακας από το θέμα του Plasma"
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:88
+msgid "Use transparency in the panel"
+msgstr "Πίνακας με διαφάνεια"
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:95
+msgid "Size: "
+msgstr "Μέγεθος: "
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:126
+msgid "Move To Desktop"
+msgstr "Στην Επιφάνεια Εργασίας"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:148
+msgid "Move To Current Desktop"
+msgstr "Στην Τρέχουσα Επιφάνεια Εργασίας"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:157
+msgid "All Desktops"
+msgstr "Όλες οι Επιφάνειες Εργασίας"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:186
+msgid "New Desktop"
+msgstr "Νέα Επιφάνεια Εργασίας"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:363
+msgid "Start New Instance"
+msgstr "Νέο Στιγμιότυπο"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:376
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:409
+msgid "Show Launcher On All Activities"
+msgstr "Εκκινητής σε Όλες τις Δραστηριότητες"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:393
+msgid "Show Launcher When Not Running"
+msgstr "Εκκινητής όταν δεν είναι Ενεργό"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:420
+msgid "Remove Launcher"
+msgstr "Αφαίρεση Εκκινητή"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:537
+msgid "Close"
+msgstr "Κλείσιμο"
+
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:740
+msgid "On %1"
+msgstr "Σε %1"
+
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:749
+msgctxt "Which virtual desktop a window is currently on"
+msgid "Available on all activities"
+msgstr "Σε όλες τις δραστηριότητες"
+
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:768
+msgctxt "Activities a window is currently on (apart from the current one)"
+msgid "Also available on %1"
+msgstr "Διαθέσιμο επίσης σε %1"
+
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:772
+msgctxt "Which activities a window is currently on"
+msgid "Available on %1"
+msgstr "Διαθέσιμο σε %1"
+
+#: ../nowdockplasmoid/contents/ui/ToolTipDelegate.qml:339
+msgctxt "Go to previous song"
+msgid "Previous"
+msgstr "Προηγούμενο"
+
+#: ../nowdockplasmoid/contents/ui/ToolTipDelegate.qml:348
+msgctxt "Pause player"
+msgid "Pause"
+msgstr "Παύση"
+
+#: ../nowdockplasmoid/contents/ui/ToolTipDelegate.qml:348
+msgctxt "Start player"
+msgid "Play"
+msgstr "Έναρξη"
+
+#: ../nowdockplasmoid/contents/ui/ToolTipDelegate.qml:356
+msgctxt "Go to next song"
+msgid "Next"
+msgstr "Επόμενο"
+
+#: ../nowdockplasmoid/contents/ui/ToolTipWindowMouseArea.qml:56
+msgctxt "close this window"
+msgid "Close"
+msgstr "Κλείσιμο"
+
+#: ../po/rc.cpp:1 rc.cpp:1
+msgid "Now Dock"
+msgstr "Now Dock"
+
+#: ../po/rc.cpp:2 rc.cpp:2
+msgid "Switch between running applications"
+msgstr "Εναλλαγή μεταξύ ενεργών εφαρμογών"
+

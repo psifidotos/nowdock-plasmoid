@@ -1,0 +1,263 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: https://github.com/psifidotos/nowdock-plasmoid/\n"
+"POT-Creation-Date: 2016-09-25 11:34+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../nowdockplasmoid/contents/config/config.qml:26
+msgid "Appearance"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/config/config.qml:31
+msgid "Panel"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/config/config.qml:36
+msgid "Interaction"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:64
+msgid "Icon size: "
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:148
+msgid "Enable shadows for icons"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:154
+msgid "Show glow around windows points"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:160
+msgid "Different color for minimized windows"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:166
+msgid "Dots on active window"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:183
+msgid "Animations: "
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:201
+msgid "duration"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:201
+msgid "disabled"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:213
+msgid "Zoom"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:227
+msgid "Level: "
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:271
+msgid "Show a red line on the limit needed for animations"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:301
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:169
+msgid ""
+"For the disabled settings you should use the Now Dock Panel Configuration "
+"Window"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:57
+msgid "Cycle through tasks with mouse wheel"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:64
+msgid "Preview windows on hovering"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:70
+msgid "Highlight windows on hovering"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:77
+msgid "Show progress information in task buttons"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:82
+msgid "On middle-click:"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:88
+msgctxt "The click action"
+msgid "None"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:88
+msgid "Close Window or Group"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:88
+msgid "New Instance"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:88
+msgid "Minimize/Restore Window or Group"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:100
+msgid "Filters"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:111
+msgid "Show only tasks from the current screen"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:116
+msgid "Show only tasks from the current desktop"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:121
+msgid "Show only tasks from the current activity"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:58
+msgid "Position: "
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:66
+msgid "Center"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:66
+msgid "Left"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:66
+msgid "Right"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:66
+msgid "Top"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:66
+msgid "Bottom"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:74
+msgid "Show bar line for tasks"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:81
+msgid "Use plasma theme panel"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:88
+msgid "Use transparency in the panel"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:95
+msgid "Size: "
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:126
+msgid "Move To Desktop"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:148
+msgid "Move To Current Desktop"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:157
+msgid "All Desktops"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:186
+msgid "New Desktop"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:363
+msgid "Start New Instance"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:376
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:409
+msgid "Show Launcher On All Activities"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:393
+msgid "Show Launcher When Not Running"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:420
+msgid "Remove Launcher"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:537
+msgid "Close"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:740
+msgid "On %1"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:749
+msgctxt "Which virtual desktop a window is currently on"
+msgid "Available on all activities"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:768
+msgctxt "Activities a window is currently on (apart from the current one)"
+msgid "Also available on %1"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:772
+msgctxt "Which activities a window is currently on"
+msgid "Available on %1"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ToolTipDelegate.qml:339
+msgctxt "Go to previous song"
+msgid "Previous"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ToolTipDelegate.qml:348
+msgctxt "Pause player"
+msgid "Pause"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ToolTipDelegate.qml:348
+msgctxt "Start player"
+msgid "Play"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ToolTipDelegate.qml:356
+msgctxt "Go to next song"
+msgid "Next"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ToolTipWindowMouseArea.qml:56
+msgctxt "close this window"
+msgid "Close"
+msgstr ""
+
+#: ../po/rc.cpp:1 rc.cpp:1
+msgid "Now Dock"
+msgstr ""
+
+#: ../po/rc.cpp:2 rc.cpp:2
+msgid "Switch between running applications"
+msgstr ""
