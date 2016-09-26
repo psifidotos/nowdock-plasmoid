@@ -1,0 +1,264 @@
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Jeff Huang <s8321414@gmail.com>, 2016.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: https://github.com/psifidotos/nowdock-plasmoid/\n"
+"POT-Creation-Date: 2016-09-25 11:34+0300\n"
+"PO-Revision-Date: 2016-09-26 16:04+0800\n"
+"Last-Translator: Jeff Huang <s8321414@gmail.com>\n"
+"Language-Team: Chinese <kde-i18n-doc@kde.org>\n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 2.0\n"
+
+#: ../nowdockplasmoid/contents/config/config.qml:26
+msgid "Appearance"
+msgstr "外觀"
+
+#: ../nowdockplasmoid/contents/config/config.qml:31
+msgid "Panel"
+msgstr "面板"
+
+#: ../nowdockplasmoid/contents/config/config.qml:36
+msgid "Interaction"
+msgstr "反應"
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:64
+msgid "Icon size: "
+msgstr "圖示大小："
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:148
+msgid "Enable shadows for icons"
+msgstr "啟用圖示陰影"
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:154
+msgid "Show glow around windows points"
+msgstr "在視窗點周圍顯示光暈"
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:160
+msgid "Different color for minimized windows"
+msgstr "最小化視窗使用不同的顏色"
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:166
+msgid "Dots on active window"
+msgstr "作用中的視窗顯示點"
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:183
+msgid "Animations: "
+msgstr "動畫："
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:201
+msgid "duration"
+msgstr "期間"
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:201
+msgid "disabled"
+msgstr "已停用"
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:213
+msgid "Zoom"
+msgstr "縮放"
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:227
+msgid "Level: "
+msgstr "等級："
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:271
+msgid "Show a red line on the limit needed for animations"
+msgstr "在需要限制的動畫上顯示紅線"
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:301
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:169
+msgid ""
+"For the disabled settings you should use the Now Dock Panel Configuration "
+"Window"
+msgstr "為了已停用的設定，您必須使用 Now Dock 面板設定視窗"
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:57
+msgid "Cycle through tasks with mouse wheel"
+msgstr "使用滑鼠滾輪循環切換工作"
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:64
+msgid "Preview windows on hovering"
+msgstr "在滑鼠游標停留其上時預覽視窗"
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:70
+msgid "Highlight windows on hovering"
+msgstr "在滑鼠游標停留其上時突顯視窗"
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:77
+msgid "Show progress information in task buttons"
+msgstr "在工具按鍵裡顯示進度資訊"
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:82
+msgid "On middle-click:"
+msgstr "點擊滑鼠中鍵："
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:88
+msgctxt "The click action"
+msgid "None"
+msgstr "無"
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:88
+msgid "Close Window or Group"
+msgstr "關閉視窗或群組"
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:88
+msgid "New Instance"
+msgstr "新的實體"
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:88
+msgid "Minimize/Restore Window or Group"
+msgstr "最小化/復原視窗"
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:100
+msgid "Filters"
+msgstr "過濾器"
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:111
+msgid "Show only tasks from the current screen"
+msgstr "只顯示目前螢幕上的工作"
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:116
+msgid "Show only tasks from the current desktop"
+msgstr "只顯示目前桌面上的工作"
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:121
+msgid "Show only tasks from the current activity"
+msgstr "只顯示目前活動裡的工作"
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:58
+msgid "Position: "
+msgstr "位置："
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:66
+msgid "Center"
+msgstr "置中"
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:66
+msgid "Left"
+msgstr "左邊"
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:66
+msgid "Right"
+msgstr "右邊"
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:66
+msgid "Top"
+msgstr "頂部"
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:66
+msgid "Bottom"
+msgstr "底部"
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:74
+msgid "Show bar line for tasks"
+msgstr "為工作顯示條狀列"
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:81
+msgid "Use plasma theme panel"
+msgstr "使用 Plasma 主題面板"
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:88
+msgid "Use transparency in the panel"
+msgstr "在面板中使用漸層"
+
+#: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:95
+msgid "Size: "
+msgstr "大小："
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:126
+msgid "Move To Desktop"
+msgstr "移動到桌面"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:148
+msgid "Move To Current Desktop"
+msgstr "移到目前桌面"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:157
+msgid "All Desktops"
+msgstr "所有桌面"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:186
+msgid "New Desktop"
+msgstr "新增桌面"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:363
+msgid "Start New Instance"
+msgstr "開啟新的實體"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:376
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:409
+msgid "Show Launcher On All Activities"
+msgstr "在所有活動中顯示啟動器"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:393
+msgid "Show Launcher When Not Running"
+msgstr "當未執行時顯示啟動器"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:420
+msgid "Remove Launcher"
+msgstr "移除啟動器"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:537
+msgid "Close"
+msgstr "關閉"
+
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:740
+msgid "On %1"
+msgstr "於 %1"
+
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:749
+msgctxt "Which virtual desktop a window is currently on"
+msgid "Available on all activities"
+msgstr "所有活動都可使用"
+
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:768
+msgctxt "Activities a window is currently on (apart from the current one)"
+msgid "Also available on %1"
+msgstr "也可在 %1 上使用"
+
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:772
+msgctxt "Which activities a window is currently on"
+msgid "Available on %1"
+msgstr "於 %1 上使用"
+
+#: ../nowdockplasmoid/contents/ui/ToolTipDelegate.qml:339
+msgctxt "Go to previous song"
+msgid "Previous"
+msgstr "前一個"
+
+#: ../nowdockplasmoid/contents/ui/ToolTipDelegate.qml:348
+msgctxt "Pause player"
+msgid "Pause"
+msgstr "暫停"
+
+#: ../nowdockplasmoid/contents/ui/ToolTipDelegate.qml:348
+msgctxt "Start player"
+msgid "Play"
+msgstr "啟動"
+
+#: ../nowdockplasmoid/contents/ui/ToolTipDelegate.qml:356
+msgctxt "Go to next song"
+msgid "Next"
+msgstr "下一個"
+
+#: ../nowdockplasmoid/contents/ui/ToolTipWindowMouseArea.qml:56
+msgctxt "close this window"
+msgid "Close"
+msgstr "關閉"
+
+#: ../po/rc.cpp:1 rc.cpp:1
+msgid "Now Dock"
+msgstr "Now Dock"
+
+#: ../po/rc.cpp:2 rc.cpp:2
+msgid "Switch between running applications"
+msgstr "在執行中的應用程式間切換"
+
