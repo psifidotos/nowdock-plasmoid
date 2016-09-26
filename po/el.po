@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/psifidotos/nowdock-plasmoid/\n"
-"POT-Creation-Date: 2016-09-25 11:34+0300\n"
+"POT-Creation-Date: 2016-09-26 15:56+0300\n"
 "PO-Revision-Date: 2016-09-25 11:37+0200\n"
 "Last-Translator: Michail Vοurlakos <mvourlakos@gmail.com>\n"
 "Language-Team: Greek <kde-i18n-doc@kde.org>\n"
@@ -263,4 +263,3 @@ msgstr "Now Dock"
 #: ../po/rc.cpp:2 rc.cpp:2
 msgid "Switch between running applications"
 msgstr "Εναλλαγή μεταξύ ενεργών εφαρμογών"
-

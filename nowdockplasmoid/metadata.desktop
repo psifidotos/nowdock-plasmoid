@@ -1,8 +1,10 @@
 [Desktop Entry]
 Name=Now Dock
 Name[el]=Now Dock
+Name[zh_TW]=Now Dock
 Comment=Switch between running applications
 Comment[el]=Εναλλαγή μεταξύ ενεργών εφαρμογών
+Comment[zh_TW]=在執行中的應用程式間切換
 
 
 Type=Service
