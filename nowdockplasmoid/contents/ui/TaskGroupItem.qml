@@ -69,7 +69,7 @@ Item{
                 property real scaleFactor: wrapper.scale
 
                 function updateInitialSizes(){
-                    if(panel.vertical)
+                    if(vertical)
                         width = glowFrame.size;
                     else
                         height = glowFrame.size;
@@ -111,6 +111,8 @@ Item{
 
                 Component.onCompleted: {
                     updateInitialSizes(true);
+
+                    panel.onIconSizeChanged.connect(updateInitialSizes);
                 }
 
                 NumberAnimation{
