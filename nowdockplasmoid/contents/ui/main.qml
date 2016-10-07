@@ -292,6 +292,54 @@ Item {
         id: activityInfo
     }
 
+    PlasmaCore.DataSource {
+        id: mpris2Source
+        engine: "mpris2"
+        connectedSources: sources
+
+        function sourceNameForLauncherUrl(launcherUrl) {
+            // MPRIS spec explicitly mentions that "DesktopEntry" is with .desktop extension trimmed
+            // Moreover, remove URL parameters, like wmClass (part after the question mark)
+            var desktopFileName = launcherUrl.toString().split('/').pop().split('?')[0].replace(".desktop", "")
+
+            for (var i = 0, length = sources.length; i < length; ++i) {
+                var source = sources[i];
+                var sourceData = data[source];
+
+                if (sourceData && sourceData.DesktopEntry === desktopFileName) {
+                    return source
+                }
+            }
+
+            return ""
+        }
+
+        function startOperation(source, op) {
+            var service = serviceForSource(source)
+            var operation = service.operationDescription(op)
+            return service.startOperationCall(operation)
+        }
+
+        function goPrevious(source) {
+            startOperation(source, "Previous");
+        }
+        function goNext(source) {
+            startOperation(source, "Next");
+        }
+        function playPause(source) {
+            startOperation(source, "PlayPause");
+        }
+        function stop(source) {
+            startOperation(source, "Stop");
+        }
+        function raise(source) {
+            startOperation(source, "Raise");
+        }
+        function quit(source) {
+            startOperation(source, "Quit");
+        }
+    }
+
 
     /*  IconsModel{
         id: iconsmdl
@@ -797,6 +845,14 @@ Item {
 
     function resetDragSource() {
         dragSource = null;
+    }
+
+    function createContextMenu(task) {
+        var menu = panel.contextMenuComponent.createObject(task);
+        menu.visualParent = task;
+        menu.mpris2Source = mpris2Source;
+        menu.activitiesCount = activityModelInstance.count;
+        return menu;
     }
 
     Component.onCompleted:  {

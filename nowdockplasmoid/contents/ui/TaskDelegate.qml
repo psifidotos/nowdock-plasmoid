@@ -626,10 +626,11 @@ Component {
                     draggingResistaner = resistanerTimerComponent.createObject(mainItemContainer);
             }
             else if (mouse.button == Qt.RightButton){
-                mainItemContainer.contextMenu = panel.contextMenuComponent.createObject(mainItemContainer);
+                panel.createContextMenu(mainItemContainer).show();
+              /*  mainItemContainer.contextMenu = panel.contextMenuComponent.createObject(mainItemContainer);
                 mainItemContainer.contextMenu.activitiesCount = activityModelInstance.count;
                 mainItemContainer.contextMenu.visualParent = mainItemContainer;
-                mainItemContainer.contextMenu.show();
+                mainItemContainer.contextMenu.show();*/
             }
 
             if (hoveredTimerObj){
