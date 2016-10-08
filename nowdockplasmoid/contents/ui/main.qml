@@ -202,6 +202,7 @@ Item {
         id: tasksModel
 
         virtualDesktop: virtualDesktopInfo.currentDesktop
+        screenGeometry: plasmoid.screenGeometry
        // comment in order to support LTS Plasma 5.8
        // screen: plasmoid.screen
         activity: activityInfo.currentActivity
@@ -860,7 +861,7 @@ Item {
 
         panel.presentWindows.connect(backend.presentWindows);
         panel.windowsHovered.connect(backend.windowsHovered);
-        mouseHandler.urlDropped.connect(backend.urlDropped);
+    //    mouseHandler.urlDropped.connect(backend.urlDropped);
         dragHelper.dropped.connect(resetDragSource);
     }
 
