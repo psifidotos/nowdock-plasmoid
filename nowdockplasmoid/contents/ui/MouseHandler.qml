@@ -27,11 +27,16 @@ import org.kde.taskmanager 0.1 as TaskManager
 import "../code/tools.js" as TaskTools
 
 Item {
-    signal urlDropped(url url)
+   // signal urlDropped(url url)
+    signal urlsDropped(var urls)
 
     property Item target
     property Item ignoredItem
     property bool moved: false
+
+    property alias hoveredItem: dropHandler.hoveredItem
+    property alias onlyLaunchers: dropHandler.onlyLaunchers
+
 
     Timer {
         id: ignoreItemTimer
@@ -63,12 +68,21 @@ Item {
         preventStealing: true;
 
         property int droppedPosition: -1;
+        property bool onlyLaunchers: false;
 
         property Item hoveredItem
 
         onDragEnter:{
             if(panel.dragSource == null){
                 panel.dropNewLauncher = true;
+
+                var createLaunchers = event.mimeData.urls.every(function (item) {
+                    return backend.isApplication(item)
+                });
+
+
+                if (createLaunchers)
+                    onlyLaunchers = true;
             }
         }
 
@@ -81,7 +95,7 @@ Item {
                 return;
             }
 
-            var above = target.childAt(event.x, event.y);
+            var above = target.childAtPos(event.x, event.y);
 
             // If we're mixing launcher tasks with other tasks and are moving
             // a (small) launcher task across a non-launcher task, don't allow
@@ -132,19 +146,21 @@ Item {
         onDragLeave: {
             hoveredItem = null;
             panel.dropNewLauncher = false;
+            onlyLaunchers = false;
             activationTimer.stop();
         }
 
         onDrop: {
             // Reject internal drops.
             panel.dropNewLauncher = false;
+            onlyLaunchers = false;
 
             if (event.mimeData.formats.indexOf("application/x-orgkdeplasmataskmanager_taskbuttonitem") >= 0) {
                 return;
             }
 
             if (event.mimeData.hasUrls) {
-                parent.urlDropped(event.mimeData.url);
+                parent.urlsDropped(event.mimeData.urls);
             }
         }
 

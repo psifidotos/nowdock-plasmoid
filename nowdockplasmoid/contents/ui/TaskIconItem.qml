@@ -139,6 +139,15 @@ Item{
                                                             Math.max(basicScalingWidth, basicScalingHeight)
     }
 
+    VisualAddItem{
+        id: dropFilesVisual
+        anchors.fill: iconImageBuffer
+
+        visible: opacity == 0 ? false : true
+        opacity: panel.dropNewLauncher && !mouseHandler.onlyLaunchers
+                 && (panel.dragSource == null) && (mouseHandler.hoveredItem === mainItemContainer) ? 1 : 0
+    }
+
     BrightnessContrast{
         id:hoveredImage
         opacity: mainItemContainer.containsMouse ? 1 : 0

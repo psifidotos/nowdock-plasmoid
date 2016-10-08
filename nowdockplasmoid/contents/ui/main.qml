@@ -48,7 +48,7 @@ Item {
     Layout.preferredHeight: (userPanelPosition !== 0)&&(!nowDockPanel) ? tasksHeight : -1
 
 
-    property bool debugLocation: false
+    property bool debugLocation: true
 
     property bool dropNewLauncher: false
     property bool enableShadows: plasmoid.configuration.showShadows
@@ -506,9 +506,34 @@ Item {
             width: panel.vertical ? maxSize : icList.width
             height: panel.vertical ? icList.height : maxSize
 
-            target: icList.contentItem
+            target: icList
 
             property int maxSize: panel.zoomFactor*panel.realSize
+
+            onUrlsDropped: {
+                // If all dropped URLs point to application desktop files, we'll add a launcher for each of them.
+                var createLaunchers = urls.every(function (item) {
+                    return backend.isApplication(item)
+                });
+
+                if (createLaunchers) {
+                    urls.forEach(function (item) {
+                        addLauncher(item);
+                    });
+                    return;
+                }
+
+                if (!hoveredItem) {
+                    return;
+                }
+
+                // DeclarativeMimeData urls is a QJsonArray but requestOpenUrls expects a proper QList<QUrl>.
+                var urlsList = backend.jsonArrayToUrlList(urls);
+
+                // Otherwise we'll just start a new instance of the application with the URLs as argument,
+                // as you probably don't expect some of your files to open in the app and others to spawn launchers.
+                tasksModel.requestOpenUrls(hoveredItem.modelIndex(), urlsList);
+            }
         }
 
 
@@ -563,41 +588,36 @@ Item {
             /*  move:  Transition {
                 NumberAnimation { properties: "x,y"; duration: units.longDuration; easing.type: Easing.Linear }
             } */
+
+            function childAtPos(x, y){
+                var tasks = icList.contentItem.children;
+
+                for(var i=0; i<tasks.length; ++i){
+                    var task = tasks[i];
+
+                    var choords = mapFromItem(task,0, 0);
+
+                    if(choords.y < 0)
+                        choords.y = 0;
+                    if(choords.x < 0)
+                        choords.x = 0;
+
+                    if( (x>=choords.x) && (x<=choords.x+task.width)
+                            && (y>=choords.y) && (y<=choords.y+task.height)){
+                        return task
+                    }
+                }
+
+                return null;
+            }
         }
 
-        Item{
+        VisualAddItem{
             id: newDroppedLauncherVisual
             anchors.fill: mouseHandler
-            // width: panel.dropNewLauncher ? parent.width : 0
-            // height: panel.dropNewLauncher ? parent.height : 0
 
             visible: opacity == 0 ? false : true
-            opacity: panel.dropNewLauncher && (panel.dragSource == null) ? 1 : 0
-
-            Behavior on opacity{
-                NumberAnimation { duration: plasmoid.configuration.durationTime*units.longDuration; }
-            }
-
-            Rectangle{
-                anchors.fill: parent
-
-                anchors.bottom: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.bottom : undefined
-                anchors.top: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.top : undefined
-                anchors.left: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.left : undefined
-                anchors.right: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.right : undefined
-
-                radius: panel.iconSize/8
-
-                property color tempColor: "#aa222222"
-                color: tempColor
-                border.width: 1
-                border.color: "#ff656565"
-
-                property int crossSize: Math.min(parent.width/2, parent.height/2)
-
-                Rectangle{width: parent.crossSize; height: 4; anchors.centerIn: parent; color: theme.highlightColor}
-                Rectangle{width: 4; height: parent.crossSize; anchors.centerIn: parent; color: theme.highlightColor}
-            }
+            opacity: panel.dropNewLauncher && mouseHandler.onlyLaunchers && (panel.dragSource == null)? 1 : 0
         }
     }
 
@@ -803,6 +823,7 @@ Item {
 
         for(var i=0; i<tasks.length; ++i){
             var task = tasks[i];
+
             if(task && task.containsMouse){
                 return true;
             }
