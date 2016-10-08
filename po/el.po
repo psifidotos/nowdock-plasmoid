@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/psifidotos/nowdock-plasmoid/\n"
-"POT-Creation-Date: 2016-09-26 15:56+0300\n"
-"PO-Revision-Date: 2016-09-25 11:37+0200\n"
+"POT-Creation-Date: 2016-10-09 02:42+0300\n"
+"PO-Revision-Date: 2016-10-09 02:44+0200\n"
 "Last-Translator: Michail Vοurlakos <mvourlakos@gmail.com>\n"
 "Language-Team: Greek <kde-i18n-doc@kde.org>\n"
 "Language: el_GR\n"
@@ -175,58 +175,108 @@ msgstr "Πίνακας με διαφάνεια"
 msgid "Size: "
 msgstr "Μέγεθος: "
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:126
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:112
+#, fuzzy
+msgctxt "Play previous track"
+msgid "Previous Track"
+msgstr "Προηγούμενο"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:125
+#, fuzzy
+msgctxt "Pause playback"
+msgid "Pause"
+msgstr "Παύση"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:125
+#, fuzzy
+msgctxt "Start playback"
+msgid "Play"
+msgstr "Έναρξη"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:136
+msgctxt "Stop playback"
+msgid "Stop"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:144
+msgctxt "Play next track"
+msgid "Next Track"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:160
+msgctxt "Quit media player app"
+msgid "Quit"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:175
+msgctxt "Open or bring to the front window of media player app"
+msgid "Restore"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:212
 msgid "Move To Desktop"
 msgstr "Στην Επιφάνεια Εργασίας"
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:148
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:234
 msgid "Move To Current Desktop"
 msgstr "Στην Τρέχουσα Επιφάνεια Εργασίας"
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:157
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:243
 msgid "All Desktops"
 msgstr "Όλες οι Επιφάνειες Εργασίας"
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:186
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:272
 msgid "New Desktop"
 msgstr "Νέα Επιφάνεια Εργασίας"
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:363
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:292
+msgid "Move To &Activity"
+msgstr "Δραστηριότητες"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:313
+msgid "Add To Current Activity"
+msgstr "Στην Τρέχουσα Δραστηριότητα"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:323
+msgid "All Activities"
+msgstr "Όλες τις Δραστηριότητες"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:410
 msgid "Start New Instance"
 msgstr "Νέο Στιγμιότυπο"
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:376
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:409
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:423
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:456
 msgid "Show Launcher On All Activities"
 msgstr "Εκκινητής σε Όλες τις Δραστηριότητες"
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:393
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:440
 msgid "Show Launcher When Not Running"
 msgstr "Εκκινητής όταν δεν είναι Ενεργό"
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:420
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:467
 msgid "Remove Launcher"
 msgstr "Αφαίρεση Εκκινητή"
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:537
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:585
 msgid "Close"
 msgstr "Κλείσιμο"
 
-#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:740
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:741
 msgid "On %1"
 msgstr "Σε %1"
 
-#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:749
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:750
 msgctxt "Which virtual desktop a window is currently on"
 msgid "Available on all activities"
 msgstr "Σε όλες τις δραστηριότητες"
 
-#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:768
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:769
 msgctxt "Activities a window is currently on (apart from the current one)"
 msgid "Also available on %1"
 msgstr "Διαθέσιμο επίσης σε %1"
 
-#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:772
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:773
 msgctxt "Which activities a window is currently on"
 msgid "Available on %1"
 msgstr "Διαθέσιμο σε %1"
@@ -263,3 +313,4 @@ msgstr "Now Dock"
 #: ../po/rc.cpp:2 rc.cpp:2
 msgid "Switch between running applications"
 msgstr "Εναλλαγή μεταξύ ενεργών εφαρμογών"
+
