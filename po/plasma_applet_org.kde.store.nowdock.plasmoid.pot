@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/psifidotos/nowdock-plasmoid/\n"
-"POT-Creation-Date: 2016-10-09 02:42+0300\n"
+"POT-Creation-Date: 2016-10-09 14:44+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,51 +29,55 @@ msgstr ""
 msgid "Interaction"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:64
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:65
 msgid "Icon size: "
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:148
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:149
 msgid "Enable shadows for icons"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:154
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:155
 msgid "Show glow around windows points"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:160
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:161
 msgid "Different color for minimized windows"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:166
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:167
 msgid "Dots on active window"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:183
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:173
+msgid "Reverse position for lines and dots"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:190
 msgid "Animations: "
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:201
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:208
 msgid "duration"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:201
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:208
 msgid "disabled"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:213
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:220
 msgid "Zoom"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:227
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:234
 msgid "Level: "
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:271
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:278
 msgid "Show a red line on the limit needed for animations"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:301
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:308
 #: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:169
 msgid ""
 "For the disabled settings you should use the Now Dock Panel Configuration "
@@ -257,21 +261,21 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:741
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:735
 msgid "On %1"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:750
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:744
 msgctxt "Which virtual desktop a window is currently on"
 msgid "Available on all activities"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:769
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:763
 msgctxt "Activities a window is currently on (apart from the current one)"
 msgid "Also available on %1"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:773
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:767
 msgctxt "Which activities a window is currently on"
 msgid "Available on %1"
 msgstr ""
