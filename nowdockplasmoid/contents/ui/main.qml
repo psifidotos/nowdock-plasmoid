@@ -94,6 +94,7 @@ Item {
     property bool forceHidePanel: false
     property bool disableLeftSpacer: false
     property bool disableRightSpacer: false
+    property bool reverseLinesPosition: plasmoid.configuration.reverseLinesPosition
 
     property int durationTime: plasmoid.configuration.durationTime
     property int iconSize: nowDockPanel ? nowDockPanel.iconSize : Math.max(plasmoid.configuration.iconSize, 16)
