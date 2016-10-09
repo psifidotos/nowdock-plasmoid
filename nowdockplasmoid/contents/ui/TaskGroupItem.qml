@@ -29,7 +29,7 @@ Item{
     height: ( icList.orientation === Qt.Vertical ) ? wrapper.regulatorHeight : size
 
     //property int size: Math.ceil( panel.iconSize/13 ) //5
-    property int size: wrapper.statesLineSize
+    property int size: panel.statesLineSize
 
     //SystemPalette { id: myPalette; colorGroup: SystemPalette.Active }
     property color isActiveColor: theme.buttonFocusColor
@@ -37,6 +37,14 @@ Item{
     property color isShownColor: isActiveColor
     property color minimizedColor: plasmoid.configuration.threeColorsWindows ? panel.minimizedDotColor : isActiveColor
     property color notActiveColor: mainItemContainer.hasMinimized ? minimizedColor : isShownColor
+
+   /* Rectangle{
+        anchors.fill: parent
+        border.width: 1
+        border.color: "yellow"
+        color: "transparent"
+        opacity:0.6
+    }*/
 
     Item{
         anchors.centerIn: parent

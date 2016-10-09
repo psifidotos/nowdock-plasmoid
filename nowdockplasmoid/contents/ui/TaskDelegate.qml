@@ -208,8 +208,8 @@ Component {
                 height: (mainItemContainer.isStartup) ? 0 : showDelegateheight
 
                 //size needed fom the states below icons
-                property int statesLineSize: panel.statesLineSize
-                property int addedSpace: statesLineSize + 2 //7
+                //property int statesLineSize: panel.statesLineSize
+                property int addedSpace: panel.statesLineSize //7
                 property real showDelegateWidth: panel.vertical ? basicScalingWidth+addedSpace :
                                                                   basicScalingWidth
                 property real showDelegateheight: panel.vertical ? basicScalingHeight :
@@ -242,60 +242,54 @@ Component {
 
                 signal runLauncherAnimation();
 
-                /* Rectangle{
+             /*   Rectangle{
                     anchors.fill: parent
                     border.width: 1
-                    border.color: "red"
+                    border.color: "green"
                     color: "transparent"
-                } */
+                }*/
 
                 Behavior on scale {
                     NumberAnimation { duration: mainItemContainer.animationTime }
                 }
 
-                Loader{
-                    active: (panel.position !== PlasmaCore.Types.TopPositioned)
-                    sourceComponent: states3Flow
 
-                    Component{
-                        id: states3Flow
-                        Flow{
-                            //    visible: (panel.position === PlasmaCore.Types.TopPositioned) ? false : true
-                            width: wrapper.width
-                            height: wrapper.height
+                Flow{
+                    anchors.bottom: (panel.position === PlasmaCore.Types.BottomPositioned) ? parent.bottom : undefined
+                    anchors.top: (panel.position === PlasmaCore.Types.TopPositioned) ? parent.top : undefined
+                    anchors.left: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.left : undefined
+                    anchors.right: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.right : undefined
 
-                            flow: (panel.position === PlasmaCore.Types.BottomPositioned) ? Flow.TopToBottom : Flow.LeftToRight
-                            layoutDirection: (panel.position === PlasmaCore.Types.LeftPositioned) ? Qt.RightToLeft : Qt.LeftToRight
+                    anchors.horizontalCenter: !parent.vertical ? parent.horizontalCenter : undefined
+                    anchors.verticalCenter: parent.vertical ? parent.verticalCenter : undefined
 
-                            TaskIconItem{}
-                            //   TaskActiveItem{}
+                    width: wrapper.width
+                    height: wrapper.height
+
+                    flow: panel.vertical ? Flow.TopToBottom : Flow.LeftToRight
+
+                    Loader{
+                        id: firstIndicator
+                        active:( (((panel.position === PlasmaCore.Types.TopPositioned) || (panel.position === PlasmaCore.Types.LeftPositioned))
+                                 && !plasmoid.configuration.reverseLinesPosition)
+                                || (((panel.position === PlasmaCore.Types.BottomPositioned) || (panel.position === PlasmaCore.Types.RightPositioned))
+                                    && plasmoid.configuration.reverseLinesPosition) )
+                        sourceComponent: Component{
                             TaskGroupItem{}
-
-                        }//Flow
+                        }
                     }
-                }
 
-                Loader{
-                    active: (panel.position === PlasmaCore.Types.TopPositioned)
-                    sourceComponent: topStateFlow
+                    TaskIconItem{}
 
-                    Component{
-                        id: topStateFlow
-                        //Flow which is used only when the listview is on Top and we are hiding the main one
-                        Flow{
-                            visible: (panel.position === PlasmaCore.Types.TopPositioned) ? true : false
-                            width: wrapper.width
-                            height: wrapper.height
-
-                            flow: Flow.TopToBottom
-                            layoutDirection: (panel.position === PlasmaCore.Types.LeftPositioned) ? Qt.RightToLeft : Qt.LeftToRight
-
+                    Loader{
+                        id: secondIndicator
+                        active: !firstIndicator.active
+                        sourceComponent: Component{
                             TaskGroupItem{}
-                            //  TaskActiveItem{}
-                            TaskIconItem{}
-                        } //Flow Element
+                        }
                     }
-                }
+
+                }//Flow
 
                 function calculateScales( currentMousePosition ){
                     var distanceFromHovered = Math.abs(index - icList.hoveredIndex);
@@ -627,7 +621,7 @@ Component {
             }
             else if (mouse.button == Qt.RightButton){
                 panel.createContextMenu(mainItemContainer).show();
-              /*  mainItemContainer.contextMenu = panel.contextMenuComponent.createObject(mainItemContainer);
+                /*  mainItemContainer.contextMenu = panel.contextMenuComponent.createObject(mainItemContainer);
                 mainItemContainer.contextMenu.activitiesCount = activityModelInstance.count;
                 mainItemContainer.contextMenu.visualParent = mainItemContainer;
                 mainItemContainer.contextMenu.show();*/
@@ -821,8 +815,8 @@ Component {
             onTriggered: {
                 for(var i=0; i<tasksModel.launcherList.length; ++i){
                     if ((tasksModel.launcherList[i] == LauncherUrlWithoutIcon) && (i != index)){
-                    //   console.log("Launch List:"+tasksModel.launcherList);
-                   //    console.log("Move from timer "+AppId+" - from:"+ index + " to:" + i + " - total:"+tasksModel.count);
+                        //   console.log("Launch List:"+tasksModel.launcherList);
+                        //    console.log("Move from timer "+AppId+" - from:"+ index + " to:" + i + " - total:"+tasksModel.count);
                         tasksModel.move(index, i);
                     }
                 }

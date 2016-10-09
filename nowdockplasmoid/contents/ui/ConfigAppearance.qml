@@ -40,6 +40,7 @@ Item {
     property alias cfg_threeColorsWindows: threeColorsWindows.checked
     property alias cfg_dotsOnActive: dotsOnActive.checked
     property alias cfg_durationTime : durationTime.value
+    property alias cfg_reverseLinesPosition : reverseLinesPosition.checked
 
     property alias cfg_isInNowDockPanel: mainItem.isInNowDockPanel
 
@@ -164,6 +165,12 @@ Item {
                 CheckBox {
                     id: dotsOnActive
                     text: i18n("Dots on active window")
+                    enabled: true
+                }
+
+                CheckBox {
+                    id: reverseLinesPosition
+                    text: i18n("Reverse position for lines and dots")
                     enabled: true
                 }
             }

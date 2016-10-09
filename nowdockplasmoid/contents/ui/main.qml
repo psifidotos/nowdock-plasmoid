@@ -48,7 +48,7 @@ Item {
     Layout.preferredHeight: (userPanelPosition !== 0)&&(!nowDockPanel) ? tasksHeight : -1
 
 
-    property bool debugLocation: false
+    property bool debugLocation: true
 
     property bool dropNewLauncher: false
     property bool enableShadows: plasmoid.configuration.showShadows
@@ -392,9 +392,10 @@ Item {
         color: "red"
         x: (panel.position === PlasmaCore.Types.LeftPositioned) ? neededSpace : parent.width - neededSpace
         y: (panel.position === PlasmaCore.Types.TopPositioned) ? neededSpace : parent.height - neededSpace
+
         visible: plasmoid.configuration.zoomHelper
 
-        property int neededSpace: zoomFactor*iconSize + statesLineSize
+        property int neededSpace: zoomFactor*(iconSize+iconMargin) + statesLineSize
     }
 
     Item{
@@ -721,11 +722,11 @@ Item {
             icList.previousCount = icList.count;
 
             var zoomedLength = Math.floor( 1.2 * (iconSize+iconMargin) * (panel.zoomFactor));
-            var bigAxis = (tasksModel.count-1) * (iconSize+iconMargin) + zoomedLength
-            var smallAxis = zoomedLength + 1
+            var bigAxis = (tasksModel.count-1) * (iconSize+iconMargin) + zoomedLength;
+            var smallAxis = zoomedLength + statesLineSize;
 
             var clearBigAxis = tasksModel.count * (iconSize+iconMargin) + (barLine.spacing/2);
-            var clearSmallAxis = (iconSize+iconMargin);
+            var clearSmallAxis = (iconSize+iconMargin)+statesLineSize;
 
             //  debugging code
             //     ncounter++;
