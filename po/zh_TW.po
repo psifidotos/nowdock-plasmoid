@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/psifidotos/nowdock-plasmoid/\n"
 "POT-Creation-Date: 2016-10-09 02:42+0300\n"
-"PO-Revision-Date: 2016-09-26 16:04+0800\n"
+"PO-Revision-Date: 2016-10-09 11:33+0800\n"
 "Last-Translator: Jeff Huang <s8321414@gmail.com>\n"
 "Language-Team: Chinese <kde-i18n-doc@kde.org>\n"
 "Language: zh_TW\n"
@@ -174,42 +174,39 @@ msgid "Size: "
 msgstr "大小："
 
 #: ../nowdockplasmoid/contents/ui/ContextMenu.qml:112
-#, fuzzy
 msgctxt "Play previous track"
 msgid "Previous Track"
-msgstr "前一個"
+msgstr "前一軌"
 
 #: ../nowdockplasmoid/contents/ui/ContextMenu.qml:125
-#, fuzzy
 msgctxt "Pause playback"
 msgid "Pause"
 msgstr "暫停"
 
 #: ../nowdockplasmoid/contents/ui/ContextMenu.qml:125
-#, fuzzy
 msgctxt "Start playback"
 msgid "Play"
-msgstr "啟動"
+msgstr "播放"
 
 #: ../nowdockplasmoid/contents/ui/ContextMenu.qml:136
 msgctxt "Stop playback"
 msgid "Stop"
-msgstr ""
+msgstr "停止"
 
 #: ../nowdockplasmoid/contents/ui/ContextMenu.qml:144
 msgctxt "Play next track"
 msgid "Next Track"
-msgstr ""
+msgstr "下一軌"
 
 #: ../nowdockplasmoid/contents/ui/ContextMenu.qml:160
 msgctxt "Quit media player app"
 msgid "Quit"
-msgstr ""
+msgstr "離開"
 
 #: ../nowdockplasmoid/contents/ui/ContextMenu.qml:175
 msgctxt "Open or bring to the front window of media player app"
 msgid "Restore"
-msgstr ""
+msgstr "恢復"
 
 #: ../nowdockplasmoid/contents/ui/ContextMenu.qml:212
 msgid "Move To Desktop"
@@ -229,16 +226,15 @@ msgstr "新增桌面"
 
 #: ../nowdockplasmoid/contents/ui/ContextMenu.qml:292
 msgid "Move To &Activity"
-msgstr ""
+msgstr "移動到活動(&A)"
 
 #: ../nowdockplasmoid/contents/ui/ContextMenu.qml:313
 msgid "Add To Current Activity"
-msgstr ""
+msgstr "加入到目前的活動"
 
 #: ../nowdockplasmoid/contents/ui/ContextMenu.qml:323
-#, fuzzy
 msgid "All Activities"
-msgstr "所有活動都可使用"
+msgstr "所有的活動"
 
 #: ../nowdockplasmoid/contents/ui/ContextMenu.qml:410
 msgid "Start New Instance"
@@ -312,3 +308,4 @@ msgstr "Now Dock"
 #: ../po/rc.cpp:2 rc.cpp:2
 msgid "Switch between running applications"
 msgstr "在執行中的應用程式間切換"
+
