@@ -69,20 +69,22 @@ Item{
                 property real scaleFactor: wrapper.scale
 
                 function updateInitialSizes(){
-                    if(vertical)
-                        width = glowFrame.size;
-                    else
-                        height = glowFrame.size;
+                    if(glowFrame){
+                        if(vertical)
+                            width = glowFrame.size;
+                        else
+                            height = glowFrame.size;
 
-                    if(vertical && isActive)
-                        height = stateHeight;
-                    else
-                        height = glowFrame.size;
+                        if(vertical && isActive)
+                            height = stateHeight;
+                        else
+                            height = glowFrame.size;
 
-                    if(!vertical && isActive)
-                        width = stateWidth;
-                    else
-                        width = glowFrame.size;
+                        if(!vertical && isActive)
+                            width = stateWidth;
+                        else
+                            width = glowFrame.size;
+                    }
                 }
 
 
