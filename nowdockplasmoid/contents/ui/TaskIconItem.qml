@@ -404,8 +404,12 @@ Item{
         }
 
         function bounceLauncher(){
-            init();
-            start();
+            if(panel.zoomFactor > 1){
+                init();
+                start();
+            }
+            else
+                stopped();
         }
 
 

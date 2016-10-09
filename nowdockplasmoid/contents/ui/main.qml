@@ -48,7 +48,7 @@ Item {
     Layout.preferredHeight: (userPanelPosition !== 0)&&(!nowDockPanel) ? tasksHeight : -1
 
 
-    property bool debugLocation: true
+    property bool debugLocation: false
 
     property bool dropNewLauncher: false
     property bool enableShadows: plasmoid.configuration.showShadows
