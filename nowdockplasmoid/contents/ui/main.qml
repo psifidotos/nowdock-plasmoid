@@ -190,11 +190,12 @@ Item {
 
         mainItem: toolTipDelegate     
 
-        property Item firstShownItem: null
+        property Item activeItem: null
 
         function hide(){
             visible = false;
-            firstShownItem = null;
+            //activeItem = null;
+         //   initializePreviewComponent.createComponent(windowsPreviewDlg);
         }
 
         function show(){
@@ -204,12 +205,30 @@ Item {
                 var task = tasks[i];
 
                 if(task && task.isActive){
-                    firstShownItem = task;
+                    activeItem = task;
                     break;
                 }
             }
 
             visible = true;
+        }
+
+        //A Timer to delay the initialization of the active item in order
+        //to not break then active item animation
+        Component {
+            id: initializePreviewComponent
+            Timer {
+                id: initializePreviewTimer
+                interval: 600
+                repeat: false
+
+                onTriggered: {
+                    windowsPreviewDlg.activeItem = null;
+                    initializePreviewTimer.destroy();
+                }
+
+                Component.onCompleted: initializePreviewTimer.start()
+            }
         }
     }
 
@@ -856,7 +875,8 @@ Item {
         var result = panel.outsideContainsMouse();
 
         if (!result || toolTipDelegate.parentIndex != icList.hoveredIndex)
-            windowsPreviewDlg.visible = false;
+            windowsPreviewDlg.hide();
+            //windowsPreviewDlg.visible = false;
 
         if (result)
             return true;

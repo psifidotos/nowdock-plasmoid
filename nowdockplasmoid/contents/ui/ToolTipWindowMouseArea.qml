@@ -34,7 +34,8 @@ MouseArea {
 
     onClicked: {
         tasksModel.requestActivate(modelIndex);
-        toolTip.hideToolTip();
+        windowsPreviewDlg.hide();
+        //toolTip.hideToolTip();
     }
 
     onContainsMouseChanged: {

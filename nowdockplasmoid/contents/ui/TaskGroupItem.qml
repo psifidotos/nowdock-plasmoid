@@ -72,6 +72,8 @@ Item{
                 property int animationTime: plasmoid.configuration.durationTime* (0.7*units.longDuration)
 
                 property bool isActive: mainItemContainer.hasActive
+                                        || (panel.showPreviews && windowsPreviewDlg.activeItem && (windowsPreviewDlg.activeItem === mainItemContainer))
+
                 property bool vertical: panel.vertical
 
                 property real scaleFactor: wrapper.scale
@@ -96,7 +98,10 @@ Item{
                 }
 
 
-                onIsActiveChanged: activeAndReverseAnimation.start();
+                onIsActiveChanged: {
+                   // if(mainItemContainer.hasActive || windowsPreviewDlg.visible)
+                        activeAndReverseAnimation.start();
+                }
 
                 onScaleFactorChanged: {
                     if(!activeAndReverseAnimation.running && !panel.vertical && isActive){
@@ -129,7 +134,9 @@ Item{
                     id: activeAndReverseAnimation
                     target: firstPoint
                     property: panel.vertical ? "height" : "width"
-                    to: mainItemContainer.hasActive ? (panel.vertical ? firstPoint.stateHeight : firstPoint.stateWidth) : glowFrame.size
+                    to: mainItemContainer.hasActive
+                        || (panel.showPreviews && windowsPreviewDlg.activeItem && (windowsPreviewDlg.activeItem === mainItemContainer))
+                        ? (panel.vertical ? firstPoint.stateHeight : firstPoint.stateWidth) : glowFrame.size
                     duration: firstPoint.animationTime
                     easing.type: Easing.InQuad
                 }
