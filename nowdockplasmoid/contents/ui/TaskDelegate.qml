@@ -610,6 +610,8 @@ Component {
         }
 
         onPressed: {
+            windowsPreviewDlg.hide();
+
             if ((mouse.button == Qt.LeftButton)||(mouse.button == Qt.MidButton)) {
                 lastButtonClicked = mouse.button;
                 pressed = true;
@@ -630,9 +632,7 @@ Component {
             if (hoveredTimerObj){
                 hoveredTimerObj.stop();
                 hoveredTimerObj.destroy();
-            }
-
-            windowsPreviewDlg.hide();
+            }            
         }
 
         onReleased: {
@@ -907,7 +907,8 @@ Component {
                 onTriggered: {
                     if(mainItemContainer.containsMouse){
                         //     console.log("Hovered Timer....");
-                        windowsPreviewDlg.visible = true;
+                        windowsPreviewDlg.show();
+                        //windowsPreviewDlg.visible = true;
                     }
 
                     hoveredTimer.destroy();

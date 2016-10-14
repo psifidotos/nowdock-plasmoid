@@ -188,10 +188,28 @@ Item {
 
         visible: false
 
-        mainItem: toolTipDelegate
+        mainItem: toolTipDelegate     
+
+        property Item firstShownItem: null
 
         function hide(){
             visible = false;
+            firstShownItem = null;
+        }
+
+        function show(){
+            var tasks = icList.contentItem.children;
+
+            for(var i=0; i<tasks.length; ++i){
+                var task = tasks[i];
+
+                if(task && task.isActive){
+                    firstShownItem = task;
+                    break;
+                }
+            }
+
+            visible = true;
         }
     }
 
