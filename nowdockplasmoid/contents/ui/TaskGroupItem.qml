@@ -122,10 +122,10 @@ Item{
                         height = stateHeight;
                 }
 
-                onVerticalChanged: updateInitialSizes(false);
+                onVerticalChanged: updateInitialSizes();
 
                 Component.onCompleted: {
-                    updateInitialSizes(true);
+                    updateInitialSizes();
 
                     panel.onIconSizeChanged.connect(updateInitialSizes);
                 }
@@ -139,6 +139,8 @@ Item{
                         ? (panel.vertical ? firstPoint.stateHeight : firstPoint.stateWidth) : glowFrame.size
                     duration: firstPoint.animationTime
                     easing.type: Easing.InQuad
+
+                    onStopped: firstPoint.updateInitialSizes()
                 }
             }
 
