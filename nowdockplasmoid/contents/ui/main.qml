@@ -195,7 +195,7 @@ Item {
         function hide(){
             visible = false;
             //activeItem = null;
-         //   initializePreviewComponent.createComponent(windowsPreviewDlg);
+            initializePreviewComponent.createObject(windowsPreviewDlg);
         }
 
         function show(){
@@ -212,23 +212,23 @@ Item {
 
             visible = true;
         }
+    }
 
-        //A Timer to delay the initialization of the active item in order
-        //to not break then active item animation
-        Component {
-            id: initializePreviewComponent
-            Timer {
-                id: initializePreviewTimer
-                interval: 600
-                repeat: false
+    //A Timer to delay the initialization of the active item in order
+    //to not break then active item animation
+    Component {
+        id: initializePreviewComponent
+        Timer {
+            id: initializePreviewTimer
+            interval: 300
+            repeat: false
 
-                onTriggered: {
-                    windowsPreviewDlg.activeItem = null;
-                    initializePreviewTimer.destroy();
-                }
-
-                Component.onCompleted: initializePreviewTimer.start()
+            onTriggered: {
+                windowsPreviewDlg.activeItem = null;
+                initializePreviewTimer.destroy();
             }
+
+            Component.onCompleted: initializePreviewTimer.start()
         }
     }
 
