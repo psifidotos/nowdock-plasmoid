@@ -515,82 +515,117 @@ Item{
 
     /////Removing a Window from a group////
 
-    ParallelAnimation{
+    Item{
         id:removingAnimation
 
-        property int speed: 2*plasmoid.configuration.durationTime*units.longDuration
-        property Item removingItem
-        property int toPoint: 0
-
-        PropertyAnimation {
-            target: removingAnimation.removingItem
-            property: "opacity"
-            to: 0
-            duration: removingAnimation.speed
-            easing.type: Easing.InQuad
-        }
-
-        PropertyAnimation {
-            target: removingAnimation.removingItem
-            property: (icList.orientation == Qt.Horizontal) ? "y" : "x"
-            to: removingAnimation.toPoint
-            duration: removingAnimation.speed
-            easing.type: Easing.InQuad
-        }
-
         function init(){
-            if(shadowedImage){
-                var relavantPoint = panel.mapFromItem(shadowedImage,0,0);
-                shadowedImage.x = relavantPoint.x;
-                shadowedImage.y = relavantPoint.y;
-                removeImageColorizer.enabled = true;
-                removeImageColorizer.visible = true;
+            var relavantPoint
+            if(plasmoid.configuration.showShadows)
+                relavantPoint = panel.mapFromItem(shadowedImage,0,0);
+            else
+                relavantPoint = panel.mapFromItem(iconImageBuffer,0,0);
 
-                //  removeImageColorizer.opacity = 1;
-                removingItem = shadowedImage;
-                shadowedImage.state = "reparented";
-                shadowedImage.visible = true;
 
-                var tempPoint = 0;
+            var removingItem = removeTaskComponent.createObject(panel);
+            removingItem.x = relavantPoint.x;
+            removingItem.y = relavantPoint.y;
 
-                if(icList.orientation == Qt.Horizontal)
-                    tempPoint = relavantPoint.y;
-                else
-                    tempPoint = relavantPoint.x;
-
-                if( (panel.position === PlasmaCore.Types.BottomPositioned) ||
-                        (panel.position === PlasmaCore.Types.RightPositioned) ){
-                    toPoint = tempPoint + panel.iconSize;
-                }
-                else{
-                    toPoint = tempPoint - panel.iconSize;
-                }
-
-                removingItem.visible = true;
-            }
+            removingItem.start();
         }
 
         function removeTask(){
             if(centralItem.firstDrawed && !centralItem.toBeDestroyed &&
                     mainItemContainer.buffersAreReady){
                 removingAnimation.init();
-                start();
             }
         }
 
-        onStopped: {
-            if(removingItem)
-                removingItem.destroy();
-
-            gc();
-        }
 
         Component.onCompleted: {
             mainItemContainer.groupWindowRemoved.connect(removeTask);
         }
-    }
-    ////////////////////////////
 
+        ///////////// Component for animating removing window from group
+
+         Component {
+             id: removeTaskComponent
+             Item{
+                 id: removeTask
+                 width: plasmoid.configuration.showShadows ? shadowedImage.width : iconImageBuffer.width
+                 height: plasmoid.configuration.showShadows ? shadowedImage.height : iconImageBuffer.height
+                 //parent: panel
+
+                 visible: false
+
+                 Image {
+                     id: tempRemoveIcon
+                     source: plasmoid.configuration.showShadows ? shadowedImage.source : iconImageBuffer.source
+                     anchors.fill: parent
+                 }
+
+                 Colorize{
+                     source: tempRemoveIcon
+                     anchors.fill: tempRemoveIcon
+
+                     hue: 0
+                     saturation: 0
+                     lightness: 0
+                 }
+
+                 ParallelAnimation{
+                     id: componentRemoveAnimation
+
+                     property int speed: 2*plasmoid.configuration.durationTime*units.longDuration
+                     property Item removingItem: parent
+                     property int toPoint: 0
+
+                     PropertyAnimation {
+                         target: removeTask
+                         property: "opacity"
+                         to: 0
+                         duration: componentRemoveAnimation.speed
+                         easing.type: Easing.InQuad
+                     }
+
+                     PropertyAnimation {
+                         target: removeTask
+                         property: (icList.orientation == Qt.Horizontal) ? "y" : "x"
+                         to: componentRemoveAnimation.toPoint
+                         duration: componentRemoveAnimation.speed
+                         easing.type: Easing.InQuad
+                     }
+
+                     onStopped: {
+                         removeTask.destroy();
+                         gc();
+                     }
+                 }
+
+                 function start(){
+                     var tempPoint = 0;
+
+                     if(icList.orientation == Qt.Horizontal)
+                         tempPoint = y;
+                     else
+                         tempPoint = x;
+
+                     if( (panel.position === PlasmaCore.Types.BottomPositioned) ||
+                             (panel.position === PlasmaCore.Types.RightPositioned) ){
+                         componentRemoveAnimation.toPoint = tempPoint + panel.iconSize;
+                     }
+                     else{
+                         componentRemoveAnimation.toPoint = tempPoint - panel.iconSize;
+                     }
+
+                     visible = true;
+                     componentRemoveAnimation.start();
+                 }
+
+             }
+         }
+    }
+
+    ////////////////////////////
     ////////////////////////////Release Dragged Animation
 
     SequentialAnimation{
