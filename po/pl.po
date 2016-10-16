@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/psifidotos/nowdock-plasmoid/\n"
 "POT-Creation-Date: 2016-10-09 02:42+0300\n"
-"PO-Revision-Date: 2016-10-10 21:13+0100\n"
+"PO-Revision-Date: 2016-10-16 13:14+0100\n"
 "Last-Translator: Damian Kopeć <damikope@gmail.com>\n"
 "Language-Team: Polish <kde-i18n-doc@kde.org>\n"
 "Language: pl\n"
@@ -309,6 +309,6 @@ msgstr "Now Dock"
 
 #: ../po/rc.cpp:2 rc.cpp:2
 msgid "Switch between running applications"
-msgstr "Zmień aplikację na pierwszym planie"
+msgstr "Przełączanie między uruchomionymi aplikacjami"
 
 
