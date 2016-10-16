@@ -535,7 +535,7 @@ Item{
 
         function removeTask(){
             if(centralItem.firstDrawed && !centralItem.toBeDestroyed &&
-                    mainItemContainer.buffersAreReady){
+                    mainItemContainer.buffersAreReady && plasmoid.configuration.showShadows){
                 removingAnimation.init();
             }
         }
