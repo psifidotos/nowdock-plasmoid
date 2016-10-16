@@ -369,17 +369,18 @@ Item{
 
             //for some reason the wrapper.scale goes to zoomFactor just a little before the end of the animation
             //this animation makes it 1 before the end of the animation
-            PropertyAnimation {
+        /*    PropertyAnimation {
                 target: wrapper
                 property: "scale"
                 to: 1
                 duration: 1
-            }
+            }*/
         }
 
 
         onStopped: {
             wrapper.scale = 1;
+            iconImageBuffer.anchors.centerIn = iconImageBuffer.parent;
             mainItemContainer.animationEnded();
             panel.noTasksInAnimation--;
         }
