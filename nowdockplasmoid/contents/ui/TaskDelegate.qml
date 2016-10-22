@@ -233,8 +233,8 @@ Component {
                 property real basicScalingWidth : (inTempScaling == true) ? (panel.realSize * scaleWidth) : cleanScaling
                 property real basicScalingHeight : (inTempScaling == true) ? (panel.realSize * scaleHeight) : cleanScaling
 
-                property real regulatorWidth: basicScalingWidth - 2;
-                property real regulatorHeight: basicScalingHeight - 2;
+                property real regulatorWidth: basicScalingWidth-2;
+                property real regulatorHeight: basicScalingHeight-2;
                 /// end of Scalers///////
 
                 //property int curIndex: icList.hoveredIndex

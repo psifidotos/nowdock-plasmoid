@@ -59,6 +59,13 @@ Item{
     property QtObject buffers: null
     property QtObject smartLauncherItem: null
 
+    /* Rectangle{
+        anchors.fill: parent
+        border.width: 1
+        border.color: "green"
+        color: "transparent"
+    } */
+
     Connections{
         target: panel
         onZoomFactorChanged: updateImages()
@@ -93,7 +100,7 @@ Item{
     Image{
         id:shadowedImage
         anchors.centerIn:iconImageBuffer
-       // anchors.horizontalCenter: iconImageBuffer.horizontalCenter
+        // anchors.horizontalCenter: iconImageBuffer.horizontalCenter
         //anchors.verticalCenter: iconImageBuffer.verticalCenter
 
         width:iconImageBuffer.width+2*shadowSize
@@ -121,10 +128,17 @@ Item{
         }
     }
 
+    /* Rectangle{
+        anchors.fill: iconImageBuffer
+        border.width: 1
+        border.color: "red"
+        color: "transparent"
+    }*/
+
     KQuickControlAddons.QIconItem{
         id: iconImageBuffer
 
-    //    anchors.centerIn: parent
+        //    anchors.centerIn: parent
 
         width: newTempSize //+ 2*centralItem.shadowSize
         height: width
@@ -148,7 +162,7 @@ Item{
 
                 AnchorChanges{
                     target:iconImageBuffer;
-                    anchors.horizontalCenter: parent.horizontaCenter;
+                    anchors.horizontalCenter: parent.horizontalCenter;
                     anchors.verticalCenter: parent.verticalCenter;
                     anchors.right: undefined;
                     anchors.left: undefined;
@@ -179,7 +193,7 @@ Item{
                 from: "animating"
                 to: "*"
 
-                AnchorAnimation { duration: plasmoid.configuration.durationTime*units.longDuration }
+                AnchorAnimation { duration: 1.5*plasmoid.configuration.durationTime*units.longDuration }
             }
         ]
     }
@@ -400,6 +414,24 @@ Item{
                 duration: 3*plasmoid.configuration.durationTime*launcherAnimation.speed
                 easing.type: Easing.OutBounce
             }
+
+            ParallelAnimation{
+                PropertyAnimation {
+                    target: wrapper
+                    property: (icList.orientation == Qt.Vertical) ? "tempScaleHeight" : "tempScaleWidth"
+                    to: 1
+                    duration: plasmoid.configuration.durationTime*launcherAnimation.speed
+                    easing.type: Easing.OutBounce
+                }
+
+                PropertyAnimation {
+                    target: wrapper
+                    property: "scale"
+                    to: 1
+                    duration: plasmoid.configuration.durationTime*launcherAnimation.speed
+                    easing.type: Easing.OutQuad
+                }
+            }
         }
 
 
@@ -476,7 +508,7 @@ Item{
         function clear(){
             loops = 1;
             newWindowAnimation.stop();
-          //  iconImageBuffer.anchors.centerIn = iconImageBuffer.parent;
+            //  iconImageBuffer.anchors.centerIn = iconImageBuffer.parent;
 
             wrapper.tempScaleWidth = 1;
             wrapper.tempScaleHeight = 1;
@@ -500,7 +532,7 @@ Item{
             wrapper.tempScaleWidth = wrapper.scale;
             wrapper.tempScaleHeight = wrapper.scale;
 
-      /*      iconImageBuffer.anchors.centerIn = undefined;
+            /*      iconImageBuffer.anchors.centerIn = undefined;
 
             if(panel.position === PlasmaCore.Types.LeftPositioned)
                 iconImageBuffer.anchors.right = iconImageBuffer.parent.right;
