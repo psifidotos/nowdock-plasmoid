@@ -144,7 +144,7 @@ Item{
         states: [
             State{
                 name: "*"
-                when:  !launcherAnimation.running
+                when:  !launcherAnimation.running && !newWindowAnimation.running
 
                 AnchorChanges{
                     target:iconImageBuffer;
@@ -159,7 +159,7 @@ Item{
 
             State{
                 name: "animating"
-                when: launcherAnimation.running
+                when: launcherAnimation.running || newWindowAnimation.running
 
                 AnchorChanges{
                     target:iconImageBuffer;
@@ -476,7 +476,7 @@ Item{
         function clear(){
             loops = 1;
             newWindowAnimation.stop();
-            iconImageBuffer.anchors.centerIn = iconImageBuffer.parent;
+          //  iconImageBuffer.anchors.centerIn = iconImageBuffer.parent;
 
             wrapper.tempScaleWidth = 1;
             wrapper.tempScaleHeight = 1;
@@ -500,7 +500,7 @@ Item{
             wrapper.tempScaleWidth = wrapper.scale;
             wrapper.tempScaleHeight = wrapper.scale;
 
-            iconImageBuffer.anchors.centerIn = undefined;
+      /*      iconImageBuffer.anchors.centerIn = undefined;
 
             if(panel.position === PlasmaCore.Types.LeftPositioned)
                 iconImageBuffer.anchors.right = iconImageBuffer.parent.right;
@@ -509,7 +509,7 @@ Item{
             else if(panel.position === PlasmaCore.Types.TopPositioned)
                 iconImageBuffer.anchors.bottom = iconImageBuffer.parent.bottom;
             else if(panel.position === PlasmaCore.Types.BottomPositioned)
-                iconImageBuffer.anchors.top = iconImageBuffer.parent.top;
+                iconImageBuffer.anchors.top = iconImageBuffer.parent.top;*/
 
             if(!isDemandingAttention)
                 loops = 2;
