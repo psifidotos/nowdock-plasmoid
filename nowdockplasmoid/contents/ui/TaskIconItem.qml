@@ -124,7 +124,7 @@ Item{
     KQuickControlAddons.QIconItem{
         id: iconImageBuffer
 
-        anchors.centerIn: parent
+    //    anchors.centerIn: parent
 
         width: newTempSize //+ 2*centralItem.shadowSize
         height: width
@@ -141,7 +141,7 @@ Item{
                                                             Math.max(basicScalingWidth, basicScalingHeight)
 
         ///states for launcher animation
-       /* states: [
+        states: [
             State{
                 name: "*"
                 when:  !launcherAnimation.running
@@ -150,13 +150,26 @@ Item{
                     target:iconImageBuffer;
                     anchors.horizontalCenter: parent.horizontaCenter;
                     anchors.verticalCenter: parent.verticalCenter;
-                    //anchors.centerIn:iconImageBuffer.parent
+                    anchors.right: undefined;
+                    anchors.left: undefined;
+                    anchors.top: undefined;
+                    anchors.bottom: undefined;
                 }
             },
 
             State{
                 name: "animating"
                 when: launcherAnimation.running
+
+                AnchorChanges{
+                    target:iconImageBuffer;
+                    anchors.horizontalCenter: undefined;
+                    anchors.verticalCenter: undefined;
+                    anchors.right: panel.position === PlasmaCore.Types.LeftPositioned ? parent.right : undefined;
+                    anchors.left: panel.position === PlasmaCore.Types.RightPositioned ? parent.left : undefined;
+                    anchors.top: panel.position === PlasmaCore.Types.BottomPositioned ? parent.top : undefined;
+                    anchors.bottom: panel.position === PlasmaCore.Types.TopPositioned ? parent.bottom : undefined;
+                }
             }
         ]
 
@@ -168,7 +181,7 @@ Item{
 
                 AnchorAnimation { duration: plasmoid.configuration.durationTime*units.longDuration }
             }
-        ]*/
+        ]
     }
 
     VisualAddItem{
@@ -339,35 +352,13 @@ Item{
 
             smartLauncherItem = smartLauncher;
         }
-
-        //start up sequence....
-        /*  if(panel.initializationStep){
-            panel.initializationStep = false;
-        }
-
-        centralItem.firstDrawed = true;
-
-        mainItemContainer.buffersAreReady = true;
-        if(!panel.initializatedBuffers)
-            panel.noInitCreatedBuffers++;
-
-        iconImageBuffer.opacity = 1;*/
     }
 
     Component.onDestruction: {
         centralItem.toBeDestroyed = true;
-        /*   if(normalImage.source)
-            normalImage.source.destroy();
-        if(zoomedImage.source)
-            zoomedImage.source.destroy();
-        if(iconImageBuffer.source)
-            iconImageBuffer.source.destroy();*/
 
         if(shadowedImage && shadowedImage.source)
             shadowedImage.source.destroy();
-
-        //  if(iconHoveredBuffer.source)
-        // iconHoveredBuffer.source.destroy();
 
         if(removingAnimation.removingItem)
             removingAnimation.removingItem.destroy();
@@ -409,21 +400,12 @@ Item{
                 duration: 3*plasmoid.configuration.durationTime*launcherAnimation.speed
                 easing.type: Easing.OutBounce
             }
-
-            //for some reason the wrapper.scale goes to zoomFactor just a little before the end of the animation
-            //this animation makes it 1 before the end of the animation
-            /*    PropertyAnimation {
-                target: wrapper
-                property: "scale"
-                to: 1
-                duration: 1
-            }*/
         }
 
 
         onStopped: {
             wrapper.scale = 1;
-            iconImageBuffer.anchors.centerIn = iconImageBuffer.parent;
+
             mainItemContainer.animationEnded();
             mainItemContainer.launcherAction();
             panel.noTasksInAnimation--;
@@ -433,17 +415,6 @@ Item{
             panel.noTasksInAnimation++;
             wrapper.tempScaleWidth = wrapper.scale;
             wrapper.tempScaleHeight = wrapper.scale;
-
-            iconImageBuffer.anchors.centerIn = undefined;
-
-            if(panel.position === PlasmaCore.Types.LeftPositioned)
-                iconImageBuffer.anchors.right = iconImageBuffer.parent.right;
-            else if(panel.position === PlasmaCore.Types.RightPositioned)
-                iconImageBuffer.anchors.left = iconImageBuffer.parent.left;
-            else if(panel.position === PlasmaCore.Types.TopPositioned)
-                iconImageBuffer.anchors.bottom = iconImageBuffer.parent.bottom;
-            else if(panel.position === PlasmaCore.Types.BottomPositioned)
-                iconImageBuffer.anchors.top = iconImageBuffer.parent.top;
 
             icList.hoveredIndex = -1;
         }
@@ -767,7 +738,7 @@ Item{
                     target: wrapper
                     property: "scale"
                     to: 1;
-                    duration: isDraggedTransition.speed/2
+                    duration: isDraggedTransition.speed
                     easing.type: Easing.OutQuad
                 }
 
