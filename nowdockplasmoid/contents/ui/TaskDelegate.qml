@@ -45,6 +45,7 @@ Component {
 
         acceptedButtons: Qt.LeftButton | Qt.MidButton | Qt.RightButton
         hoverEnabled: (inAnimation !== true)&& (!IsStartup)&&(!panel.taskInAnimation)&&(plasmoid.immutable || panel.debugLocation)
+       // hoverEnabled: true
 
         property bool buffersAreReady: false
         property bool delayingRemove: ListView.delayRemove
@@ -439,10 +440,6 @@ Component {
 
         onIsDraggedChanged: {
             if(isDragged && (plasmoid.immutable)){
-                panel.updateScale(index-1, 1, 0);
-                panel.updateScale(index+1, 1, 0);
-                wrapper.scale = 1.35;
-
                 panel.dragSource = mainItemContainer;
                 dragHelper.startDrag(mainItemContainer, model.MimeType, model.MimeData,
                                      model.LauncherUrlWithoutIcon, model.decoration);
@@ -475,6 +472,8 @@ Component {
 
         ///////////////// Mouse Area Events ///////////////////
         onEntered: {
+            checkListHovered.stop();
+
             if((!inAnimation)&&(panel.dragSource == null)&&(!panel.taskInAnimation)){
                 icList.hoveredIndex = index;
                 mouseEntered = true;
@@ -514,6 +513,8 @@ Component {
         }
 
         onPositionChanged: {
+            checkListHovered.stop();
+
             if((inAnimation == false)&&(!panel.taskInAnimation)){
                 if(panel.dragSource == null){
                     if (icList.orientation == Qt.Horizontal){
@@ -541,10 +542,6 @@ Component {
                         && isDragged
                         && plasmoid.immutable
                         && dragHelper.isDrag(pressX, pressY, mouse.x, mouse.y) ) {
-                    panel.updateScale(index-1, 1, 0);
-                    panel.updateScale(index+1, 1, 0);
-                    wrapper.scale = 1.35;
-
                     panel.dragSource = mainItemContainer;
                     dragHelper.startDrag(mainItemContainer, model.MimeType, model.MimeData,
                                          model.LauncherUrlWithoutIcon, model.decoration);
@@ -654,14 +651,12 @@ Component {
                     }
                     else{
                         mouseEntered = false;
-                        inAnimation = true;
                         wrapper.runLauncherAnimation();
                     }
                 }
                 else if (mouse.button == Qt.LeftButton){
                     if( mainItemContainer.isLauncher ){
                         mouseEntered = false;
-                        inAnimation = true;
                         wrapper.runLauncherAnimation();
                     }
                     else{
@@ -683,11 +678,10 @@ Component {
                 }
             }
 
-            //have to wait first for the launcher animation to end
-            if(!mainItemContainer.isLauncher)
-                pressed = false;
+            pressed = false;
 
-            checkListHovered.startDuration(2*plasmoid.configuration.durationTime*units.longDuration);
+            if(!inAnimation)
+                checkListHovered.startDuration(3*units.longDuration);
         }
 
         ///////////////// End Of Mouse Area Events ///////////////////
@@ -698,18 +692,19 @@ Component {
                 mouseEntered = value;
         }
 
-        function animationEnded(){
-            if(pressed){
-                if ((lastButtonClicked == Qt.LeftButton)||(lastButtonClicked == Qt.MidButton)){
-                    tasksModel.requestActivate(modelIndex());
-                }
-            }
+        function animationStarted(){
+        //    console.log("Animation started: " + index);
+            inAnimation = true;
+        }
 
-            pressed = false;
+        function animationEnded(){
+         //   console.log("Animation ended: " + index);
             inAnimation = false;
+           // checkListHovered.startDuration(3*units.longDuration);
         }
 
         function clearZoom(){
+         //   console.log("Clear zoom: " + index);
             if (wrapper)
                 wrapper.scale=1;
         }
@@ -722,6 +717,11 @@ Component {
 
 
         ///// Helper functions /////
+        function launcherAction(){
+           // if ((lastButtonClicked == Qt.LeftButton)||(lastButtonClicked == Qt.MidButton)){
+                tasksModel.requestActivate(modelIndex());
+           // }
+        }
 
         ///window previews///
         function generateSubText(task) {
@@ -873,8 +873,6 @@ Component {
             function init(){
                 wrapper.tempScaleWidth = 0;
                 wrapper.tempScaleHeight = 0;
-
-
             }
 
             function showWindow(){

@@ -93,6 +93,8 @@ Item{
     Image{
         id:shadowedImage
         anchors.centerIn:iconImageBuffer
+       // anchors.horizontalCenter: iconImageBuffer.horizontalCenter
+        //anchors.verticalCenter: iconImageBuffer.verticalCenter
 
         width:iconImageBuffer.width+2*shadowSize
         height:iconImageBuffer.height+2*shadowSize
@@ -137,6 +139,36 @@ Item{
 
         property real newTempSize: (wrapper.opacity == 1) ?  Math.min(basicScalingWidth, basicScalingHeight) :
                                                             Math.max(basicScalingWidth, basicScalingHeight)
+
+        ///states for launcher animation
+       /* states: [
+            State{
+                name: "*"
+                when:  !launcherAnimation.running
+
+                AnchorChanges{
+                    target:iconImageBuffer;
+                    anchors.horizontalCenter: parent.horizontaCenter;
+                    anchors.verticalCenter: parent.verticalCenter;
+                    //anchors.centerIn:iconImageBuffer.parent
+                }
+            },
+
+            State{
+                name: "animating"
+                when: launcherAnimation.running
+            }
+        ]
+
+        ///transitions, basic for the anchor changes
+        transitions: [
+            Transition{
+                from: "animating"
+                to: "*"
+
+                AnchorAnimation { duration: plasmoid.configuration.durationTime*units.longDuration }
+            }
+        ]*/
     }
 
     VisualAddItem{
@@ -173,10 +205,12 @@ Item{
         id: stateColorizer
         source: iconImageBuffer
         anchors.fill: iconImageBuffer
-        visible: false
-        hue:1
-        saturation:1
-        lightness:1
+        //visible: false
+        opacity:0
+
+        hue:0
+        saturation:0
+        lightness:0
     }
 
     //Something to show until the buffers are updated
@@ -239,6 +273,7 @@ Item{
     ///////Activate animation/////
     SequentialAnimation{
         id: clickedAnimation
+
         property bool pressed: mainItemContainer.pressed
         property int speed: plasmoid.configuration.durationTime*units.longDuration
 
@@ -280,7 +315,15 @@ Item{
         onPressedChanged: {
             if( (pressed)&&
                     ((mainItemContainer.lastButtonClicked == Qt.LeftButton)||(mainItemContainer.lastButtonClicked == Qt.MidButton)) ){
+                mainItemContainer.animationStarted();
                 start();
+            }
+        }
+
+        onStopped: {
+            if( !mainItemContainer.isDragged){
+                mainItemContainer.animationEnded();
+                checkListHovered.startDuration(4*units.longDuration);
             }
         }
     }
@@ -369,7 +412,7 @@ Item{
 
             //for some reason the wrapper.scale goes to zoomFactor just a little before the end of the animation
             //this animation makes it 1 before the end of the animation
-        /*    PropertyAnimation {
+            /*    PropertyAnimation {
                 target: wrapper
                 property: "scale"
                 to: 1
@@ -382,6 +425,7 @@ Item{
             wrapper.scale = 1;
             iconImageBuffer.anchors.centerIn = iconImageBuffer.parent;
             mainItemContainer.animationEnded();
+            mainItemContainer.launcherAction();
             panel.noTasksInAnimation--;
         }
 
@@ -406,6 +450,7 @@ Item{
 
         function bounceLauncher(){
             if(panel.zoomFactor > 1){
+                mainItemContainer.animationStarted();
                 init();
                 start();
             }
@@ -547,169 +592,96 @@ Item{
 
         ///////////// Component for animating removing window from group
 
-         Component {
-             id: removeTaskComponent
-             Item{
-                 id: removeTask
-                 width: plasmoid.configuration.showShadows ? shadowedImage.width : iconImageBuffer.width
-                 height: plasmoid.configuration.showShadows ? shadowedImage.height : iconImageBuffer.height
-                 //parent: panel
+        Component {
+            id: removeTaskComponent
+            Item{
+                id: removeTask
+                width: plasmoid.configuration.showShadows ? shadowedImage.width : iconImageBuffer.width
+                height: plasmoid.configuration.showShadows ? shadowedImage.height : iconImageBuffer.height
+                //parent: panel
 
-                 visible: false
+                visible: false
 
-                 Image {
-                     id: tempRemoveIcon
-                     source: plasmoid.configuration.showShadows ? shadowedImage.source : iconImageBuffer.source
-                     anchors.fill: parent
-                 }
-
-                 Colorize{
-                     source: tempRemoveIcon
-                     anchors.fill: tempRemoveIcon
-
-                     hue: 0
-                     saturation: 0
-                     lightness: 0
-                 }
-
-                 ParallelAnimation{
-                     id: componentRemoveAnimation
-
-                     property int speed: 2*plasmoid.configuration.durationTime*units.longDuration
-                     property Item removingItem: parent
-                     property int toPoint: 0
-
-                     PropertyAnimation {
-                         target: removeTask
-                         property: "opacity"
-                         to: 0
-                         duration: componentRemoveAnimation.speed
-                         easing.type: Easing.InQuad
-                     }
-
-                     PropertyAnimation {
-                         target: removeTask
-                         property: (icList.orientation == Qt.Horizontal) ? "y" : "x"
-                         to: componentRemoveAnimation.toPoint
-                         duration: componentRemoveAnimation.speed
-                         easing.type: Easing.InQuad
-                     }
-
-                     onStopped: {
-                         removeTask.destroy();
-                         gc();
-                     }
-                 }
-
-                 function start(){
-                     var tempPoint = 0;
-
-                     if(icList.orientation == Qt.Horizontal)
-                         tempPoint = y;
-                     else
-                         tempPoint = x;
-
-                     if( (panel.position === PlasmaCore.Types.BottomPositioned) ||
-                             (panel.position === PlasmaCore.Types.RightPositioned) ){
-                         componentRemoveAnimation.toPoint = tempPoint + panel.iconSize;
-                     }
-                     else{
-                         componentRemoveAnimation.toPoint = tempPoint - panel.iconSize;
-                     }
-
-                     visible = true;
-                     componentRemoveAnimation.start();
-                 }
-
-             }
-         }
-    }
-
-    ////////////////////////////
-    ////////////////////////////Release Dragged Animation
-
-    SequentialAnimation{
-        id: releaseDraggedAnimation
-
-        property bool inHalf: false
-
-        property int speed: plasmoid.configuration.durationTime*units.longDuration
-
-        SequentialAnimation{
-
-            PropertyAnimation {
-                target: wrapper
-                property: "scale"
-                to: 0.6;
-                duration: releaseDraggedAnimation.speed
-                easing.type: Easing.OutQuad
-            }
-
-            PropertyAnimation {
-                target: releaseDraggedAnimation
-                property: "inHalf"
-                to: true
-                duration: 1
-            }
-
-            PropertyAnimation {
-                target: wrapper
-                property: "scale"
-                to: panel.zoomFactor
-                duration: releaseDraggedAnimation.speed
-                easing.type: Easing.OutQuad
-            }
-        }
-
-        onInHalfChanged: {
-            if(inHalf){
-                var halfZoom = 1 + ((panel.zoomFactor - 1) / 2);
-                panel.updateScale(index-1, halfZoom, 0);
-                panel.updateScale(index+1, halfZoom, 0);
-            }
-        }
-
-        onStopped: {
-            inHalf = false;
-
-            mainItemContainer.inAnimation = false;
-            checkListHovered.start();
-        }
-
-        function init(){
-            mainItemContainer.inAnimation = true;
-        }
-
-        function execute(){
-            if(mainItemContainer){
-                if(mainItemContainer.isDragged){
-                    init();
-                    start();
+                Image {
+                    id: tempRemoveIcon
+                    source: plasmoid.configuration.showShadows ? shadowedImage.source : iconImageBuffer.source
+                    anchors.fill: parent
                 }
+
+                Colorize{
+                    source: tempRemoveIcon
+                    anchors.fill: tempRemoveIcon
+
+                    hue: 0
+                    saturation: 0
+                    lightness: 0
+                }
+
+                ParallelAnimation{
+                    id: componentRemoveAnimation
+
+                    property int speed: 2*plasmoid.configuration.durationTime*units.longDuration
+                    property Item removingItem: parent
+                    property int toPoint: 0
+
+                    PropertyAnimation {
+                        target: removeTask
+                        property: "opacity"
+                        to: 0
+                        duration: componentRemoveAnimation.speed
+                        easing.type: Easing.InQuad
+                    }
+
+                    PropertyAnimation {
+                        target: removeTask
+                        property: (icList.orientation == Qt.Horizontal) ? "y" : "x"
+                        to: componentRemoveAnimation.toPoint
+                        duration: componentRemoveAnimation.speed
+                        easing.type: Easing.InQuad
+                    }
+
+                    onStopped: {
+                        removeTask.destroy();
+                        gc();
+                    }
+                }
+
+                function start(){
+                    var tempPoint = 0;
+
+                    if(icList.orientation == Qt.Horizontal)
+                        tempPoint = y;
+                    else
+                        tempPoint = x;
+
+                    if( (panel.position === PlasmaCore.Types.BottomPositioned) ||
+                            (panel.position === PlasmaCore.Types.RightPositioned) ){
+                        componentRemoveAnimation.toPoint = tempPoint + panel.iconSize;
+                    }
+                    else{
+                        componentRemoveAnimation.toPoint = tempPoint - panel.iconSize;
+                    }
+
+                    visible = true;
+                    componentRemoveAnimation.start();
+                }
+
             }
         }
-
-
-        Component.onCompleted: {
-            panel.draggingFinished.connect(execute);
-        }
     }
-    /////////////////// end of release dragged animation
 
     //////////// States ////////////////////
-
     states: [
         State{
             name: "*"
-            when:  !mainItemContainer.isDragged||(panel.dragSource==null)
-            PropertyChanges { target: stateColorizer; visible:false }
+            when:  !mainItemContainer.isDragged
         },
 
         State{
             name: "isDragged"
-            when: ( (mainItemContainer.isDragged)&&(panel.dragSource!=null)
-                   && (plasmoid.immutable) )
-            PropertyChanges { target: stateColorizer; visible:true }
+            when: ( (mainItemContainer.isDragged) && (plasmoid.immutable) )
+
+            //    PropertyChanges { target: clickedAnimation; running:false }
             PropertyChanges { target: wrapper; scale:1 + ((panel.zoomFactor - 1) / 2)}
         }
     ]
@@ -722,60 +694,92 @@ Item{
             to: "isDragged"
             property int speed: plasmoid.configuration.durationTime*units.longDuration
 
-            ParallelAnimation{
-                PropertyAnimation {
-                    target: draggedRectangle
-                    property: "opacity"
-                    to: 1
-                    duration: isDraggedTransition.speed
-                    easing.type: Easing.OutQuad
-                }
+            SequentialAnimation{
+                ParallelAnimation{
+                    PropertyAnimation {
+                        target: draggedRectangle
+                        property: "opacity"
+                        to: 1
+                        duration: isDraggedTransition.speed
+                        easing.type: Easing.OutQuad
+                    }
 
-                PropertyAnimation {
-                    target: iconImageBuffer
-                    property: "opacity"
-                    to: 0
-                    duration: isDraggedTransition.speed
-                    easing.type: Easing.OutQuad
-                }
+                    PropertyAnimation {
+                        target: iconImageBuffer
+                        property: "opacity"
+                        to: 0
+                        duration: isDraggedTransition.speed
+                        easing.type: Easing.OutQuad
+                    }
 
-                PropertyAnimation {
-                    target: stateColorizer
-                    properties: "hue,saturation,lightness"
-                    to: 0
-                    duration: isDraggedTransition.speed
-                    easing.type: Easing.OutQuad
+                    PropertyAnimation {
+                        target: stateColorizer
+                        property: "opacity"
+                        to: 1
+                        duration: isDraggedTransition.speed
+                        easing.type: Easing.OutQuad
+                    }
+                }
+            }
+
+            onRunningChanged: {
+                if(running){
+                    mainItemContainer.animationStarted();
+                    panel.updateScale(index-1, 1, 0);
+                    panel.updateScale(index+1, 1, 0);
                 }
             }
         },
         Transition{
             id: defaultTransition
+            from: "isDragged"
             to: "*"
             property int speed: plasmoid.configuration.durationTime*units.longDuration
 
-            ParallelAnimation{
-                PropertyAnimation {
-                    target: draggedRectangle
-                    property: "opacity"
-                    to: 0
-                    duration: defaultTransition.speed
-                    easing.type: Easing.OutQuad
+            SequentialAnimation{
+                ParallelAnimation{
+                    PropertyAnimation {
+                        target: draggedRectangle
+                        property: "opacity"
+                        to: 0
+                        duration: defaultTransition.speed
+                        easing.type: Easing.OutQuad
+                    }
+
+                    PropertyAnimation {
+                        target: iconImageBuffer
+                        property: "opacity"
+                        to: 1
+                        duration: defaultTransition.speed
+                        easing.type: Easing.OutQuad
+                    }
+
+                    PropertyAnimation {
+                        target: stateColorizer
+                        property: "opacity"
+                        to: 0
+                        duration: isDraggedTransition.speed
+                        easing.type: Easing.OutQuad
+                    }
                 }
 
                 PropertyAnimation {
-                    target: iconImageBuffer
-                    property: "opacity"
-                    to: 1
-                    duration: defaultTransition.speed
+                    target: wrapper
+                    property: "scale"
+                    to: 1;
+                    duration: isDraggedTransition.speed/2
                     easing.type: Easing.OutQuad
                 }
 
-                PropertyAnimation {
-                    target: stateColorizer
-                    properties: "hue,saturation,lightness"
-                    to: 1
-                    duration: isDraggedTransition.speed
-                    easing.type: Easing.OutQuad
+            }
+
+            onRunningChanged: {
+                if(!running){
+                    var halfZoom = 1 + ((panel.zoomFactor - 1) / 2);
+                    panel.updateScale(index-1, halfZoom, 0);
+                    panel.updateScale(index+1, halfZoom, 0);
+
+                    mainItemContainer.animationEnded();
                 }
             }
         }

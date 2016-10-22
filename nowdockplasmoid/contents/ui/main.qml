@@ -863,6 +863,7 @@ Item {
         for(var i=0; i<tasks.length; ++i){
             var task = tasks[i];
 
+        //l    console.log("Checking "+i+" - "+task.index+" - "+task.containsMouse);
             if(task && task.containsMouse){
                 return true;
             }
