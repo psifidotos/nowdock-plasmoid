@@ -24,17 +24,17 @@ import org.kde.plasma.configuration 2.0
 ConfigModel {
     ConfigCategory {
          name: i18n("Appearance")
-         icon: "preferences-color"
+         icon: "preferences-desktop-display-color"
          source: "ConfigAppearance.qml"
     }
     ConfigCategory {
          name: i18n("Panel")
-         icon: "preferences-system-windows"
+         icon: "window-duplicate"
          source: "ConfigPanel.qml"
     }
     ConfigCategory {
          name: i18n("Interaction")
-         icon: "preferences-system-windows"
+         icon: "preferences-system-windows-move"
          source: "ConfigInteraction.qml"
     }
 }
