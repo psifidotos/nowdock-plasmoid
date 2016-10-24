@@ -374,9 +374,12 @@ PlasmaComponents.ContextMenu {
    }
 
 
-    /*
+
     PlasmaComponents.MenuItem {
-        visible: (visualParent && visualParent.m.IsLauncher !== true && visualParent.m.IsStartup !== true)
+        visible: (visualParent
+                  && visualParent.m.IsLauncher !== true
+                  && visualParent.m.IsStartup !== true
+                  && plasmoid.configuration.showWindowActions)
 
         enabled: visualParent && visualParent.m.IsMinimizable === true
 
@@ -389,7 +392,10 @@ PlasmaComponents.ContextMenu {
     }
 
     PlasmaComponents.MenuItem {
-        visible: (visualParent && visualParent.m.IsLauncher !== true && visualParent.m.IsStartup !== true)
+        visible: (visualParent
+                  && visualParent.m.IsLauncher !== true
+                  && visualParent.m.IsStartup !== true
+                  && plasmoid.configuration.showWindowActions)
 
         enabled: visualParent && visualParent.m.IsMaximizable === true
 
@@ -399,7 +405,7 @@ PlasmaComponents.ContextMenu {
         text: i18n("Maximize")
 
         onClicked: tasksModel.requestToggleMaximized(visualParent.modelIndex())
-    }*/
+    }
 
     PlasmaComponents.MenuItem {
         id: startNewInstanceItem
@@ -469,11 +475,14 @@ PlasmaComponents.ContextMenu {
         onClicked: tasksModel.requestRemoveLauncher(visualParent.m.LauncherUrlWithoutIcon);
     }
 
-    /*
+
     PlasmaComponents.MenuItem {
         id: moreActionsMenuItem
 
-        visible: (visualParent && visualParent.m.IsLauncher !== true && visualParent.m.IsStartup !== true)
+        visible: (visualParent
+                  && visualParent.m.IsLauncher !== true
+                  && visualParent.m.IsStartup !== true
+                  && plasmoid.configuration.showWindowActions)
 
         enabled: visible
 
@@ -557,7 +566,7 @@ PlasmaComponents.ContextMenu {
                 onClicked: tasksModel.requestToggleGrouping(menu.visualParent.modelIndex())
             }
         }
-    }*/
+    }
 
     PlasmaComponents.MenuItem {
         property QtObject configureAction: null

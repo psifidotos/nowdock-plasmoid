@@ -100,6 +100,9 @@
     <entry name="reverseLinesPosition" type="Bool">
       <default>false</default>
     </entry>
+    <entry name="showWindowActions" type="Bool">
+      <default>false</default>
+    </entry>
   </group>
 </kcfg>
 

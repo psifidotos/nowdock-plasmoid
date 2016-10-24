@@ -40,6 +40,7 @@ Item {
     property alias cfg_highlightWindows: highlightWindowsChk.checked
     property alias cfg_smartLaunchersEnabled: smartLaunchersChk.checked
     property alias cfg_showToolTips: showPreviewsChk.checked
+    property alias cfg_showWindowActions: windowActionsChk.checked
 
     ColumnLayout{
         spacing: 15
@@ -70,6 +71,11 @@ Item {
                     text: i18n("Highlight windows on hovering")
                 }
 
+                CheckBox {
+                    id: windowActionsChk
+                    Layout.fillWidth: true
+                    text: i18n("Show window actions in the context menu")
+                }
 
                 CheckBox {
                     id: smartLaunchersChk
