@@ -350,7 +350,7 @@ Item{
         onStopped: {
             if( !mainItemContainer.isDragged){
                 mainItemContainer.animationEnded();
-                checkListHovered.startDuration(4*units.longDuration);
+                checkListHovered.startDuration(6*units.longDuration);
             }
         }
     }
