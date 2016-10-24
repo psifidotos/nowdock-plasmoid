@@ -180,15 +180,15 @@ Item {
 
     PlasmaCore.Dialog{
         id: windowsPreviewDlg
-       // hideOnWindowDeactivate: false
+        // hideOnWindowDeactivate: false
 
         type: PlasmaCore.Dialog.Tooltip
-//        flags: Qt.WindowStaysOnTopHint
+        //        flags: Qt.WindowStaysOnTopHint
         location: plasmoid.location
 
         visible: false
 
-        mainItem: toolTipDelegate     
+        mainItem: toolTipDelegate
 
         property Item activeItem: null
 
@@ -241,8 +241,8 @@ Item {
 
         virtualDesktop: virtualDesktopInfo.currentDesktop
         screenGeometry: plasmoid.screenGeometry
-       // comment in order to support LTS Plasma 5.8
-       // screen: plasmoid.screen
+        // comment in order to support LTS Plasma 5.8
+        // screen: plasmoid.screen
         activity: activityInfo.currentActivity
 
         filterByVirtualDesktop: plasmoid.configuration.showOnlyCurrentDesktop
@@ -265,9 +265,9 @@ Item {
             //panelGeometryTimer.start();
         }
 
-    //    onCountChanged: {
-         //   updateImplicits();
-      //  }
+        //    onCountChanged: {
+        //   updateImplicits();
+        //  }
 
         onLauncherListChanged: {
             // plasmoid.configuration.launchers = launcherList;
@@ -337,6 +337,10 @@ Item {
         connectedSources: sources
 
         function sourceNameForLauncherUrl(launcherUrl) {
+            if (!launcherUrl) {
+                return "";
+            }
+
             // MPRIS spec explicitly mentions that "DesktopEntry" is with .desktop extension trimmed
             // Moreover, remove URL parameters, like wmClass (part after the question mark)
             var desktopFileName = launcherUrl.toString().split('/').pop().split('?')[0].replace(".desktop", "")
@@ -863,7 +867,7 @@ Item {
         for(var i=0; i<tasks.length; ++i){
             var task = tasks[i];
 
-        //l    console.log("Checking "+i+" - "+task.index+" - "+task.containsMouse);
+            //l    console.log("Checking "+i+" - "+task.index+" - "+task.containsMouse);
             if(task && task.containsMouse){
                 return true;
             }
@@ -877,7 +881,7 @@ Item {
 
         if (!result || toolTipDelegate.parentIndex != icList.hoveredIndex)
             windowsPreviewDlg.hide();
-            //windowsPreviewDlg.visible = false;
+        //windowsPreviewDlg.visible = false;
 
         if (result)
             return true;
@@ -923,7 +927,7 @@ Item {
 
         panel.presentWindows.connect(backend.presentWindows);
         panel.windowsHovered.connect(backend.windowsHovered);
-    //    mouseHandler.urlDropped.connect(backend.urlDropped);
+        //    mouseHandler.urlDropped.connect(backend.urlDropped);
         dragHelper.dropped.connect(resetDragSource);
     }
 
