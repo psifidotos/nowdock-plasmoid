@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/psifidotos/nowdock-plasmoid/\n"
-"POT-Creation-Date: 2016-10-09 14:44+0300\n"
+"POT-Creation-Date: 2016-10-24 20:06+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -84,56 +84,60 @@ msgid ""
 "Window"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:57
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:58
 msgid "Cycle through tasks with mouse wheel"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:64
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:65
 msgid "Preview windows on hovering"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:70
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:71
 msgid "Highlight windows on hovering"
 msgstr ""
 
 #: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:77
+msgid "Show window actions in the context menu"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:83
 msgid "Show progress information in task buttons"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:82
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:88
 msgid "On middle-click:"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:88
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:94
 msgctxt "The click action"
 msgid "None"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:88
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:94
 msgid "Close Window or Group"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:88
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:94
 msgid "New Instance"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:88
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:94
 msgid "Minimize/Restore Window or Group"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:100
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:106
 msgid "Filters"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:111
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:117
 msgid "Show only tasks from the current screen"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:116
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:122
 msgid "Show only tasks from the current desktop"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:121
+#: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:127
 msgid "Show only tasks from the current activity"
 msgstr ""
 
@@ -240,24 +244,64 @@ msgstr ""
 msgid "All Activities"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:410
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:389
+msgid "Minimize"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:405
+msgid "Maximize"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:416
 msgid "Start New Instance"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:423
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:456
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:429
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:462
 msgid "Show Launcher On All Activities"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:440
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:446
 msgid "Show Launcher When Not Running"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:467
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:473
 msgid "Remove Launcher"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:585
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:489
+msgid "More Actions"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:497
+msgid "Move"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:506
+msgid "Resize"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:515
+msgid "Keep Above Others"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:525
+msgid "Keep Below Others"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:537
+msgid "Fullscreen"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:549
+msgid "Shade"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:564
+msgid "Allow this program to be grouped"
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:594
 msgid "Close"
 msgstr ""
 
@@ -300,7 +344,7 @@ msgctxt "Go to next song"
 msgid "Next"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ToolTipWindowMouseArea.qml:56
+#: ../nowdockplasmoid/contents/ui/ToolTipWindowMouseArea.qml:57
 msgctxt "close this window"
 msgid "Close"
 msgstr ""

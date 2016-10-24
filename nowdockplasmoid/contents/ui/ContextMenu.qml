@@ -408,75 +408,6 @@ PlasmaComponents.ContextMenu {
     }
 
     PlasmaComponents.MenuItem {
-        id: startNewInstanceItem
-        visible: (visualParent && visualParent.m.IsLauncher !== true && visualParent.m.IsStartup !== true)
-
-        enabled: visualParent && visualParent.m.LauncherUrlWithoutIcon != null
-
-        text: i18n("Start New Instance")
-        icon: "system-run"
-
-        onClicked: tasksModel.requestNewInstance(visualParent.modelIndex())
-    }
-
-    PlasmaComponents.MenuItem {
-        id: launcherToggleOnAllActivitiesAction
-        visible: launcherToggleAction.visible && launcherToggleAction.checked && activitiesCount > 1
-        enabled: visualParent && visualParent.m.LauncherUrlWithoutIcon != null
-
-        checkable: true
-        checked: isOnAllActivitiesLauncher
-        text: i18n("Show Launcher On All Activities")
-
-        onClicked:{
-            ActivitiesTools.toggleLauncherState(visualParent.m.LauncherUrlWithoutIcon);
-            updateOnAllActivitiesLauncher();
-        }
-    }
-
-    PlasmaComponents.MenuItem {
-        id: launcherToggleAction
-
-        visible: (visualParent && visualParent.m.IsLauncher !== true && visualParent.m.IsStartup !== true)
-
-        enabled: visualParent && visualParent.m.LauncherUrlWithoutIcon != null
-
-        checkable: true
-
-        text: i18n("Show Launcher When Not Running")
-
-        onClicked: {
-            if (tasksModel.launcherPosition(visualParent.m.LauncherUrlWithoutIcon) != -1) {
-                tasksModel.requestRemoveLauncher(visualParent.m.LauncherUrlWithoutIcon);
-            } else {
-                tasksModel.requestAddLauncher(visualParent.m.LauncherUrl);
-            }
-        }
-    }
-
-    PlasmaComponents.MenuItem {
-        visible: (visualParent && visualParent.m.IsLauncher === true) && activitiesCount > 1
-
-        checkable: true
-        checked: isOnAllActivitiesLauncher
-        text: i18n("Show Launcher On All Activities")
-
-        onClicked:{
-            ActivitiesTools.toggleLauncherState(visualParent.m.LauncherUrlWithoutIcon);
-            updateOnAllActivitiesLauncher();
-        }
-    }
-
-    PlasmaComponents.MenuItem {
-        visible: (visualParent && visualParent.m.IsLauncher === true)
-
-        text: i18n("Remove Launcher")
-
-        onClicked: tasksModel.requestRemoveLauncher(visualParent.m.LauncherUrlWithoutIcon);
-    }
-
-
-    PlasmaComponents.MenuItem {
         id: moreActionsMenuItem
 
         visible: (visualParent
@@ -567,6 +498,86 @@ PlasmaComponents.ContextMenu {
             }
         }
     }
+
+    PlasmaComponents.MenuItem {
+        id: startNewInstanceItem
+        visible: (visualParent && visualParent.m.IsLauncher !== true && visualParent.m.IsStartup !== true)
+
+        enabled: visualParent && visualParent.m.LauncherUrlWithoutIcon != null
+
+        text: i18n("Start New Instance")
+        icon: "system-run"
+
+        onClicked: tasksModel.requestNewInstance(visualParent.modelIndex())
+    }
+
+    PlasmaComponents.MenuItem {
+        separator: true
+
+        visible: (visualParent
+                  && visualParent.m.IsLauncher !== true
+                  && visualParent.m.IsStartup !== true
+                  && plasmoid.configuration.showWindowActions)
+    }
+
+    PlasmaComponents.MenuItem {
+        id: launcherToggleOnAllActivitiesAction
+        visible: launcherToggleAction.visible && launcherToggleAction.checked && activitiesCount > 1
+        enabled: visualParent && visualParent.m.LauncherUrlWithoutIcon != null
+
+        checkable: true
+        checked: isOnAllActivitiesLauncher
+        text: i18n("Show Launcher On All Activities")
+
+        onClicked:{
+            ActivitiesTools.toggleLauncherState(visualParent.m.LauncherUrlWithoutIcon);
+            updateOnAllActivitiesLauncher();
+        }
+    }
+
+    PlasmaComponents.MenuItem {
+        id: launcherToggleAction
+
+        visible: (visualParent && visualParent.m.IsLauncher !== true && visualParent.m.IsStartup !== true)
+
+        enabled: visualParent && visualParent.m.LauncherUrlWithoutIcon != null
+
+        checkable: true
+
+        text: i18n("Show Launcher When Not Running")
+
+        onClicked: {
+            if (tasksModel.launcherPosition(visualParent.m.LauncherUrlWithoutIcon) != -1) {
+                tasksModel.requestRemoveLauncher(visualParent.m.LauncherUrlWithoutIcon);
+            } else {
+                tasksModel.requestAddLauncher(visualParent.m.LauncherUrl);
+            }
+        }
+    }
+
+    PlasmaComponents.MenuItem {
+        visible: (visualParent && visualParent.m.IsLauncher === true) && activitiesCount > 1
+
+        checkable: true
+        checked: isOnAllActivitiesLauncher
+        text: i18n("Show Launcher On All Activities")
+
+        onClicked:{
+            ActivitiesTools.toggleLauncherState(visualParent.m.LauncherUrlWithoutIcon);
+            updateOnAllActivitiesLauncher();
+        }
+    }
+
+    PlasmaComponents.MenuItem {
+        visible: (visualParent && visualParent.m.IsLauncher === true)
+
+        text: i18n("Remove Launcher")
+
+        onClicked: tasksModel.requestRemoveLauncher(visualParent.m.LauncherUrlWithoutIcon);
+    }
+
+
+
 
     PlasmaComponents.MenuItem {
         property QtObject configureAction: null
