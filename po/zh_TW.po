@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/psifidotos/nowdock-plasmoid/\n"
 "POT-Creation-Date: 2016-10-24 20:06+0300\n"
-"PO-Revision-Date: 2016-10-09 21:16+0800\n"
+"PO-Revision-Date: 2016-10-25 07:46+0800\n"
 "Last-Translator: Jeff Huang <s8321414@gmail.com>\n"
 "Language-Team: Chinese <kde-i18n-doc@kde.org>\n"
 "Language: zh_TW\n"
@@ -98,7 +98,7 @@ msgstr "在滑鼠游標停留其上時突顯視窗"
 
 #: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:77
 msgid "Show window actions in the context menu"
-msgstr ""
+msgstr "在右鍵選單中顯示視窗動作"
 
 #: ../nowdockplasmoid/contents/ui/ConfigInteraction.qml:83
 msgid "Show progress information in task buttons"
@@ -246,11 +246,11 @@ msgstr "所有的活動"
 
 #: ../nowdockplasmoid/contents/ui/ContextMenu.qml:389
 msgid "Minimize"
-msgstr ""
+msgstr "最小化"
 
 #: ../nowdockplasmoid/contents/ui/ContextMenu.qml:405
 msgid "Maximize"
-msgstr ""
+msgstr "最大化"
 
 #: ../nowdockplasmoid/contents/ui/ContextMenu.qml:416
 msgid "Start New Instance"
@@ -271,35 +271,35 @@ msgstr "移除啟動器"
 
 #: ../nowdockplasmoid/contents/ui/ContextMenu.qml:489
 msgid "More Actions"
-msgstr ""
+msgstr "更多動作"
 
 #: ../nowdockplasmoid/contents/ui/ContextMenu.qml:497
 msgid "Move"
-msgstr ""
+msgstr "移動"
 
 #: ../nowdockplasmoid/contents/ui/ContextMenu.qml:506
 msgid "Resize"
-msgstr ""
+msgstr "調整大小"
 
 #: ../nowdockplasmoid/contents/ui/ContextMenu.qml:515
 msgid "Keep Above Others"
-msgstr ""
+msgstr "顯示在最上層"
 
 #: ../nowdockplasmoid/contents/ui/ContextMenu.qml:525
 msgid "Keep Below Others"
-msgstr ""
+msgstr "顯示在最下層"
 
 #: ../nowdockplasmoid/contents/ui/ContextMenu.qml:537
 msgid "Fullscreen"
-msgstr ""
+msgstr "全螢幕"
 
 #: ../nowdockplasmoid/contents/ui/ContextMenu.qml:549
 msgid "Shade"
-msgstr ""
+msgstr "陰影"
 
 #: ../nowdockplasmoid/contents/ui/ContextMenu.qml:564
 msgid "Allow this program to be grouped"
-msgstr ""
+msgstr "允許此程式被歸類"
 
 #: ../nowdockplasmoid/contents/ui/ContextMenu.qml:594
 msgid "Close"
@@ -356,3 +356,4 @@ msgstr "Now Dock"
 #: ../po/rc.cpp:2 rc.cpp:2
 msgid "Switch between running applications"
 msgstr "在執行中的應用程式間切換"
+
