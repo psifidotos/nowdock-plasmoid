@@ -73,7 +73,7 @@ Component {
         property int lastButtonClicked: -1;
         property int pressX: -1
         property int pressY: -1
-        property int resistanceDelay: 300
+        property int resistanceDelay: 750
 
         property real animationStep: panel.iconSize / 8
 
