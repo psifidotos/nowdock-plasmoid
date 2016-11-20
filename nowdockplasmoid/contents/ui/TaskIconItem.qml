@@ -106,7 +106,8 @@ Item{
         width:iconImageBuffer.width+2*shadowSize
         height:iconImageBuffer.height+2*shadowSize
 
-        visible: plasmoid.configuration.showShadows
+        //visible: plasmoid.configuration.showShadows
+        visible: false
 
         states: State {
             name: "reparented"
@@ -197,6 +198,24 @@ Item{
             }
         ]
     }
+
+    ///Shadow in tasks
+    Loader{
+        anchors.fill: iconImageBuffer
+        active: plasmoid.configuration.showShadows
+
+        sourceComponent: DropShadow{
+            anchors.fill: parent
+            color: "#cc080808"
+            samples: 2 * radius
+            source: iconImageBuffer
+            radius: centralItem.shadowSize
+            verticalOffset: 2
+
+            property int shadowSize : Math.ceil(panel.iconSize / 30)
+        }
+    }
+
 
     VisualAddItem{
         id: dropFilesVisual
