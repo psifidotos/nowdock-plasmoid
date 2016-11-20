@@ -115,7 +115,7 @@ Item{
         }
 
         //Corize to use when a window is removed....
-        Colorize{
+    /*    Colorize{
             id: removeImageColorizer
             source: parent
             anchors.fill: parent
@@ -126,7 +126,7 @@ Item{
             hue: 0
             saturation: 0
             lightness: 0
-        }
+        }*/
     }
 
     /* Rectangle{
