@@ -63,6 +63,7 @@ Component {
         property bool isMinimized: (IsMinimized === true) ? true : false
         property bool isStartup: (IsStartup === true) ? true : false
         property bool isWindow: (IsWindow === true) ? true : false
+        property bool isZoomed: false
 
         property bool mouseEntered: false
         property bool pressed: false
@@ -365,6 +366,16 @@ Component {
                         else
                             scale = scale + step;
                         //     console.log(index+ ", "+scale);
+                    }
+                }
+
+                onScaleChanged: {
+                    if ((scale > 1) && !mainItemContainer.isZoomed) {
+                        mainItemContainer.isZoomed = true;
+                        panel.animations++;
+                    } else if ((scale == 1) && mainItemContainer.isZoomed) {
+                        mainItemContainer.isZoomed = false;
+                        panel.animations--;
                     }
                 }
 
@@ -868,11 +879,14 @@ Component {
                     }
                 }
                 mainItemContainer.inAnimation = false;
+                panel.animations--;
             }
 
             function init(){
                 wrapper.tempScaleWidth = 0;
                 wrapper.tempScaleHeight = 0;
+
+                panel.animations++;
             }
 
             function showWindow(){
@@ -1004,6 +1018,8 @@ Component {
                     duration: showWindowAnimation.speed
                     easing.type: Easing.InQuad
                 }
+
+                onStarted: panel.animations++;
             }
 
             //smooth move into place the surrounding tasks
@@ -1013,6 +1029,8 @@ Component {
                 to: 0
                 duration: showWindowAnimation.speed
                 easing.type: Easing.InQuad
+
+                onStopped: panel.animations--;
             }
 
             PropertyAction { target: mainItemContainer; property: "inAnimation"; value: false }

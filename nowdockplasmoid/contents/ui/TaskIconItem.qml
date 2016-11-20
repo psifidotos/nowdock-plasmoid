@@ -441,10 +441,12 @@ Item{
             mainItemContainer.animationEnded();
             mainItemContainer.launcherAction();
             panel.noTasksInAnimation--;
+            panel.animations--;
         }
 
         function init(){
             panel.noTasksInAnimation++;
+            panel.animations++;
             wrapper.tempScaleWidth = wrapper.scale;
             wrapper.tempScaleHeight = wrapper.scale;
 
@@ -728,6 +730,7 @@ Item{
             onRunningChanged: {
                 if(running){
                     mainItemContainer.animationStarted();
+                    panel.animations++;
                     panel.updateScale(index-1, 1, 0);
                     panel.updateScale(index+1, 1, 0);
                 }
@@ -783,6 +786,7 @@ Item{
                     panel.updateScale(index+1, halfZoom, 0);
 
                     mainItemContainer.animationEnded();
+                    panel.animations--;
                 }
             }
         }

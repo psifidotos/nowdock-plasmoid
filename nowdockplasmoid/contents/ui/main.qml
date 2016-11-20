@@ -64,6 +64,7 @@ Item {
     property bool vertical: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
                              (panel.position === PlasmaCore.Types.RightPositioned)) ? true : false
 
+    property int animations:0 //it is used to track the animations running especially those in need of space
     property int clearWidth
     property int clearHeight
 
@@ -124,6 +125,7 @@ Item {
     signal updateScale(int delegateIndex, real newScale, real step)
     signal windowsHovered(variant winIds, bool hovered)
 
+    //onAnimationsChanged: console.log(animations);
     /* Rectangle{
                 anchors.fill: parent
                 border.width: 1
