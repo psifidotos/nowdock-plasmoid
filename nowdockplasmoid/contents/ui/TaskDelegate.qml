@@ -68,7 +68,7 @@ Component {
         property bool mouseEntered: false
         property bool pressed: false
 
-        property int animationTime: plasmoid.configuration.durationTime * 1.8 * units.shortDuration
+        property int animationTime: plasmoid.configuration.durationTime * 1.2 * units.shortDuration
         property int hoveredIndex: icList.hoveredIndex
         property int itemIndex: index
         property int lastButtonClicked: -1;
