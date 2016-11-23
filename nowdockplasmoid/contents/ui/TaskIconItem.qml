@@ -405,6 +405,7 @@ Item{
     SequentialAnimation{
         id:launcherAnimation
 
+        property bool launchedAlready: false
         property int speed: plasmoid.configuration.durationTime * 0.8 * units.longDuration
 
         SequentialAnimation{
@@ -455,17 +456,25 @@ Item{
 
 
         onStopped: {
-            wrapper.scale = 1;
+            //wrapper.scale = 1;
+            panel.noTasksInAnimation--;
+            panel.animations--;
+
+            console.log ("Nooo 2: "+panel.noTasksInAnimation);
 
             mainItemContainer.animationEnded();
             mainItemContainer.launcherAction();
-            panel.noTasksInAnimation--;
-            panel.animations--;
+
         }
 
         function init(){
-            panel.noTasksInAnimation++;
-            panel.animations++;
+            console.log ("Nooo 1 : "+panel.noTasksInAnimation);
+            if(!launchedAlready) {
+                launchedAlready = true;
+                panel.noTasksInAnimation++;
+                panel.animations++;
+            }
+
             wrapper.tempScaleWidth = wrapper.scale;
             wrapper.tempScaleHeight = wrapper.scale;
 
@@ -559,21 +568,10 @@ Item{
             wrapper.tempScaleWidth = wrapper.scale;
             wrapper.tempScaleHeight = wrapper.scale;
 
-            /*      iconImageBuffer.anchors.centerIn = undefined;
-
-            if(panel.position === PlasmaCore.Types.LeftPositioned)
-                iconImageBuffer.anchors.right = iconImageBuffer.parent.right;
-            else if(panel.position === PlasmaCore.Types.RightPositioned)
-                iconImageBuffer.anchors.left = iconImageBuffer.parent.left;
-            else if(panel.position === PlasmaCore.Types.TopPositioned)
-                iconImageBuffer.anchors.bottom = iconImageBuffer.parent.bottom;
-            else if(panel.position === PlasmaCore.Types.BottomPositioned)
-                iconImageBuffer.anchors.top = iconImageBuffer.parent.top;*/
-
             if(!isDemandingAttention)
                 loops = 2;
             else
-                loops = 45;
+                loops = 20;
 
             if (!needsThicknessSent) {
                 needsThicknessSent = true;
