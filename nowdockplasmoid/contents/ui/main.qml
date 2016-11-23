@@ -553,7 +553,7 @@ Item {
 
             target: icList
 
-            property int maxSize: panel.zoomFactor*panel.realSize
+            property int maxSize: panel.statesLineSize + panel.iconSize + 2*panel.iconMargin
 
             onUrlsDropped: {
                 // If all dropped URLs point to application desktop files, we'll add a launcher for each of them.

@@ -21,11 +21,6 @@ import QtQuick 2.0
 import org.kde.plasma.core 2.0 as PlasmaCore
 
 Item{
-
-    Behavior on opacity{
-        NumberAnimation { duration: plasmoid.configuration.durationTime*units.longDuration; }
-    }
-
     Rectangle{
         anchors.fill: parent
 
@@ -34,7 +29,7 @@ Item{
         anchors.left: (panel.position === PlasmaCore.Types.RightPositioned) ? parent.left : undefined
         anchors.right: (panel.position === PlasmaCore.Types.LeftPositioned) ? parent.right : undefined
 
-        radius: panel.iconSize/8
+        radius: panel.iconSize/10
 
         property color tempColor: "#aa222222"
         color: tempColor
