@@ -65,6 +65,7 @@ Item {
                              (panel.position === PlasmaCore.Types.RightPositioned)) ? true : false
 
     property int animations:0 //it is used to track the animations running especially those in need of space
+    property int animationsNeedThickness: 0 // animations need thickness, e.g. bouncing animation
     property int clearWidth
     property int clearHeight
 
@@ -115,12 +116,12 @@ Item {
     Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
     Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground
 
-
     signal clearZoomSignal();
     signal draggingFinished();
     signal mouseWasEntered(int delegateIndex, bool value);
     signal presentWindows(variant winIds)
     signal requestLayout
+    signal signalForAnimationsNeedThickness(int value);
     //trigger updating scaling of neighbour delegates of zoomed delegate
     signal updateScale(int delegateIndex, real newScale, real step)
     signal windowsHovered(variant winIds, bool hovered)

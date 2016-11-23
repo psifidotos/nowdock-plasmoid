@@ -497,6 +497,7 @@ Item{
         property int speed: plasmoid.configuration.durationTime*units.longDuration
         property bool isDemandingAttention: (IsDemandingAttention === true) ? true : false
         property bool entered: mainItemContainer.mouseEntered
+        property bool needsThicknessSent: false //flag to check if the signal for thickness was sent
 
         SequentialAnimation{
             ParallelAnimation{
@@ -536,6 +537,11 @@ Item{
         }
 
         onStopped: {
+            if (needsThicknessSent) {
+                needsThicknessSent = false;
+                panel.animationsNeedThickness--;
+                panel.signalForAnimationsNeedThickness(panel.animationsNeedThickness);
+            }
             clear();
         }
 
@@ -568,6 +574,12 @@ Item{
                 loops = 2;
             else
                 loops = 45;
+
+            if (!needsThicknessSent) {
+                needsThicknessSent = true;
+                panel.animationsNeedThickness++;
+                panel.signalForAnimationsNeedThickness(panel.animationsNeedThickness);
+            }
 
             // icList.hoveredIndex = -1;
         }
