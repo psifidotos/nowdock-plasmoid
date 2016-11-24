@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/psifidotos/nowdock-plasmoid/\n"
-"POT-Creation-Date: 2016-10-24 20:06+0300\n"
+"POT-Creation-Date: 2016-11-24 18:06+0200\n"
 "PO-Revision-Date: 2016-10-25 07:46+0800\n"
 "Last-Translator: Jeff Huang <s8321414@gmail.com>\n"
 "Language-Team: Chinese <kde-i18n-doc@kde.org>\n"
@@ -252,74 +252,74 @@ msgstr "最小化"
 msgid "Maximize"
 msgstr "最大化"
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:416
-msgid "Start New Instance"
-msgstr "開啟新的實體"
-
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:429
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:462
-msgid "Show Launcher On All Activities"
-msgstr "在所有活動中顯示啟動器"
-
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:446
-msgid "Show Launcher When Not Running"
-msgstr "當未執行時顯示啟動器"
-
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:473
-msgid "Remove Launcher"
-msgstr "移除啟動器"
-
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:489
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:420
 msgid "More Actions"
 msgstr "更多動作"
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:497
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:428
 msgid "Move"
 msgstr "移動"
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:506
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:437
 msgid "Resize"
 msgstr "調整大小"
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:515
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:446
 msgid "Keep Above Others"
 msgstr "顯示在最上層"
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:525
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:456
 msgid "Keep Below Others"
 msgstr "顯示在最下層"
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:537
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:468
 msgid "Fullscreen"
 msgstr "全螢幕"
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:549
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:480
 msgid "Shade"
 msgstr "陰影"
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:564
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:495
 msgid "Allow this program to be grouped"
 msgstr "允許此程式被歸類"
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:594
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:508
+msgid "Start New Instance"
+msgstr "開啟新的實體"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:530
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:563
+msgid "Show Launcher On All Activities"
+msgstr "在所有活動中顯示啟動器"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:547
+msgid "Show Launcher When Not Running"
+msgstr "當未執行時顯示啟動器"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:574
+msgid "Remove Launcher"
+msgstr "移除啟動器"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:605
 msgid "Close"
 msgstr "關閉"
 
-#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:735
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:747
 msgid "On %1"
 msgstr "於 %1"
 
-#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:744
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:756
 msgctxt "Which virtual desktop a window is currently on"
 msgid "Available on all activities"
 msgstr "所有活動都可使用"
 
-#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:763
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:775
 msgctxt "Activities a window is currently on (apart from the current one)"
 msgid "Also available on %1"
 msgstr "也可在 %1 上使用"
 
-#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:767
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:779
 msgctxt "Which activities a window is currently on"
 msgid "Available on %1"
 msgstr "於 %1 上使用"
@@ -356,4 +356,3 @@ msgstr "Now Dock"
 #: ../po/rc.cpp:2 rc.cpp:2
 msgid "Switch between running applications"
 msgstr "在執行中的應用程式間切換"
-

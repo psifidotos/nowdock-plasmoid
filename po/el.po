@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/psifidotos/nowdock-plasmoid/\n"
-"POT-Creation-Date: 2016-10-24 20:06+0300\n"
+"POT-Creation-Date: 2016-11-24 18:06+0200\n"
 "PO-Revision-Date: 2016-10-24 20:10+0200\n"
 "Last-Translator: Michail Vοurlakos <mvourlakos@gmail.com>\n"
 "Language-Team: Greek <kde-i18n-doc@kde.org>\n"
@@ -254,74 +254,74 @@ msgstr "Ελαχιστοποίηση"
 msgid "Maximize"
 msgstr "Μεγιστοποίηση"
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:416
-msgid "Start New Instance"
-msgstr "Νέο Στιγμιότυπο"
-
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:429
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:462
-msgid "Show Launcher On All Activities"
-msgstr "Εκκινητής σε Όλες τις Δραστηριότητες"
-
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:446
-msgid "Show Launcher When Not Running"
-msgstr "Εκκινητής όταν δεν είναι Ενεργό"
-
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:473
-msgid "Remove Launcher"
-msgstr "Αφαίρεση Εκκινητή"
-
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:489
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:420
 msgid "More Actions"
 msgstr "Περισσότερες ενέργειες"
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:497
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:428
 msgid "Move"
 msgstr "Μετακίνηση"
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:506
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:437
 msgid "Resize"
 msgstr "Αλλαγή μεγέθους"
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:515
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:446
 msgid "Keep Above Others"
 msgstr "Διατήρηση πάνω από τα άλλα"
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:525
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:456
 msgid "Keep Below Others"
 msgstr "Διατήρηση κάτω από τα άλλα"
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:537
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:468
 msgid "Fullscreen"
 msgstr "Πλήρης οθόνη"
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:549
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:480
 msgid "Shade"
 msgstr "Τύλιγμα"
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:564
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:495
 msgid "Allow this program to be grouped"
 msgstr "Να επιτρέπεται η ομαδοποίηση του προγράμματος"
 
-#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:594
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:508
+msgid "Start New Instance"
+msgstr "Νέο Στιγμιότυπο"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:530
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:563
+msgid "Show Launcher On All Activities"
+msgstr "Εκκινητής σε Όλες τις Δραστηριότητες"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:547
+msgid "Show Launcher When Not Running"
+msgstr "Εκκινητής όταν δεν είναι Ενεργό"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:574
+msgid "Remove Launcher"
+msgstr "Αφαίρεση Εκκινητή"
+
+#: ../nowdockplasmoid/contents/ui/ContextMenu.qml:605
 msgid "Close"
 msgstr "Κλείσιμο"
 
-#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:735
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:747
 msgid "On %1"
 msgstr "Σε %1"
 
-#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:744
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:756
 msgctxt "Which virtual desktop a window is currently on"
 msgid "Available on all activities"
 msgstr "Σε όλες τις δραστηριότητες"
 
-#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:763
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:775
 msgctxt "Activities a window is currently on (apart from the current one)"
 msgid "Also available on %1"
 msgstr "Διαθέσιμο επίσης σε %1"
 
-#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:767
+#: ../nowdockplasmoid/contents/ui/TaskDelegate.qml:779
 msgctxt "Which activities a window is currently on"
 msgid "Available on %1"
 msgstr "Διαθέσιμο σε %1"
@@ -358,4 +358,3 @@ msgstr "Now Dock"
 #: ../po/rc.cpp:2 rc.cpp:2
 msgid "Switch between running applications"
 msgstr "Εναλλαγή μεταξύ ενεργών εφαρμογών"
-
