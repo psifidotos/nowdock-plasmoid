@@ -54,6 +54,7 @@ Component {
         property bool hasMinimized: (IsGroupParent === true) ? tasksWindows.hasMinimized : isMinimized
         property bool hasShown: (IsGroupParent === true) ? tasksWindows.hasShown : !isMinimized
         property bool inAnimation: true
+        property bool inBlockingAnimation: false
 
         property bool isActive: (IsActive === true) ? true : false
         property bool isDemandingAttention: (IsDemandingAttention === true) ? true : false
@@ -649,7 +650,7 @@ Component {
                 draggingResistaner = null;
             }
 
-            if(pressed){
+            if(pressed && !inBlockingAnimation){
                 if (mouse.button == Qt.MidButton){
                     if( !mainItemContainer.isLauncher){
                         if (plasmoid.configuration.middleClickAction == TaskManagerApplet.Backend.NewInstance) {
@@ -660,13 +661,13 @@ Component {
                             tasksModel.requestToggleMinimized(modelIndex());
                         }
                     }
-                    else{
+                    else {
                         mouseEntered = false;
                         wrapper.runLauncherAnimation();
                     }
                 }
                 else if (mouse.button == Qt.LeftButton){
-                    if( mainItemContainer.isLauncher ){
+                    if( mainItemContainer.isLauncher){
                         mouseEntered = false;
                         wrapper.runLauncherAnimation();
                     }
@@ -789,6 +790,10 @@ Component {
             return tasksModel.makeModelIndex(index);
         }
 
+        function setBlockingAnimation(value){
+            inBlockingAnimation = value;
+        }
+
         //fix wrong positioning of launchers....
         onActivityChanged:{
             for(var i=0; i<tasksModel.launcherList.length; ++i){
@@ -879,14 +884,11 @@ Component {
                     }
                 }
                 mainItemContainer.inAnimation = false;
-                panel.animations--;
             }
 
             function init(){
                 wrapper.tempScaleWidth = 0;
                 wrapper.tempScaleHeight = 0;
-
-                panel.animations++;
             }
 
             function showWindow(){
@@ -941,7 +943,9 @@ Component {
                 repeat: false
 
                 onTriggered: {
-                    mainItemContainer.isDragged = true;
+                    if (!mainItemContainer.inBlockingAnimation){
+                        mainItemContainer.isDragged = true;
+                    }
                     resistanerTimer.destroy();
                 }
 
@@ -1018,8 +1022,6 @@ Component {
                     duration: showWindowAnimation.speed
                     easing.type: Easing.InQuad
                 }
-
-                onStarted: panel.animations++;
             }
 
             //smooth move into place the surrounding tasks
@@ -1029,8 +1031,6 @@ Component {
                 to: 0
                 duration: showWindowAnimation.speed
                 easing.type: Easing.InQuad
-
-                onStopped: panel.animations--;
             }
 
             PropertyAction { target: mainItemContainer; property: "inAnimation"; value: false }

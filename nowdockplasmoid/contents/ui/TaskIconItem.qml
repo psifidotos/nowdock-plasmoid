@@ -457,14 +457,18 @@ Item{
 
         onStopped: {
             //wrapper.scale = 1;
-            panel.noTasksInAnimation--;
-            panel.animations--;
+            if ( panel.noTasksInAnimation>0 ) {
+                panel.noTasksInAnimation--;
+            }
+            if ( panel.animations>0 ) {
+                panel.animations--;
+            }
 
-            console.log ("Nooo 2: "+panel.noTasksInAnimation);
+            console.log ("Nooo 2: "+panel.noTasksInAnimation + " - "+panel.animations);
 
+            mainItemContainer.setBlockingAnimation(false);
             mainItemContainer.animationEnded();
             mainItemContainer.launcherAction();
-
         }
 
         function init(){
@@ -473,12 +477,13 @@ Item{
                 launchedAlready = true;
                 panel.noTasksInAnimation++;
                 panel.animations++;
+                mainItemContainer.setBlockingAnimation(true);
             }
 
             wrapper.tempScaleWidth = wrapper.scale;
             wrapper.tempScaleHeight = wrapper.scale;
 
-            icList.hoveredIndex = -1;
+            icList.hoveredIndex = -1;            
         }
 
         function bounceLauncher(){
