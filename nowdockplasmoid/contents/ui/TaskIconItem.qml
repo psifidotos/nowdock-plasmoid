@@ -518,7 +518,7 @@ Item{
                 PropertyAnimation {
                     target: wrapper
                     property: (icList.orientation == Qt.Vertical) ? "tempScaleWidth" : "tempScaleHeight"
-                    to: 0.8 * panel.zoomFactor
+                    to: 1 + (0.6 * (panel.zoomFactor-1))
                     duration: newWindowAnimation.speed
                     easing.type: Easing.OutQuad
                 }
