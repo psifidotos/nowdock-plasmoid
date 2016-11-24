@@ -50,6 +50,7 @@ Item {
         id:mainColumn
         spacing: 15
         width: parent.width-40
+
         //Layout.fillWidth: true
 
         GroupBox {
@@ -59,8 +60,10 @@ Item {
 
             ColumnLayout {
                 Layout.fillWidth: true
+                width: mainItem.width-40
 
                 RowLayout{
+
                     Label {
                         text: i18n("Icon size: ")
                     }
@@ -141,6 +144,17 @@ Item {
                             }
                         }
                     }
+
+                    Label {
+                        id: versionLabel
+
+                        font.italic: true
+                        horizontalAlignment: Text.AlignRight
+                        Layout.alignment: Qt.AlignRight
+                        Layout.fillWidth: true
+
+                        text: i18n("ver: ") + "0.4.90"
+                    }
                 }
 
 
@@ -177,6 +191,7 @@ Item {
         }
 
         GridLayout{
+            id: animationsGridLayout
             Layout.fillWidth: true
             columns: 3
 

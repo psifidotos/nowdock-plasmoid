@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/psifidotos/nowdock-plasmoid/\n"
-"POT-Creation-Date: 2016-11-24 18:06+0200\n"
+"POT-Creation-Date: 2016-11-25 00:01+0200\n"
 "PO-Revision-Date: 2016-10-16 13:14+0100\n"
 "Last-Translator: Damian Kopeć <damikope@gmail.com>\n"
 "Language-Team: Polish <kde-i18n-doc@kde.org>\n"
@@ -31,55 +31,59 @@ msgstr "Panel"
 msgid "Interaction"
 msgstr "Interakcja"
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:65
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:68
 msgid "Icon size: "
 msgstr "Rozmiar ikon:"
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:149
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:156
+msgid "ver: "
+msgstr ""
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:163
 msgid "Enable shadows for icons"
 msgstr "Włącz wyświetlanie cieni ikon"
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:155
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:169
 msgid "Show glow around windows points"
 msgstr "Pokaż poświatę przy punktach okien"
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:161
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:175
 msgid "Different color for minimized windows"
 msgstr "Inny kolor zminimalizowanych okien"
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:167
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:181
 msgid "Dots on active window"
 msgstr "Kropki na aktywnych oknach"
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:173
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:187
 msgid "Reverse position for lines and dots"
 msgstr ""
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:190
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:205
 msgid "Animations: "
 msgstr "Animacje:"
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:208
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:223
 msgid "duration"
 msgstr "czas trwania"
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:208
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:223
 msgid "disabled"
 msgstr "wyłączone"
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:220
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:235
 msgid "Zoom"
 msgstr "Zbliżenie"
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:234
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:249
 msgid "Level: "
 msgstr "Poziom:"
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:278
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:293
 msgid "Show a red line on the limit needed for animations"
 msgstr "Pokaż czerwoną linię określającą miejsce potrzebne dla animacji"
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:308
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:323
 #: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:169
 msgid ""
 "For the disabled settings you should use the Now Dock Panel Configuration "

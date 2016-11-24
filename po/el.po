@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/psifidotos/nowdock-plasmoid/\n"
-"POT-Creation-Date: 2016-11-24 18:06+0200\n"
-"PO-Revision-Date: 2016-10-24 20:10+0200\n"
+"POT-Creation-Date: 2016-11-25 00:01+0200\n"
+"PO-Revision-Date: 2016-11-25 00:01+0200\n"
 "Last-Translator: Michail Vοurlakos <mvourlakos@gmail.com>\n"
 "Language-Team: Greek <kde-i18n-doc@kde.org>\n"
 "Language: el_GR\n"
@@ -29,55 +29,59 @@ msgstr "Πίνακας"
 msgid "Interaction"
 msgstr "Αλληλεπίδραση"
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:65
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:68
 msgid "Icon size: "
 msgstr "Μέγεθος: "
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:149
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:156
+msgid "ver: "
+msgstr "εκδ: "
+
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:163
 msgid "Enable shadows for icons"
 msgstr "Σκιές στα εικονίδια"
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:155
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:169
 msgid "Show glow around windows points"
 msgstr "Λάμψη στα σημεία κατάστασης των παραθύρων"
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:161
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:175
 msgid "Different color for minimized windows"
 msgstr "Διαφορετικό χρώμα για ελαχιστοποιημένα παράθυρα"
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:167
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:181
 msgid "Dots on active window"
 msgstr "Τελείες στο ενεργό παράθυρο"
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:173
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:187
 msgid "Reverse position for lines and dots"
 msgstr "Αντίστροφη θέση για γραμμές και τελείες"
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:190
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:205
 msgid "Animations: "
 msgstr "Εφέ: "
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:208
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:223
 msgid "duration"
 msgstr "διάρκεια"
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:208
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:223
 msgid "disabled"
 msgstr "ανενεργό"
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:220
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:235
 msgid "Zoom"
 msgstr "Εστίαση"
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:234
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:249
 msgid "Level: "
 msgstr "Επίπεδο:"
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:278
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:293
 msgid "Show a red line on the limit needed for animations"
 msgstr "Εμφάνιση κόκκινης γραμμής στο όριο των εφέ"
 
-#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:308
+#: ../nowdockplasmoid/contents/ui/ConfigAppearance.qml:323
 #: ../nowdockplasmoid/contents/ui/ConfigPanel.qml:169
 msgid ""
 "For the disabled settings you should use the Now Dock Panel Configuration "
@@ -358,3 +362,4 @@ msgstr "Now Dock"
 #: ../po/rc.cpp:2 rc.cpp:2
 msgid "Switch between running applications"
 msgstr "Εναλλαγή μεταξύ ενεργών εφαρμογών"
+
