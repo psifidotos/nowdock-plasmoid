@@ -463,8 +463,7 @@ Item{
             if ( panel.animations>0 ) {
                 panel.animations--;
             }
-
-            console.log ("Nooo 2: "+panel.noTasksInAnimation + " - "+panel.animations);
+            //console.log ("Nooo 2: "+panel.noTasksInAnimation + " - "+panel.animations);
 
             mainItemContainer.setBlockingAnimation(false);
             mainItemContainer.animationEnded();
@@ -472,7 +471,7 @@ Item{
         }
 
         function init(){
-            console.log ("Nooo 1 : "+panel.noTasksInAnimation);
+            //console.log ("Nooo 1 : "+panel.noTasksInAnimation);
             if(!launchedAlready) {
                 launchedAlready = true;
                 panel.noTasksInAnimation++;
