@@ -119,14 +119,15 @@ Item {
     signal clearZoomSignal();
     signal draggingFinished();
     signal mouseWasEntered(int delegateIndex, bool value);
-    signal presentWindows(variant winIds)
-    signal requestLayout
+    signal presentWindows(variant winIds);
+    signal requestLayout;
     signal signalAnimationsNeedBothAxis(int value);
     signal signalAnimationsNeedLength(int value);
     signal signalAnimationsNeedThickness(int value);
     signal signalDraggingState(bool value);
     //trigger updating scaling of neighbour delegates of zoomed delegate
     signal updateScale(int delegateIndex, real newScale, real step)
+    signal publishTasksGeometries();
     signal windowsHovered(variant winIds, bool hovered)
 
     //onAnimationsChanged: console.log(animations);

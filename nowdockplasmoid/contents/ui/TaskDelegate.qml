@@ -802,6 +802,13 @@ Component {
             inBlockingAnimation = value;
         }
 
+        function slotPublishGeometries() {
+            if (isWindow || isStartup || isGroupParent) {
+                tasksModel.requestPublishDelegateGeometry(mainItemContainer.modelIndex(),
+                                                          backend.globalRect(mainItemContainer), mainItemContainer);
+            }
+        }
+
         //fix wrong positioning of launchers....
         onActivityChanged:{
             for(var i=0; i<tasksModel.launcherList.length; ++i){
@@ -817,6 +824,7 @@ Component {
             panel.mouseWasEntered.connect(signalMouseWasEntered);
             panel.draggingFinished.connect(handlerDraggingFinished);
             panel.clearZoomSignal.connect(clearZoom);
+            panel.publishTasksGeometries.connect(slotPublishGeometries);
 
             //fix wrong positioning of launchers....
             for(var i=0; i<tasksModel.launcherList.length; ++i){
