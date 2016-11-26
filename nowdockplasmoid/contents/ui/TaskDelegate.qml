@@ -45,7 +45,7 @@ Component {
 
         acceptedButtons: Qt.LeftButton | Qt.MidButton | Qt.RightButton
         hoverEnabled: (inAnimation !== true)&& (!IsStartup)&&(!panel.taskInAnimation)&&(plasmoid.immutable || panel.debugLocation)
-       // hoverEnabled: true
+        // hoverEnabled: true
 
         property bool buffersAreReady: false
         property bool delayingRemove: ListView.delayRemove
@@ -245,7 +245,7 @@ Component {
 
                 signal runLauncherAnimation();
 
-             /*   Rectangle{
+                /*   Rectangle{
                     anchors.fill: parent
                     border.width: 1
                     border.color: "green"
@@ -274,7 +274,7 @@ Component {
                     Loader{
                         id: firstIndicator
                         active:( (((panel.position === PlasmaCore.Types.TopPositioned) || (panel.position === PlasmaCore.Types.LeftPositioned))
-                                 && !plasmoid.configuration.reverseLinesPosition)
+                                  && !plasmoid.configuration.reverseLinesPosition)
                                 || (((panel.position === PlasmaCore.Types.BottomPositioned) || (panel.position === PlasmaCore.Types.RightPositioned))
                                     && plasmoid.configuration.reverseLinesPosition) )
                         sourceComponent: Component{
@@ -370,13 +370,21 @@ Component {
                     }
                 }
 
+                function sendEndOfNeedBothAxisAnimation(){
+                    if (mainItemContainer.isZoomed) {
+                        mainItemContainer.isZoomed = false;
+                        if (panel.animationsNeedBothAxis > 0) {
+                            panel.setAnimationsNeedBothAxis(panel.animationsNeedBothAxis - 1);
+                        }
+                    }
+                }
+
                 onScaleChanged: {
                     if ((scale > 1) && !mainItemContainer.isZoomed) {
                         mainItemContainer.isZoomed = true;
-                        panel.animations++;
+                        panel.setAnimationsNeedBothAxis(panel.animationsNeedBothAxis + 1);
                     } else if ((scale == 1) && mainItemContainer.isZoomed) {
-                        mainItemContainer.isZoomed = false;
-                        panel.animations--;
+                        sendEndOfNeedBothAxisAnimation();
                     }
                 }
 
@@ -641,7 +649,7 @@ Component {
             if (hoveredTimerObj){
                 hoveredTimerObj.stop();
                 hoveredTimerObj.destroy();
-            }            
+            }
         }
 
         onReleased: {
@@ -705,18 +713,18 @@ Component {
         }
 
         function animationStarted(){
-        //    console.log("Animation started: " + index);
+            //    console.log("Animation started: " + index);
             inAnimation = true;
         }
 
         function animationEnded(){
-         //   console.log("Animation ended: " + index);
+            //   console.log("Animation ended: " + index);
             inAnimation = false;
-           // checkListHovered.startDuration(3*units.longDuration);
+            // checkListHovered.startDuration(3*units.longDuration);
         }
 
         function clearZoom(){
-         //   console.log("Clear zoom: " + index);
+            //   console.log("Clear zoom: " + index);
             if (wrapper)
                 wrapper.scale=1;
         }
@@ -730,9 +738,9 @@ Component {
 
         ///// Helper functions /////
         function launcherAction(){
-           // if ((lastButtonClicked == Qt.LeftButton)||(lastButtonClicked == Qt.MidButton)){
-                tasksModel.requestActivate(modelIndex());
-           // }
+            // if ((lastButtonClicked == Qt.LeftButton)||(lastButtonClicked == Qt.MidButton)){
+            tasksModel.requestActivate(modelIndex());
+            // }
         }
 
         ///window previews///
@@ -821,7 +829,7 @@ Component {
         }
 
         Component.onDestruction: {
-            //    console.log("Destroying... "+index);
+            wrapper.sendEndOfNeedBothAxisAnimation();
         }
 
         Timer{

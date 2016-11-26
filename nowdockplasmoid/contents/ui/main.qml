@@ -47,7 +47,6 @@ Item {
     Layout.preferredWidth: (userPanelPosition !== 0)&&(!nowDockPanel) ? tasksWidth : -1
     Layout.preferredHeight: (userPanelPosition !== 0)&&(!nowDockPanel) ? tasksHeight : -1
 
-
     property bool debugLocation: false
 
     property bool dropNewLauncher: false
@@ -64,7 +63,8 @@ Item {
     property bool vertical: ((panel.position === PlasmaCore.Types.LeftPositioned) ||
                              (panel.position === PlasmaCore.Types.RightPositioned)) ? true : false
 
-    property int animations:0 //it is used to track the animations running especially those in need of space
+    property int animationsNeedBothAxis:0 //animations need space in both axes, e.g zooming a task
+    property int animationsNeedLength: 0 // animations need length, e.g. adding a task
     property int animationsNeedThickness: 0 // animations need thickness, e.g. bouncing animation
     property int clearWidth
     property int clearHeight
@@ -121,7 +121,9 @@ Item {
     signal mouseWasEntered(int delegateIndex, bool value);
     signal presentWindows(variant winIds)
     signal requestLayout
-    signal signalForAnimationsNeedThickness(int value);
+    signal signalAnimationsNeedBothAxis(int value);
+    signal signalAnimationsNeedLength(int value);
+    signal signalAnimationsNeedThickness(int value);
     //trigger updating scaling of neighbour delegates of zoomed delegate
     signal updateScale(int delegateIndex, real newScale, real step)
     signal windowsHovered(variant winIds, bool hovered)
@@ -155,6 +157,31 @@ Item {
         // onLaunchersChanged: tasksModel.launcherList = plasmoid.configuration.launchers
         onGroupingAppIdBlacklistChanged: tasksModel.groupingAppIdBlacklist = plasmoid.configuration.groupingAppIdBlacklist;
         onGroupingLauncherUrlBlacklistChanged: tasksModel.groupingLauncherUrlBlacklist = plasmoid.configuration.groupingLauncherUrlBlacklist;
+    }
+
+    function setAnimationsNeedBothAxis(value) {
+        if (value === animationsNeedBothAxis) {
+            return;
+        }
+
+        animationsNeedBothAxis = value;
+        signalAnimationsNeedBothAxis(animationsNeedBothAxis);
+    }
+
+    function setAnimationsNeedLength(value) {
+        if (value === animationsNeedLength) {
+            return;
+        }
+        animationsNeedLength = value;
+        signalAnimationsNeedLength(animationsNeedLength);
+    }
+
+    function setAnimationsNeedThickness(value) {
+        if (value === animationsNeedThickness) {
+            return;
+        }
+        animationsNeedThickness = value;
+        signalAnimationsNeedThickness(animationsNeedThickness);
     }
 
     /////

@@ -115,7 +115,7 @@ Item{
         }
 
         //Corize to use when a window is removed....
-    /*    Colorize{
+        /*    Colorize{
             id: removeImageColorizer
             source: parent
             anchors.fill: parent
@@ -457,32 +457,45 @@ Item{
 
         onStopped: {
             //wrapper.scale = 1;
-            if ( panel.noTasksInAnimation>0 ) {
+            /*   if ( panel.noTasksInAnimation>0 ) {
                 panel.noTasksInAnimation--;
             }
             if ( panel.animations>0 ) {
                 panel.animations--;
-            }
+            }*/
             //console.log ("Nooo 2: "+panel.noTasksInAnimation + " - "+panel.animations);
+            clearAnimationsSignals();
 
             mainItemContainer.setBlockingAnimation(false);
             mainItemContainer.animationEnded();
             mainItemContainer.launcherAction();
         }
 
+        function clearAnimationsSignals() {
+            if ( launchedAlready && panel.noTasksInAnimation>0 ) {
+                panel.noTasksInAnimation--;
+            }
+
+            if ( launchedAlready && panel.animationsNeedThickness>0 ) {
+                panel.setAnimationsNeedThickness( panel.animationsNeedThickness-1 );
+            }
+
+            launchedAlready = false;
+        }
+
         function init(){
             //console.log ("Nooo 1 : "+panel.noTasksInAnimation);
             if(!launchedAlready) {
                 launchedAlready = true;
+                panel.setAnimationsNeedThickness( panel.animationsNeedThickness+1 );
                 panel.noTasksInAnimation++;
-                panel.animations++;
                 mainItemContainer.setBlockingAnimation(true);
             }
 
             wrapper.tempScaleWidth = wrapper.scale;
             wrapper.tempScaleHeight = wrapper.scale;
 
-            icList.hoveredIndex = -1;            
+            icList.hoveredIndex = -1;
         }
 
         function bounceLauncher(){
@@ -498,6 +511,10 @@ Item{
 
         Component.onCompleted: {
             wrapper.runLauncherAnimation.connect(bounceLauncher);
+        }
+
+        Component.onDestruction: {
+            clearAnimationsSignals();
         }
     }
     /////////////////// end of launcher animation
@@ -550,11 +567,7 @@ Item{
         }
 
         onStopped: {
-            if (needsThicknessSent) {
-                needsThicknessSent = false;
-                panel.animationsNeedThickness--;
-                panel.signalForAnimationsNeedThickness(panel.animationsNeedThickness);
-            }
+            sendEndOfNeedThicknessAnimation();
             clear();
         }
 
@@ -565,6 +578,15 @@ Item{
             }
             else if(isDemandingAttention){
                 bounceNewWindow();
+            }
+        }
+
+        function sendEndOfNeedThicknessAnimation(){
+            if (needsThicknessSent) {
+                needsThicknessSent = false;
+                if (panel.animationsNeedThickness > 0) {
+                    panel.setAnimationsNeedThickness( panel.animationsNeedThickness-1 );
+                }
             }
         }
 
@@ -579,8 +601,7 @@ Item{
 
             if (!needsThicknessSent) {
                 needsThicknessSent = true;
-                panel.animationsNeedThickness++;
-                panel.signalForAnimationsNeedThickness(panel.animationsNeedThickness);
+                panel.setAnimationsNeedThickness( panel.animationsNeedThickness+1 );
             }
 
             // icList.hoveredIndex = -1;
@@ -593,6 +614,10 @@ Item{
 
         Component.onCompleted: {
             mainItemContainer.groupWindowAdded.connect(bounceNewWindow);
+        }
+
+        Component.onDestruction: {
+            sendEndOfNeedThicknessAnimation();
         }
     }
 
@@ -763,7 +788,7 @@ Item{
             onRunningChanged: {
                 if(running){
                     mainItemContainer.animationStarted();
-                    panel.animations++;
+                    //panel.animations++;
                     panel.updateScale(index-1, 1, 0);
                     panel.updateScale(index+1, 1, 0);
                 }
@@ -819,7 +844,7 @@ Item{
                     panel.updateScale(index+1, halfZoom, 0);
 
                     mainItemContainer.animationEnded();
-                    panel.animations--;
+                    //   panel.animations--;
                 }
             }
         }
