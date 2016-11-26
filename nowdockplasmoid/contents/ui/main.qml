@@ -124,6 +124,7 @@ Item {
     signal signalAnimationsNeedBothAxis(int value);
     signal signalAnimationsNeedLength(int value);
     signal signalAnimationsNeedThickness(int value);
+    signal signalDraggingState(bool value);
     //trigger updating scaling of neighbour delegates of zoomed delegate
     signal updateScale(int delegateIndex, real newScale, real step)
     signal windowsHovered(variant winIds, bool hovered)
@@ -194,8 +195,11 @@ Item {
     onDragSourceChanged: {
         if (dragSource == null) {
             panel.draggingFinished();
+            panel.signalDraggingState(false);
 
             tasksModel.syncLaunchers();
+        } else {
+            panel.signalDraggingState(true);
         }
     }
 
