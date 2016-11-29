@@ -52,7 +52,7 @@ Item{
     // property int shadowInterval: firstDrawed ? firstDrawedInterval : 250
     property int shadowInterval: firstDrawed ? 1000 : 250
 
-    property int shadowSize : Math.ceil(panel.iconSize / 20)
+    property int shadowSize : Math.ceil(panel.iconSize / 10)
 
     readonly property bool smartLauncherEnabled: ((mainItemContainer.isStartup === false) && (plasmoid.configuration.smartLaunchersEnabled))
     readonly property variant iconDecoration: decoration
@@ -206,13 +206,11 @@ Item{
 
         sourceComponent: DropShadow{
             anchors.fill: parent
-            color: "#cc080808"
+            color: "#ff080808"
             samples: 2 * radius
             source: iconImageBuffer
             radius: centralItem.shadowSize
-            verticalOffset: 2
-
-            property int shadowSize : Math.ceil(panel.iconSize / 30)
+            verticalOffset: 2            
         }
     }
 

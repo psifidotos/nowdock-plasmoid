@@ -131,7 +131,7 @@ Component {
 
             radius: centralItem.shadowSize
             samples: 2 * radius
-            color: "#cc080808"
+            color: "#ff080808"
             source: fixedIcon
 
             verticalOffset: 2
