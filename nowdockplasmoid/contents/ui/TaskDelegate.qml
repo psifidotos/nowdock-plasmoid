@@ -22,6 +22,7 @@ import QtGraphicalEffects 1.0
 
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
+import org.kde.plasma.plasmoid 2.0
 
 import org.kde.plasma.private.taskmanager 0.1 as TaskManagerApplet
 
@@ -295,6 +296,10 @@ Component {
                 }//Flow
 
                 function calculateScales( currentMousePosition ){
+                    if (!plasmoid.immutable) {
+                        return;
+                    }
+
                     var distanceFromHovered = Math.abs(index - icList.hoveredIndex);
 
                     // A new algorithm tryig to make the zoom calculation only once
