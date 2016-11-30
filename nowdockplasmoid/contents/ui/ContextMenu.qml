@@ -57,6 +57,8 @@ PlasmaComponents.ContextMenu {
     }
 
     function show() {
+        //trying to use the dragging mechanism in order to not hide the dock
+        panel.signalDraggingState(true);
         loadDynamicLaunchActions(visualParent.m.LauncherUrlWithoutIcon);
         backend.ungrabMouse(visualParent);
         openRelative();
@@ -195,6 +197,11 @@ PlasmaComponents.ContextMenu {
         ActivitiesTools.currentActivity = activityInfo.currentActivity;
         ActivitiesTools.plasmoid = plasmoid;
         //  updateOnAllActivitiesLauncher();
+    }
+
+
+    Component.onDestruction: {
+        panel.signalDraggingState(false);
     }
 
     /// Sub Items
