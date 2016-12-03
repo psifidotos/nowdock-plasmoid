@@ -103,7 +103,7 @@ Item {
     property int iconSize: nowDockPanel ? nowDockPanel.iconSize : Math.max(plasmoid.configuration.iconSize, 16)
     property int tasksHeight: mouseHandler.height
     property int tasksWidth: mouseHandler.width
-    property int userPanelPosition: nowDockPanel ? nowDockPanel.userPanelPosition : plasmoid.configuration.plasmoidPosition
+    property int userPanelPosition: nowDockPanel ? nowDockPanel.panelAlignment : plasmoid.configuration.plasmoidPosition
 
     property real zoomFactor: nowDockPanel ? nowDockPanel.zoomFactor : ( 1 + (plasmoid.configuration.zoomLevel / 20) )
 
