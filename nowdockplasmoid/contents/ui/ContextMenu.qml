@@ -60,7 +60,7 @@ PlasmaComponents.ContextMenu {
         //trying to use the dragging mechanism in order to not hide the dock
         panel.signalDraggingState(true);
         loadDynamicLaunchActions(visualParent.m.LauncherUrlWithoutIcon);
-        backend.ungrabMouse(visualParent);
+       // backend.ungrabMouse(visualParent);
         openRelative();
     }
 
@@ -201,7 +201,8 @@ PlasmaComponents.ContextMenu {
 
 
     Component.onDestruction: {
-        panel.signalDraggingState(false);
+        backend.ungrabMouse(visualParent);
+        panel.signalDraggingState(false);        
     }
 
     /// Sub Items
