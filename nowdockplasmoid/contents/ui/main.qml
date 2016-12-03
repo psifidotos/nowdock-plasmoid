@@ -49,6 +49,7 @@ Item {
 
     property bool debugLocation: false
 
+    property bool disableRestoreZoom: false //blocks restore animation in rightClick
     property bool dropNewLauncher: false
     property bool enableShadows: plasmoid.configuration.showShadows
     property bool glow: plasmoid.configuration.showGlow
@@ -894,6 +895,10 @@ Item {
     }
 
     function outsideContainsMouse(){
+        if (disableRestoreZoom) {
+            return true;
+        }
+
         var tasks = icList.contentItem.children;
 
         if(toolTipDelegate.currentItem != -1)
@@ -912,6 +917,10 @@ Item {
     }
 
     function containsMouse(){
+        if (disableRestoreZoom) {
+            return;
+        }
+
         var result = panel.outsideContainsMouse();
 
         if (!result || toolTipDelegate.parentIndex != icList.hoveredIndex)
@@ -932,6 +941,10 @@ Item {
 
     function clearZoom(){
         //console.log("Plasmoid clear...");
+        if (disableRestoreZoom) {
+            return;
+        }
+
         icList.currentSpot = -1000;
         icList.hoveredIndex = -1;
         panel.clearZoomSignal();

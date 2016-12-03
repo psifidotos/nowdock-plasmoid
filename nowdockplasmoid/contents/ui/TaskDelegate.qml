@@ -540,7 +540,7 @@ Component {
         onPositionChanged: {
             checkListHovered.stop();
 
-            if((inAnimation == false)&&(!panel.taskInAnimation)){
+            if((inAnimation == false)&&(!panel.taskInAnimation)&&(!panel.disableRestoreZoom)){
                 if(panel.dragSource == null){
                     if (icList.orientation == Qt.Horizontal){
                         var step = Math.abs(icList.currentSpot-mouse.x);
@@ -645,10 +645,6 @@ Component {
             }
             else if (mouse.button == Qt.RightButton){
                 panel.createContextMenu(mainItemContainer).show();
-                /*  mainItemContainer.contextMenu = panel.contextMenuComponent.createObject(mainItemContainer);
-                mainItemContainer.contextMenu.activitiesCount = activityModelInstance.count;
-                mainItemContainer.contextMenu.visualParent = mainItemContainer;
-                mainItemContainer.contextMenu.show();*/
             }
 
             if (hoveredTimerObj){
