@@ -61,7 +61,7 @@ PlasmaComponents.ContextMenu {
         panel.disableRestoreZoom = true;
         panel.signalDraggingState(true);
         loadDynamicLaunchActions(visualParent.m.LauncherUrlWithoutIcon);
-       // backend.ungrabMouse(visualParent);
+        // backend.ungrabMouse(visualParent);
         openRelative();
     }
 
@@ -292,97 +292,100 @@ PlasmaComponents.ContextMenu {
 
 
     PlasmaComponents.MenuItem {
-       id: activitiesDesktopsMenuItem
+        id: activitiesDesktopsMenuItem
 
-       visible: activityInfo.numberOfRunningActivities > 1
-           && (visualParent && !visualParent.m.IsLauncher
-           && !visualParent.m.IsStartup)
+        visible: activityInfo.numberOfRunningActivities > 1
+                 && (visualParent && !visualParent.m.IsLauncher
+                     && !visualParent.m.IsStartup)
 
-       enabled: visible
+        enabled: visible
 
-       text: i18n("Move To &Activity")
+        text: i18n("Move To &Activity")
 
-       Connections {
-           target: activityInfo
+        Connections {
+            target: activityInfo
 
-           onNumberOfRunningActivitiesChanged: activitiesDesktopsMenu.refresh()
-       }
+            onNumberOfRunningActivitiesChanged: activitiesDesktopsMenu.refresh()
+        }
 
-       PlasmaComponents.ContextMenu {
-           id: activitiesDesktopsMenu
+        PlasmaComponents.ContextMenu {
+            id: activitiesDesktopsMenu
 
-           visualParent: activitiesDesktopsMenuItem.action
+            visualParent: activitiesDesktopsMenuItem.action
 
-           function refresh() {
-               clearMenuItems();
+            function refresh() {
+                clearMenuItems();
 
-               if (activityInfo.numberOfRunningActivities <= 1) {
-                   return;
-               }
+                if (activityInfo.numberOfRunningActivities <= 1) {
+                    return;
+                }
 
-               var menuItem = menu.newMenuItem(activitiesDesktopsMenu);
-               menuItem.text = i18n("Add To Current Activity");
-               menuItem.enabled = Qt.binding(function() {
-                   return menu.visualParent && menu.visualParent.m.Activities.length > 0 &&
-                          menu.visualParent.m.Activities.indexOf(activityInfo.currentActivity) < 0;
-               });
-               menuItem.clicked.connect(function() {
-                   tasksModel.requestActivities(menu.visualParent.modelIndex(), menu.visualParent.m.Activities.concat(activityInfo.currentActivity));
-               });
+                var menuItem = menu.newMenuItem(activitiesDesktopsMenu);
+                menuItem.text = i18n("Add To Current Activity");
+                menuItem.enabled = Qt.binding(function() {
+                    return menu.visualParent && menu.visualParent.m.Activities.length > 0 &&
+                            menu.visualParent.m.Activities.indexOf(activityInfo.currentActivity) < 0;
+                });
+                menuItem.clicked.connect(function() {
+                    tasksModel.requestActivities(menu.visualParent.modelIndex(), menu.visualParent.m.Activities.concat(activityInfo.currentActivity));
+                });
 
-               menuItem = menu.newMenuItem(activitiesDesktopsMenu);
-               menuItem.text = i18n("All Activities");
-               menuItem.checkable = true;
-               menuItem.checked = Qt.binding(function() {
-                   return menu.visualParent && menu.visualParent.m.Activities.length === 0;
-               });
-               menuItem.clicked.connect(function() {
-                   var checked = menuItem.checked;
-                   var newActivities = undefined; // will cast to an empty QStringList i.e all activities
-                   if (!checked) {
-                       newActivities = new Array(activityInfo.currentActivity);
-                   }
-                   tasksModel.requestActivities(menu.visualParent.modelIndex(), newActivities);
-               });
+                menuItem = menu.newMenuItem(activitiesDesktopsMenu);
+                menuItem.text = i18n("All Activities");
+                menuItem.checkable = true;
+                menuItem.checked = Qt.binding(function() {
+                    return menu.visualParent && menu.visualParent.m.Activities.length === 0;
+                });
+                menuItem.clicked.connect(function() {
+                    var checked = menuItem.checked;
+                    var newActivities = menu.visualParent.m.Activities;
+                    var size = newActivities.length;
 
-               menu.newSeparator(activitiesDesktopsMenu);
+                    newActivities = undefined; // will cast to an empty QStringList i.e all activities
+                    if (size === 0) {
+                        newActivities = new Array(activityInfo.currentActivity);
+                    }
 
-               var runningActivities = activityInfo.runningActivities();
-               for (var i = 0; i < runningActivities.length; ++i) {
-                   var activityId = runningActivities[i];
+                    tasksModel.requestActivities(menu.visualParent.modelIndex(), newActivities);
+                });
 
-                   menuItem = menu.newMenuItem(activitiesDesktopsMenu);
-                   menuItem.text = activityInfo.activityName(runningActivities[i]);
-                   menuItem.checkable = true;
-                   menuItem.checked = Qt.binding( (function(activityId) {
-                       return function() {
-                           return menu.visualParent && menu.visualParent.m.Activities.indexOf(activityId) >= 0;
-                       };
-                   })(activityId));
-                   menuItem.clicked.connect((function(activityId) {
-                       return function () {
-                           var checked = menuItem.checked;
-                           var newActivities = menu.visualParent.m.Activities;
-                           if (checked) {
-                               newActivities = newActivities.concat(activityId);
-                           } else {
-                               var index = newActivities.indexOf(activityId)
-                               if (index < 0) {
-                                   return;
-                               }
-                               newActivities = newActivities.splice(index, 1);
-                           }
-                           return tasksModel.requestActivities(menu.visualParent.modelIndex(), newActivities);
-                       };
-                   })(activityId));
-               }
+                menu.newSeparator(activitiesDesktopsMenu);
 
-               menu.newSeparator(activitiesDesktopsMenu);
-           }
+                var runningActivities = activityInfo.runningActivities();
+                for (var i = 0; i < runningActivities.length; ++i) {
+                    var activityId = runningActivities[i];
 
-           Component.onCompleted: refresh()
-       }
-   }
+                    menuItem = menu.newMenuItem(activitiesDesktopsMenu);
+                    menuItem.text = activityInfo.activityName(runningActivities[i]);
+                    menuItem.checkable = true;
+                    menuItem.checked = Qt.binding( (function(activityId) {
+                        return function() {
+                            return menu.visualParent && menu.visualParent.m.Activities.indexOf(activityId) >= 0;
+                        };
+                    })(activityId));
+                    menuItem.clicked.connect((function(activityId) {
+                        return function () {
+                            var checked = menuItem.checked;
+                            var newActivities = menu.visualParent.m.Activities;
+                            var index = newActivities.indexOf(activityId)
+
+                            if (index < 0) {
+                                newActivities = newActivities.concat(activityId);
+                            } else {
+                                //newActivities = newActivities.splice(index, 1);  //this does not work!!!
+                                newActivities.splice(index, 1);
+                            }
+                            return tasksModel.requestActivities(menu.visualParent.modelIndex(), newActivities);
+                        };
+                    })(activityId));
+                }
+
+                menu.newSeparator(activitiesDesktopsMenu);
+            }
+
+            Component.onCompleted: refresh()
+        }
+    }
 
 
 
