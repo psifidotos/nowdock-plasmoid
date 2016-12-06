@@ -46,7 +46,9 @@ Item{
     DelegateModel {
         id: windowsLocalModel
         model: tasksModel //icList.model
-        rootIndex: tasksModel.makeModelIndex(index)
+        rootIndex: tasksModel.makeModelIndex(currentIndex >=0 ? currentIndex : index)
+
+        property int currentIndex: -1
 
         delegate: Item{
             property string title: model.display
@@ -77,6 +79,7 @@ Item{
     }
 
     function checkInternalStates(){
+        windowsLocalModel.currentIndex = index;
         var childs = windowsLocalModel.items;
 
         for(var i=0; i<childs.count; ++i){
@@ -92,20 +95,21 @@ Item{
     }
 
     function windowsTitles() {
-        var childs = windowsLocalModel.items;
-
         var result = new Array;
+
+        windowsLocalModel.currentIndex = index;
+        var childs = windowsLocalModel.items;
 
         for(var i=0; i<childs.count; ++i){
             var kid = childs.get(i);
-
             var title = kid.model.display
+
+            //console.log(title);
             // FIXME: we may need a way to remove the app name from the end
             /*   var lst = title.lastIndexOf(" - ");
-
             if (lst > 0) {
-                title = title.substring(0, lst);
-            }*/
+                 title = title.substring(0, lst);
+             }*/
 
             result.push(title);
         }
@@ -123,6 +127,7 @@ Item{
         //    console.log("--------- "+ index+" -------");
         if(index>=0){
             if(IsGroupParent){
+                windowsLocalModel.currentIndex = index;
                 var tempC = windowsLocalModel.count;
 
                 if (tempC == 0){

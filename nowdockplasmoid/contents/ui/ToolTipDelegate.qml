@@ -227,6 +227,8 @@ MouseArea{
                                     opacity: 0.7
                                     textFormat: Text.PlainText
                                     verticalAlignment: Text.AlignVCenter
+
+                                    width: thumbnailWidth
                                 }
                             }
 
