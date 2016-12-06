@@ -640,8 +640,9 @@ Item{
         }
 
         function removeTask(){
-            if(centralItem.firstDrawed && !centralItem.toBeDestroyed &&
-                    mainItemContainer.buffersAreReady && plasmoid.configuration.showShadows){
+            if(centralItem.firstDrawed && !centralItem.toBeDestroyed
+                    && mainItemContainer.buffersAreReady && plasmoid.configuration.showShadows
+                    && windowSystem.compositingActive){
                 removingAnimation.init();
             }
         }
