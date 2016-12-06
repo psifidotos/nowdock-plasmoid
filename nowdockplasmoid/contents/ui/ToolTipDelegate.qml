@@ -35,6 +35,7 @@ MouseArea{
 
     property Item toolTip
     property var parentIndex
+    property var titles
     property var windows
     property string mainText
     property string subText
@@ -198,23 +199,37 @@ MouseArea{
                         spacing: units.largeSpacing
 
                         Repeater {
-                            model: plasmoid.configuration.showToolTips && !albumArtImage.available ? windows : null
+                            model: (plasmoid.configuration.showToolTips && !albumArtImage.available)
+                                   || !windowSystem.compositingActive ? windows : null
 
-                            PlasmaCore.WindowThumbnail {
-                                id: windowThumbnail
+                            Column{
+                                PlasmaCore.WindowThumbnail {
+                                    id: windowThumbnail
 
-                                width: thumbnailWidth
-                                height: thumbnailHeight
+                                    width: thumbnailWidth
+                                    height: thumbnailHeight
 
-                                winId: modelData
-
-                                ToolTipWindowMouseArea {
-                                    anchors.fill: parent
-                                    modelIndex: tasksModel.makeModelIndex(parentIndex, group ? index : -1)
                                     winId: modelData
-                                    thumbnailItem: parent
+
+                                    ToolTipWindowMouseArea {
+                                        anchors.fill: parent
+                                        modelIndex: tasksModel.makeModelIndex(parentIndex, group ? index : -1)
+                                        winId: modelData
+                                        thumbnailItem: parent
+                                    }
+                                }
+
+                                PlasmaComponents.Label{
+                                    text: titles && titles[index] ? titles[index] : ""
+                                    wrapMode: Text.Wrap
+                                    font.italic: true
+                                    elide: Text.ElideRight
+                                    opacity: 0.7
+                                    textFormat: Text.PlainText
+                                    verticalAlignment: Text.AlignVCenter
                                 }
                             }
+
                         }
 
                         function containsMouse(){
@@ -246,7 +261,7 @@ MouseArea{
                         id: albumMouseArea
 
                         anchors.fill: parent
-                        modelIndex: tasksModel.makeModelIndex(parentIndex, group ? index : -1)
+                        modelIndex: tasksModel.makeModelIndex(parentIndex)//, group ? (index ? index : -1) : -1)
                         winId: windows != undefined ? (windows[0] || 0) : 0
                     }
                 }

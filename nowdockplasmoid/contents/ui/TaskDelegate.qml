@@ -599,28 +599,9 @@ MouseArea{
 
         ////window previews/////////
         if (isWindow) {
-            if(containsMouse && panel.showPreviews){
+            if(containsMouse && panel.showPreviews && windowSystem.compositingActive){
                 hoveredTimerObj = hoveredTimerComponent.createObject(mainItemContainer);
-                windowsPreviewDlg.visualParent = mainItemContainer;
-
-                toolTipDelegate.parentIndex = itemIndex;
-
-                toolTipDelegate.windows = Qt.binding(function() {
-                    return model.LegacyWinIdList;
-                });
-                toolTipDelegate.mainText = Qt.binding(function() {
-                    return model.display;
-                });
-                toolTipDelegate.icon = Qt.binding(function() {
-                    return model.decoration;
-                });
-                toolTipDelegate.subText = Qt.binding(function() {
-                    return model.IsLauncher === true ? model.GenericName : generateSubText(model);
-                });
-                toolTipDelegate.launcherUrl = Qt.binding(function() {
-                    return model.LauncherUrlWithoutIcon;
-                });
-
+                preparePreviewWindow();
             }
             else{
                 if (hoveredTimerObj){
@@ -632,7 +613,9 @@ MouseArea{
     }
 
     onPressed: {
-        windowsPreviewDlg.hide();
+        if (windowSystem.compositingActive) {
+            windowsPreviewDlg.hide();
+        }
 
         if ((mouse.button == Qt.LeftButton)||(mouse.button == Qt.MidButton)) {
             lastButtonClicked = mouse.button;
@@ -684,12 +667,12 @@ MouseArea{
                     if (model.IsGroupParent) {
                         if (windowSystem.compositingActive) {
                             panel.presentWindows(model.LegacyWinIdList);
-                        } else {
-                            if (groupDialog.visible) {
-                                groupDialog.visible = false;
+                        } else {                           
+                            if ((windowsPreviewDlg.visualParent === mainItemContainer)&&(windowsPreviewDlg.visible)) {
+                                windowsPreviewDlg.hide();
                             } else {
-                                groupDialog.visualParent = mainItemContainer;
-                                groupDialog.visible = true;
+                                preparePreviewWindow();
+                                windowsPreviewDlg.show();
                             }
                         }
                     } else {
@@ -747,6 +730,31 @@ MouseArea{
 
 
     ///// Helper functions /////
+    function preparePreviewWindow(){
+        windowsPreviewDlg.visualParent = mainItemContainer;
+
+        toolTipDelegate.parentIndex = index;
+
+        toolTipDelegate.windows = Qt.binding(function() {
+            return model.LegacyWinIdList;
+        });
+        toolTipDelegate.mainText = Qt.binding(function() {
+            return model.display;
+        });
+        toolTipDelegate.icon = Qt.binding(function() {
+            return model.decoration;
+        });
+        toolTipDelegate.subText = Qt.binding(function() {
+            return model.IsLauncher === true ? model.GenericName : generateSubText(model);
+        });
+        toolTipDelegate.launcherUrl = Qt.binding(function() {
+            return model.LauncherUrlWithoutIcon;
+        });
+
+        toolTipDelegate.titles = tasksWindows.windowsTitles();
+    }
+
+
     function launcherAction(){
         // if ((lastButtonClicked == Qt.LeftButton)||(lastButtonClicked == Qt.MidButton)){
         tasksModel.requestActivate(modelIndex());
@@ -871,7 +879,7 @@ MouseArea{
     ///item's added Animation
     SequentialAnimation{
         id:showWindowAnimation
-        property int speed: plasmoid.configuration.durationTime* (1.2*units.longDuration)
+        property int speed: windowSystem.compositingActive ? plasmoid.configuration.durationTime* (1.2*units.longDuration) : 0
 
         PropertyAnimation {
             target: wrapper

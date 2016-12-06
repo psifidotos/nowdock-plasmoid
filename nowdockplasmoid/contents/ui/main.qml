@@ -94,6 +94,7 @@ Item {
     property color minimizedDotColor: textColorLuma > 0.5 ? Qt.darker(theme.textColor, 1+ (1-textColorLuma)) : Qt.lighter(theme.textColor, 1+(1-textColorLuma))
 
     //BEGIN Now Dock Panel properties
+    property bool compositingActive: nowDockPanel ? nowDockPanel.compositingActive : true
     property bool forceHidePanel: false
     property bool disableLeftSpacer: false
     property bool disableRightSpacer: false
@@ -214,14 +215,10 @@ Item {
         property int currentItem: -1
     }
 
-    GroupDialog{
-        id: groupDialog
-    }
-
     // FIXME: at some point this must be dropped with NowDock plugin
     Item{
         id: windowSystem
-        property bool compositingActive: false
+        property alias compositingActive: panel.compositingActive
     }
 
 
@@ -934,9 +931,9 @@ Item {
 
         var result = panel.outsideContainsMouse();
 
-        if (!result || toolTipDelegate.parentIndex != icList.hoveredIndex)
+        if ((!result || toolTipDelegate.parentIndex != icList.hoveredIndex) && windowSystem.compositingActive) {
             windowsPreviewDlg.hide();
-        //windowsPreviewDlg.visible = false;
+        }
 
         if (result)
             return true;

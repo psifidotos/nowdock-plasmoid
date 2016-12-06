@@ -32,20 +32,25 @@ Item{
     property bool isWindow: IsWindow ? true : false
 
     onIsLauncherChanged: updateCounter();
-  //  onIsStartupChanged: updateCounter();
-//    onIsWindowChanged: updateCounter();
+    //  onIsStartupChanged: updateCounter();
+    //    onIsWindowChanged: updateCounter();
 
     //states that exist in windows in a Group of windows
     property bool hasMinimized: false;
     property bool hasShown: false;
     property bool hasActive: false;
 
-
+    //FIXME: For some reason the index is not updated correctly in some cases (e.g. window dragging, repositioning launchers)
+    // and this way much beautiful information are lost, an activity change back and return,
+    // it fixes this sometimes...
     DelegateModel {
         id: windowsLocalModel
-        model: icList.model
+        model: tasksModel //icList.model
         rootIndex: tasksModel.makeModelIndex(index)
-        delegate: Item{}
+
+        delegate: Item{
+            property string title: model.display
+        }
 
         onCountChanged:{
             windowsContainer.updateCounter();
@@ -86,13 +91,36 @@ Item{
         }
     }
 
+    function windowsTitles() {
+        var childs = windowsLocalModel.items;
+
+        var result = new Array;
+
+        for(var i=0; i<childs.count; ++i){
+            var kid = childs.get(i);
+
+            var title = kid.model.display
+            // FIXME: we may need a way to remove the app name from the end
+            /*   var lst = title.lastIndexOf(" - ");
+
+            if (lst > 0) {
+                title = title.substring(0, lst);
+            }*/
+
+            result.push(title);
+        }
+
+        return result;
+    }
+
+
     Component.onCompleted: {
         mainItemContainer.checkWindowsStates.connect(initializeStates);
         updateCounter();
     }
 
     function updateCounter(){
-    //    console.log("--------- "+ index+" -------");
+        //    console.log("--------- "+ index+" -------");
         if(index>=0){
             if(IsGroupParent){
                 var tempC = windowsLocalModel.count;
@@ -121,6 +149,6 @@ Item{
             initializeStates();
         }
 
-   }
+    }
 
 }
