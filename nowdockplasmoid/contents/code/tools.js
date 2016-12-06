@@ -107,7 +107,6 @@ function insertIndexAt(above, x, y) {
 }
 
 
-
 function publishIconGeometries(taskItems) {   
     for (var i = 0; i < taskItems.length - 1; ++i) {
         var task = taskItems[i];

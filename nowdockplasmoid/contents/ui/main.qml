@@ -214,6 +214,17 @@ Item {
         property int currentItem: -1
     }
 
+    GroupDialog{
+        id: groupDialog
+    }
+
+    // FIXME: at some point this must be dropped with NowDock plugin
+    Item{
+        id: windowSystem
+        property bool compositingActive: false
+    }
+
+
     PlasmaCore.Dialog{
         id: windowsPreviewDlg
         // hideOnWindowDeactivate: false
