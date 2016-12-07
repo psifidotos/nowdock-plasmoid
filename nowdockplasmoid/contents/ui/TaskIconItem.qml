@@ -141,8 +141,8 @@ Item{
 
         //    anchors.centerIn: parent
 
-        width: newTempSize //+ 2*centralItem.shadowSize
-        height: width
+        width: Math.round(newTempSize) //+ 2*centralItem.shadowSize
+        height: Math.round(width)
         icon: decoration
 
         property int zoomedSize: panel.zoomFactor * panel.iconSize
@@ -152,7 +152,7 @@ Item{
         property real basicScalingHeight : wrapper.inTempScaling ? (panel.iconSize * wrapper.scaleHeight) :
                                                                    panel.iconSize * wrapper.scale
 
-        property real newTempSize: (wrapper.opacity == 1) ?  Math.min(basicScalingWidth, basicScalingHeight) :
+        property real newTempSize: (wrapper.opacity == 1) ? Math.min(basicScalingWidth, basicScalingHeight) :
                                                             Math.max(basicScalingWidth, basicScalingHeight)
 
         ///states for launcher animation
@@ -210,7 +210,7 @@ Item{
             samples: 2 * radius
             source: iconImageBuffer
             radius: centralItem.shadowSize
-            verticalOffset: 2            
+            verticalOffset: 2
         }
     }
 
