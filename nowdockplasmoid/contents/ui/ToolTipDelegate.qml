@@ -166,7 +166,7 @@ MouseArea{
 
         Item {
             id: thumbnailContainer
-            width: Math.max(parent.width, windowRow.width)
+            width: Math.max(tooltipContentItem.width, windowRow.width)
             height: albumArtImage.available ? albumArtImage.height :
                                               raisePlayerArea.visible ? raisePlayerArea.height :
                                                                         windowRow.height
