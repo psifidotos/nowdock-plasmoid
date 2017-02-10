@@ -1,3 +1,7 @@
+#### DEPRECATED: Now Dock is no longer maintained. Future development is focused on [Latte Dock](https://github.com/psifidotos/Latte-Dock), a merge of Now Dock and [Candil-Dock](https://github.com/audoban/Candil-Dock) projects. Feel free to join us in this new journey!
+
+-------------
+
 About
 =====
 This is a plasmoid for Plasma 5 which is trying to implement a
